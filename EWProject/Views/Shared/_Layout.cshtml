@@ -1,0 +1,510 @@
+﻿@using Client.Connection;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.Extensions.Options.IOptions<Microsoft.AspNetCore.Builder.RequestLocalizationOptions> locOptions
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var culture = Context.Features.Get<Microsoft.AspNetCore.Localization.IRequestCultureFeature>();
+    var cultureList = locOptions.Value.SupportedUICultures.Select(x => new SelectListItem { Value = x.Name, Text = x.Name }).ToList();
+    var returnUrl = string.IsNullOrWhiteSpace(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}{Context.Request.QueryString}";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EWSystem</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/lib/fontawesome-free/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @*  <link rel="stylesheet" href="~/styles.css" asp-append-version="true" />*@
+    <link href="~/lib/bootstrap/dist/css/bootstrap-select.min.css" rel="stylesheet" />
+    <link href="~/lib/datatable/jquery.datatables.min.css" rel="stylesheet" />
+    <link href="~/lib/select2/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/lib/datatable/rowgroup.datatables.min.css" rel="stylesheet" />
+    <link href="~/lib/datatable/fixedheader.datatables.min.css" rel="stylesheet" />
+    <link href="~/lib/jquery/dist/jquery-ui.css" rel="stylesheet" />
+    @RenderSection("header", required: false)
+</head>
+<style>
+    .select2-selection {
+        overflow: hidden;
+    }
+
+    .select2-selection__rendered {
+        white-space: normal;
+        word-break: break-all;
+    }
+</style>
+@{
+   await Configure.GetAllPermission(HttpContextAccessor.HttpContext.Request.Cookies["ID"]);
+}
+<body style="background-color:#ffff">
+    @if (Client.Connection.Configure.ListOfPermissionsByUser != null)
+    {
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color: #01295C">
+                <div class="container-fluid">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                        <img src="~/images/logoew.png" class="img-sm img-md img-lg" style="max-width: 30px" />
+                    </a>
+                    <button class="navbar-toggler" style="background-color:white;" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">@localizer["MAINPAGE"]</a>
+                            </li>
+                            @if (Client.Connection.Configure.ListOfPermissionsByUser.FirstOrDefault().CBTCount != 0)
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown" href="#">@localizer["CROSS BORDER TRANSFER"]</a>
+                                    <ul class="dropdown-menu" style="border: 1px solid #01295C">
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "SalesQuotation").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="SalesQuotation" asp-action="ListSalesQuotation">
+                                                    @localizer["SALES QUOTATION"]
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "BookingSheet_CBT").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="BookingSheet" asp-action="ListBookingSheet">
+                                                    @localizer["BOOKING SHEET"]
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "ConfirmBookingSheet_CBT").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="ConfirmBookingSheet" asp-action="ListConfirmBookingSheet">
+                                                    @localizer["CONFIRM BOOKING SHEET"]
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "JobSheetTrucking_CBT").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="JobSheetTrucking" asp-action="ListJobSheetTrucking">
+                                                    @localizer["JOB SHEET TRUCKING"]
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "CreditNote_CBT").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="CreditNote" asp-action="ListCreditNote">
+                                                    @localizer["Credit Note"]
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "DebitNote_CBT").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="DeditNote" asp-action="ListDeditNote">
+                                                    @localizer["Debit Note"]
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            @if (Client.Connection.Configure.ListOfPermissionsByUser.FirstOrDefault().S_A_Count != 0)
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown" href="#">@localizer["SEA & AIR"]</a>
+                                    <ul class="dropdown-menu" style="border: 1px solid #01295C">
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "BookingSheet_S_A").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="BookingSheetSeaAndAir" asp-action="ListBookingSheet">
+                                                    @localizer["BOOKING SHEET"]
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "SeaConfirmBooking_S_A").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="ConfirmBookingSheetSeaAndAir" asp-action="ListOfConfirmBookingSheet">
+                                                    @localizer["SEA CONFIRM BOOKING"]
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "JobSheetTrucking_S_A").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="JobSheetTruckingSeaAndAir" asp-action="ListJobSheetTrucking">
+                                                    @localizer["Job Sheet S&A"]
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "CreditNote_S_A").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="CreditSeaAir" asp-action="ListCredit">
+                                                    @localizer["Credit Note"]
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "DebitNote_S_A").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="DebitSeaAir" asp-action="ListDebit">
+                                                    @localizer["Debit Note"]
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            @if (Client.Connection.Configure.ListOfPermissionsByUser.FirstOrDefault().OtherCount != 0)
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown" href="#">@localizer["OTHER"]</a>
+                                    <ul class="dropdown-menu" style="border: 1px solid #01295C">
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "PettyCash").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="PettyCash" asp-action="ListPettyCash">
+                                                    @localizer["PETTY CASH"]
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "RequestReimbursement").First().Properties.IsPermission).Count() == 1 || Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "ApproveReimbursement").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="Reimbursement" asp-action="ViewReimbursement">
+                                                    @localizer["REIMBURSEMENT"]
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "PurchaseRequestForAdmin").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="PurchaseRequest" asp-action="ListPurchaseRequest">
+                                                    @localizer["PURCHASE REQUEST FOR ADMIN"]
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "PurchaseRequestCostOfSales").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="PurchaseRequestCostOfSales" asp-action="ListPurchaseRequestCostOfSale">
+                                                    @localizer["PURCHASE REQUEST COST OF SALES"]
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "PurchaseRequestForAdvancePayment").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="PurchaseRequestAdvancePayment" asp-action="ListPurchaseRequestAdvancePayment">
+                                                    @localizer["PURCHASE REQUEST FOR ADVANCE PAYMENT"]
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "PruchaseRequestForSalesCommission").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="PurchaseRequestSalesCommission" asp-action="ListPurchaseRequestSalesCommission">
+                                                    @localizer["PURCHASE REQUEST FOR SALES COMMISSION"]
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "ApprovalDocument").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="ApprovePurchaseRequest" asp-action="Index">
+                                                    @localizer["APPROVAL DOCUMENT"]
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "ApprovePlaceOfLoading_Delivery").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="ApprovePlaceOfLoadingAndDelivery" asp-action="Index">
+                                                    @localizer["APPROVAL PlACE OF LOADING/DELIVERY"]
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "PRForSettlement").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="Settlement" asp-action="ListSettlement">
+                                                    @localizer["PR FOR SETTLEMENT"]
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "ContainerUpdateStatus").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <!--ListContainer-->
+                                                <a class="dropdown-item" asp-controller="Container" asp-action="ListContainer">
+                                                    @localizer["CONTAINER UPDATE STATUS"]
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "Report").First().Properties.IsPermission).Count() == 1)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="Report" asp-action="Index">
+                                                    @localizer["REPORT"]
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+
+                            @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "Alert").First().Properties.IsPermission).Count() == 1)
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown" href="#"><i class="fas fa-bell" style="font-weight: 900;" aria-hidden="true"></i><span id="alertCount" style="color:red;font-weight: 900;position:relative;bottom:5px;">0</span></a>
+                                    <ul class="dropdown-menu" id="showListAlert" style="border: 1px solid #01295C">
+
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="MessageAlert" asp-action="ListMessage">
+                                                @localizer["SEE All ALERT"]
+                                            </a>
+                                        </li>
+
+                                        @*<li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">Report</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">Other</a></li>*@
+                                    </ul>
+                                </li>
+                            }
+                        </ul>
+                        @*<span class="">*@
+                        <!--Language-->
+                        <ul class="navbar-text text-white navbar-nav">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @localizer["language"]
+                                </a>
+                                <ul class="dropdown-menu">
+                                    @foreach (var a in cultureList)
+                                    {
+                                        if (a.Text == "en-US")
+                                        {
+                                            <li>
+                                                <a asp-action="CultureManagment" asp-controller="Home" asp-route-culture="@a.Text" asp-route-returnUrl="@returnUrl" class="dropdown-item">
+                                                    <img src="~/images/usa.png" width="30px" /> @localizer["en-US"]
+                                                </a>
+                                            </li>
+                                        }
+                                        else if (a.Text == "th-TH")
+                                        {
+                                            <li>
+                                                <a asp-action="CultureManagment" asp-controller="Home" asp-route-culture="@a.Text" asp-route-returnUrl="@returnUrl" class="dropdown-item">
+                                                    <img src="~/images/Flag_of_Thailand.svg.png" width="30px" /> @localizer["th-TH"]
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                            </li>
+                        </ul>
+                        <!--End Language-->
+                        @*</span>*@
+                        @* <span class="navbar-text">
+                    <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">@localizer["logout"]</a>
+                    </span>*@
+                    </div>
+                </div>
+            </nav>
+        </header>
+    }    
+    <div class="container-fluid">
+        <main role="main" class="pb-3">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-5 mb-5" id="userInfo" style="border-right: 6px solid #01295C;margin-bottom:0px !important;display:none">
+                    <div class="row" style="margin-bottom:15px;">
+                        <div class="col-6" style="font-family:Arial;font-size:16px;font-weight:bold;">@localizer["UserID"]:</div>
+                        <div class="col-6" style="font-family:Arial;font-size:16px;font-weight:bold;" data-empid="@HttpContextAccessor.HttpContext.Request.Cookies["EmpID"]" data-id="@HttpContextAccessor.HttpContext.Request.Cookies["ID"]" id="UserID">@HttpContextAccessor.HttpContext.Request.Cookies["UserIDName"]</div>
+                    </div>
+                    <div class="row" style="margin-bottom:15px;">
+                        <div class="col-6" style="font-family:Arial;font-size:16px;font-weight:bold;">@localizer["Username"]:</div>
+                        <div class="col-6" style="font-family:Arial;font-size:16px;font-weight:bold;" id="UserName">@HttpContextAccessor.HttpContext.Request.Cookies["UserName"]</div>
+                    </div>
+                    <div class="row" style="margin-bottom:15px;">
+                        <div class="col-6" style="font-family:Arial;font-size:16px;font-weight:bold;">@localizer["Department"]:</div>
+                        <div class="col-6" style="font-family:Arial;font-size:16px;font-weight:bold;">@HttpContextAccessor.HttpContext.Request.Cookies["Department"]</div>
+                    </div>
+                    <center>
+                        <a id="btnLogOut" class="btn" style="padding-left: 25%; padding-right: 25%;max-width: 85%; background-color: #01295C;color: white" asp-controller="Home" asp-action="Logout">@localizer["LOGOUT"]</a><br />
+                        <a href="#" class="btn btn-info mt-3" style="padding-left: 15%; padding-right: 15%;max-width: 105%;color: white">@localizer["NEW PASSWORD"]</a>
+                    </center>
+                </div>
+                <div class="col-lg-9 col-md-9 col-7" id="mainScreen">
+                    @*//style="border:0px;width:20px;height:20px;"*@
+                    <a id="btnHide" class="btn btn-info mb-2" style="color:white;"><i class="fas fa-bars" aria-hidden="true"></i></a>
+                    @RenderBody()
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted" style="background-color: #01295C">
+        <div class="container-fuid">
+            <div style="margin-left:20px;font-weight:bold;color:white">@localizer["Version"] 1.0.0</div>
+        </div>
+    </footer>
+    @*Import Modal*@
+    @await Html.PartialAsync("ModalInfo")
+</body>
+</html>
+@*<script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>*@
+<script src="~/lib/datatable/jquery-3.5.1.js" asp-append-version="true"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap-select.min.js" asp-append-version="true"></script>
+<script src="~/lib/datatable/jquery.datatables.min.js" asp-append-version="true"></script>
+<script src="~/lib/datatable/datatables.rowgroup.min.js" asp-append-version="true"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script src="~/lib/select2/dist/js/select2.min.js" asp-append-version="true"></script>
+<script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
+@*<script src="~/lib/signalr/dist/browser/signalr.min.js" asp-append-version="true"></script>*@
+<script src="~/lib/datatable/datatables.fixedheader.min.js" asp-append-version="true"></script>
+<script src="~/lib/datatable/moment.min.js"></script>
+<script src="~/lib/datatable/datetime-moment.js"></script>
+<script src="~/lib/jquery/dist/jquery-ui.js"></script>
+ @if (Client.Connection.Configure.ListOfPermissionsByUser != null)
+{
+    @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "Alert").First().Properties.IsPermission).Count() == 1)
+    {
+        <script>
+            var isNotAllow = 0;
+        </script>
+    }
+    else
+    {
+        <script>
+            var isNotAllow = 1;
+        </script>
+    }
+}
+else
+{
+    <script>
+        var isNotAllow = 1;
+    </script>
+}
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+    var connection = new signalR.HubConnectionBuilder()
+        .withUrl("@HttpContextAccessor.HttpContext.Request.Scheme://@HttpContextAccessor.HttpContext.Request.Host@HttpContextAccessor.HttpContext.Request.PathBase/chatHub", {
+            skipNegotiation: true,
+            transport: signalR.HttpTransportType.WebSockets
+        })
+        .configureLogging(signalR.LogLevel.Information)
+        .withAutomaticReconnect()
+        .build();
+    connection.start().then(function () {
+        console.log("SignalR Connected!");
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
+    //async function start() {
+    //    try {
+    //        await connection.start();
+    //        console.log("SignalR Connected.");
+    //    } catch (err) {
+    //        //console.log(err);
+    //        setTimeout(start, 5000);
+    //    }
+    //};
+    //connection.onclose(async () => {
+    //    await start();
+    //});
+
+    // Start the connection.
+    //start();
+    connection.on("ReceiveMessage", function (user) {
+        currenctUser = $("#UserID").attr("data-empid");
+        if (currenctUser == user) {
+            onInitAlert();
+        }
+    });
+    onInitAlert();
+    function onInitAlert() {
+        if (isNotAllow == 0) {
+            $.ajax({
+                url: '@Url.Action("GetMessage","MessageAlert")',
+                type: "GET",
+                data: { userID: $("#UserID").attr("data-empid") },
+                dataType: "JSON",
+                success: function (data) {
+                    $("#showListAlert").empty();
+                    var ul = document.getElementById("showListAlert");
+                    for (var i = 0; i < data.data.length; i++) {
+                        ul.innerHTML += '<li><a href="@Url.Action("ViewAlert","MessageAlert")?userID=' + $("#UserID").attr("data-empid") + '&alertID=' + data.data[i].alertID + '" target="_blank" class="dropdown-item">' + data.data[i].messageHeader + '</a></li>'
+                    }
+                    ul.innerHTML += '<li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="@Url.Action("ListMessage","MessageAlert")?userID=' + $("#UserID").attr("data-empid") + '">@localizer["SEE All ALERT"]</a></li>';
+                    if (data.data.length !== 0) {
+                        $("#alertCount").text(data.data[0].messageCount);
+                    }
+                    else {
+                        $("#alertCount").text(0);
+                    }
+                },
+                error: function (erro) {
+                }
+            });
+        }
+
+    }
+    var menuVisable = "1";
+    $(document).ready(function () {
+        var a = $(document).height() - 190;
+        $("#userInfo").height(a);
+        $(window).resize(function () {
+            $(".fullheight").height(a);
+        });
+    });
+    HideScreen();
+    $("#btnHide").click(function () {
+        HideScreen();
+    });
+    function HideScreen() {
+        if (menuVisable === "1") {
+            $("#userInfo").css("display", "none");
+            $('#userInfo').removeClass('col-lg-3 col-md-3 col-5 mb-5');
+            $('#mainScreen').removeClass('col-lg-9 col-md-9 col-7');
+            $('#mainScreen').addClass('col-lg-12 col-md-12 col-12');
+            menuVisable = "0";
+        } else {
+            $("#userInfo").css("display", "block");
+            $('#mainScreen').removeClass('col-lg-12 col-md-12 col-12');
+            $('#userInfo').addClass('col-lg-3 col-md-3 col-5 mb-5');
+            $('#mainScreen').addClass('col-lg-9 col-md-9 col-7');
+            menuVisable = "1";
+        }
+    }
+</script>
+@await RenderSectionAsync("Scripts", required: false)

@@ -1,0 +1,327 @@
+﻿<title>@ViewData["Title"] - EWSystem</title>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Client.Models.Response.ListMasterConfirmBookingSheet
+<div class="row">
+    <div class="col-6">
+        <div style="float:left">
+            <button type="button" class="btn" style="background-color:#01295C;color:white" data-bs-toggle="modal" data-bs-target="#ModalBookingSheetList">
+                COPY FROM BOOKINGSHEET
+            </button>
+        </div>
+    </div>
+    <div class="col-6">
+        <div style="float:right">
+            <h2>@localizer["CONFIRM BOOKING SHEET"]</h2>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-1">
+        <hr />
+    </div>
+    <div class="col-3">
+        <h5>Booking Sheet Information</h5>
+    </div>
+    <div class="col-8">
+        <hr />
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["JOB TYPE"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" id="txtjobType" readonly>
+                <input type="hidden" id="txtBookingID" />
+                <input type="hidden" id="txtCardCode" />
+                <input type="hidden" id="txtDestination" />
+                <input type="hidden" id="txtOrigin" />
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ROUTE"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" id="txtRoute" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SALE NAME"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <input type="text" class="form-control" id="txtSplPerson" data-slpCode="" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["BORDER"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-6">
+                        <input type="text" class="form-control" id="txtBorder1" readonly>
+                    </div>
+                    <div class="col-6">
+                        <input type="text" class="form-control" id="txtBorder2" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["JOB NO"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <input type="text" class="form-control" id="txtJobNo" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["PLACE OF LOADING"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <select class="form-control" multiple="multiple" size="1" id="txtPlaceOfLoading" disabled>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Comodities"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <input type="text" class="form-control" id="txtCommodities" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Loading OF District"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <select class="form-control" multiple="multiple" size="1" id="txtLoadingOfDistrict" disabled>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SHIPPER"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <select class="form-control" multiple="multiple" size="1" id="txtShipper" disabled>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["PLACE OF DELIVERY"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <select class="form-control" multiple="multiple" size="1" id="txtPlaceOfDelivery" disabled>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">        
+    </div>
+    <div class="col-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Delivery OF District"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <select class="form-control" multiple="multiple" size="1" id="txtDeliveryOfDistrict" disabled>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CONSIGNEE"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <select class="form-control" multiple="multiple" size="1" id="txtCO" disabled>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ORIGIN - DESTINATION"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <select multiple="multiple" class="form-select" id="cboPriceList">
+                            @*<option selected value="">SELECT ORIGIN TO DESTINATION</option>*@
+                            @foreach(var a in Model.getPriceListConfirmBookings)
+                            {
+                                <option value="@a.PriceListCode">@a.PriceListName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-4">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Loading Date"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <input type="text" class="form-control" id="txtLoadingDate" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Cross Border Date"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <input type="text" class="form-control" id="txtCrossBorderDate" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ETA Requirement Date"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <input type="text" class="form-control" id="txtETARequirement" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-4">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CS Name"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <input type="text" class="form-control" id="CSName" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+    </div>
+    <div class="col-4"></div>
+</div>
+<div class="row mt-2">
+    <div class="col-1 pr-0">
+        <hr />
+    </div>
+    <div class="col-3 p-0" style="text-align:center">
+        <h5>Container Information</h5>
+    </div>
+    <div class="col-8 pl-0">
+        <hr />
+    </div>
+</div>
+<div id="ContainerInfo">
+    @*@await Component.InvokeAsync("ContainerInfo", new { BookingID = "Heng"})*@
+</div>
+@*@await Component.InvokeAsync("PurchaseRequest")*@
+@*@await Component.InvokeAsync("AdvancePayment",new { typeAdvancePayment="ADPM" })*@
+<div class="row">
+    <div class="col-12">@localizer["Remarks"]</div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <textarea id="remarks" rows="4" class="form-control"></textarea>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-6">
+    </div>
+    <div class="col-6">
+        <button class="btn" id="btnConfirmTransaction" onclick="OnSubitConfirmBookingSheet('@Url.Action("OnSubmitConfirmBookingSheet","ConfirmBookingSheet")','@Url.Action("Index","ConfirmBookingSheet")')" style="float:right;background-color:#01295C;color:white"> Confirm Transaction</button>
+    </div>
+</div>
+<!--Import Modal OnSubmitBookingSheet-->
+@*@await Html.PartialAsync("Modal/ModalContainer", Model.getContainers)
+@await Html.PartialAsync("Modal/ModalEmployee", Model.getEmployees)
+@await Html.PartialAsync("Modal/ModalTruck", Model.getTruckNos)
+@await Html.PartialAsync("Modal/ModalVendor", Model.getVendors)
+@await Html.PartialAsync("Modal/ModalCostType", Model.getCostTypes)*@
+@await Html.PartialAsync("ListBookingSheet", Model.getBookingSheetByUser)
+@section scripts{
+    <script src="~/js/confirmbookingsheet/modal/modalcontainer.js"></script>
+    <script src="~/js/confirmbookingsheet/modal/modalemployee.js"></script>
+    <script src="~/js/confirmbookingsheet/modal/modaltruck.js"></script>
+    <script src="~/js/confirmbookingsheet/modal/modalvendor.js"></script>
+    <script src="~/js/confirmbookingsheet/modal/modalCostType.js"></script>
+    <script src="~/js/confirmbookingsheet/index.js"></script>
+    <script src="~/js/confirmbookingsheet/listbookingsheet.js"></script>
+    @* setterListTruckInformation(JSON.parse('@Json.Serialize(Model.getDetailBookingSheetByUsers[0].Volume)'));*@
+    <script>
+        var listConfirmPR = [];
+        var countint = 1;
+        //$("#CSName").val(@Model.);
+        cboPriceList
+        //District Of Loading
+        $("#cboPriceList").select2({
+            placeholder: "SELECT ORIGIN TO DESTINATION",
+            maximumSelectionLength: 1,
+            width: '100%'
+        });
+    </script>
+}

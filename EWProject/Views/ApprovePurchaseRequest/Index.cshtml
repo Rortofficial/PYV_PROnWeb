@@ -1,0 +1,521 @@
+﻿@using Client.Connection;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Client.Models.Response.ListMasterConfirmBookingSheet
+<div class="row">
+    <div class="col-6">
+    </div>
+    <div class="col-6">
+        <div style="float:right">
+            <h2>@localizer["Approve Document"]</h2>
+        </div>
+    </div>
+</div>
+@if (Configure.ListOfPermissionsByUser.Where(x =>
+               x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "ApprovalDocument").First().Properties.IsPermission
+           && x.IsAllowReadOnly == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "ApprovalDocument").First().Properties.IsAllowReadOnly).Count() == 1)
+{
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+            @localizer["Date From"]
+        </div>
+        <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+            @localizer["Date To"]
+        </div>
+        <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+            @localizer["Document Type"]
+        </div>
+        <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+            <input type="date" class="form-control" value="@(DateTime.Now.ToString("yyyy-MM-01"))" id="txtDateFrom">
+        </div>
+        <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+            <input type="date" class="form-control" value="@(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddDays(-1).ToString("yyyy-MM-dd"))" id="txtDateTo">
+        </div>
+        <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+            <select class="form-control" @*multiple="multiple"*@ id="txtDocumentType">
+                <option selected value="--1">Select Document Type</option>
+                <option value="PR">Purchase Request For Admin</option>
+                <option value="PRCOS">Purchase Request Cost of Sale</option>
+                <option value="PRAD">Purchase Request Advance Payment</option>
+                <option value="PRCommission">Purchase Request For SalesCommission</option>
+            </select>
+        </div>
+        <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+            <button class="btn" id="btnSearch" style="float:left;background-color:#01295C;color:white">Search</button>
+        </div>
+    </div>
+}
+<div class="table-responsive mt-3">
+    <div class="row">
+        <div class="col-12">
+            <table id="TbListBookingSheet" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0" style="background: #f0eff1; color: #696969;">
+                <thead>
+                    <tr>
+                        <th>View</th>
+                        <th>Document Status</th>
+                        <th>DocNum</th>
+                        <th>No#</th>
+                        <th>Approve By</th>
+                        <th>Project Number</th>
+                        <th>Issue Date</th>
+                        <th>Vendor</th>
+                        <th>Currency</th>
+                        <th>UserName</th>
+                        <th>Amount</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!--Import Modal OnSubmitBookingSheet-->
+@await Html.PartialAsync("Modal/ModalViewDocumentApprove"/*, Model.GetCOs*/)
+@await Html.PartialAsync("Modal/ModalViewDocumentApproveCommission"/*, Model.GetCOs*/)
+@section scripts{
+    <script>
+        $('#TbListBookingSheet thead tr')
+            .clone(true)
+            .addClass('filters')
+            .appendTo('#TbListBookingSheet thead');
+        var tbListItemLine = $('#TbListBookingSheet').DataTable(
+            {
+                columns:
+                    [
+                        {
+                            render: function (data, type, full, meta) {
+                                return '<button class="btn-sm btn-success" style="" onClick="ShowModal(' + full.docEntry + ',\'' + full.documentType + '\',\'' + full.type + '\')">View Document</button>';
+                            }
+                        },
+                        {
+                            render: function (data, type, full, meta) {
+                                var style="";
+                                if(full.documentType=="Approve"){
+                                    style = "color:green;font-weight: bold;"
+                                } else if (full.documentType == "Pending") {
+                                    style = "color:purple;font-weight: bold;"
+                                } else if (full.documentType == "Reject") {
+                                    style = "color:red;font-weight: bold;"
+                                }
+                                return '<div style="' + style + '">' + full.documentType + '</div>';
+                            }
+                        },
+                        //{ data: "documentType", autoWidth: true },
+                        { data: "docNumPR", autoWidth: true },
+                        { data: "docNum", autoWidth: true },
+                        { data: "approveBy", autoWidth: true },
+                        { data: "projectNumber", autoWidth: true },
+                        { data: "issueDate", autoWidth: true },
+                        { data: "vendorName", autoWidth: true },
+                        { data: "currency", autoWidth: true },
+                        { data: "employeeName", autoWidth: true },
+                        { data: "amount", autoWidth: true },
+                        { data: "remarks", autoWidth: true },
+
+                    ],
+                orderCellsTop: true,
+                fixedHeader: true,
+                initComplete: function () {
+                    var api = this.api();
+                    // For each column
+                    api
+                        .columns()
+                        .eq(0)
+                        .each(function (colIdx) {
+                            // Set the header cell to contain the input element
+                            var cell = $('.filters th').eq(
+                                $(api.column(colIdx).header()).index()
+                            );
+                            var title = $(cell).text();
+                            $(cell).html('<input type="text" placeholder="' + title + '" />');
+
+                            // On every keypress in this input
+                            $(
+                                'input',
+                                $('.filters th').eq($(api.column(colIdx).header()).index())
+                            )
+                                .off('keyup change')
+                                .on('change', function (e) {
+                                    // Get the search value
+                                    $(this).attr('title', $(this).val());
+                                    var regexr = '({search})'; //$(this).parents('th').find('select').val();
+
+                                    var cursorPosition = this.selectionStart;
+                                    // Search the column for that value
+                                    api
+                                        .column(colIdx)
+                                        .search(
+                                            this.value != ''
+                                                ? regexr.replace('{search}', '(((' + this.value + ')))')
+                                                : '',
+                                            this.value != '',
+                                            this.value == ''
+                                        )
+                                        .draw();
+                                })
+                                .on('keyup', function (e) {
+                                    e.stopPropagation();
+
+                                    $(this).trigger('change');
+                                    $(this)
+                                        .focus()[0]
+                                        .setSelectionRange(cursorPosition, cursorPosition);
+                                });
+                        });
+                },
+                scrollCollapse: true,
+                scrollX: true,
+                scrollY: 500
+            });
+        var tbListInformationItemLine = $('#TbListLineItemPurchaseRequest').DataTable(
+            {
+                columns:
+                    [
+                        { data: "itemName", autoWidth: true },
+                        { data: "serviceType", autoWidth: true },
+                        { data: "truckNumber", autoWidth: true },
+                        { data: "truckType", autoWidth: true },
+                        { data: "trailerType", autoWidth: true },
+                        { data: "distributionRule", autoWidth: true },
+                        { data: "refInv", autoWidth: true },
+                        { data: "vatCode", autoWidth: true },
+                        { data: "jobNo", autoWidth: true },
+                        { data: "loadingDate", autoWidth: true },
+                        { data: "amount", autoWidth: true },
+                        { data: "placeOfLoading", autoWidth: true },
+                        { data: "placeOfDelivery", autoWidth: true },
+                        { data: "remark", autoWidth: true },
+
+                    ],
+            });
+        var tbListInformationItemLineForComission = $('#TbListLineItemPurchaseRequestForComission').DataTable(
+            {
+                responsive: true,
+                columns:
+                    [
+                        { data: "accountCode", autoWidth: true },
+                        { data: "jobNumber", autoWidth: true },
+                        { data: "arDocNum", autoWidth: true },
+                        { data: "incomingNumber", autoWidth: true },
+                        { data: "grandTotalSelling", autoWidth: true },
+                        { data: "grandTotalCosting", autoWidth: true },
+                        { data: "grossProfit", autoWidth: true },
+                        { data: "percentage", autoWidth: true },
+                        { data: "totalSaleCommission", autoWidth: true },
+                    ],
+            });
+        $("#btnSearch").click(function () {
+            //if ($("#txtDateFrom").val() === "") {
+            //    alert("Please Select Date From!");
+            //    return;
+            //}
+            //if ($("#txtDateTo").val() === "") {
+            //    alert("Please Select Date To!");
+            //    return;
+            //}
+            if ($("#txtDocumentType").val() === "") {
+                alert("Please Select Document Type!");
+                return;
+            }
+            RetriveDataFromPurchaseRequest();
+        });
+        function RetriveDataFromPurchaseRequest() {
+            $.ajax({
+                url: '@Url.Action("GetApproveListByDocumentType","ApprovePurchaseRequest")',
+                type: "GET",
+                data: {
+                    dateFrom: $("#txtDateFrom").val(),
+                    dateTo: $("#txtDateTo").val(),
+                    documentType: $("#txtDocumentType").val(),
+                },
+                dataType: "JSON",
+                beforeSend: function () {
+                    $('#Modalloder').modal('show');
+                },
+                success: function (data) {
+                    $('#Modalloder').modal('hide');
+                    tbListItemLine.clear();
+                    tbListItemLine.rows.add(data.data);
+                    tbListItemLine.search("").columns().search("").draw();
+                },
+                error: function (erro) {
+                    $('#Modalloder').modal('hide');
+                    $('#ModalSuccess').modal('show');
+                    $('#ErrMsg').html(erro.responseText);
+                }
+            });
+        }
+        function ShowModal(docEntry, documentType, type) {
+            if (type == "Normal") {
+                $.ajax({
+                    url: '@Url.Action("GetDetailInformationDocumentApproveByDocNum","ApprovePurchaseRequest")',
+                    type: "GET",
+                    data: {
+                        docNum: docEntry,
+                    },
+                    dataType: "JSON",
+                    beforeSend: function () {
+                        $('#Modalloder').modal('show');
+                    },
+                    success: function (data) {
+                        $('#Modalloder').modal('hide');
+                        $("#txtStatus").val(documentType);
+                        $("#reasonRemarks").val('');
+                        if (documentType !== "Pending") {
+                            $("#btnReject").css('display', 'none');
+                            $("#btnApprove").css('display', 'none');
+                            $("#reasonRemarks").attr('disabled', 'disabled');
+                            $("#reasonRemarks").val(data.data.reason);
+                        } else {
+                            $("#btnReject").css('display', '');
+                            $("#btnApprove").css('display', '');
+                            $("#reasonRemarks").removeAttr('disabled');
+                        }
+                        $("#btnLinkTo").empty();
+                        $("#btnLinkTo").append("<option selected value='-1'>Select Document Link</option>");
+                        for (var i = 0; i < data.data.listJobSheetTruckByDocEntry.length; i++) {
+                            $("#btnLinkTo").append("<option value='" + data.data.listJobSheetTruckByDocEntry[i] + "'>" + data.data.listJobSheetTruckByDocEntry[i] + " - " + data.data.jobNo + "</option>");
+                        }
+                        $("#btnLinkToCon").empty();
+                        $("#btnLinkToCon").append("<option selected value='-1'>Select Document Link</option>");
+                        for (var i = 0; i < data.data.listConfirmBookingByDocEntry.length; i++) {//ListConfirmBookingByDocEntry
+                            $("#btnLinkToCon").append("<option value='" + data.data.listConfirmBookingByDocEntry[i] + "'>" + data.data.listConfirmBookingByDocEntry[i] + " - " + data.data.jobNo + "</option>");
+                        }
+                        $("#txtDocEntry").val(data.data.docEntry);
+                        $("#txtRefNo").val(data.data.refNo);
+                        $("#txtIssueDate").val(data.data.issueDate);
+                        $("#txtIssueByName").val(data.data.issueByName);
+                        $("#txtDueDate").val(data.data.dueDate);
+                        $("#txtVendorName").val(data.data.vendorName);
+                        $("#txtJobNo").val(data.data.jobNo);
+                        $("#txtAmountCurrency").val(data.data.amountCurrency);
+                        $("#txtGrandTotal").val(data.data.grandTotal);
+                        $("#txtAmountTHB").val(data.data.amountTHB);
+                        $("#txtBankAccount").val(data.data.bankAccount);
+                        $("#txtBranch").val(data.data.branchName);
+                        $("#txtCountry").val(data.data.country);
+                        $("#txtBankName").val(data.data.bankName);
+                        $("#txtSwiftCode").val(data.data.swiftCode);
+                        $("#remarks").val(data.data.remarks);
+                        tbListInformationItemLine.clear();
+                        tbListInformationItemLine.rows.add(data.data.lines);
+                        tbListInformationItemLine.search("").columns().search("").draw();
+                    },
+                    error: function (erro) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html(erro.responseText);
+                    }
+                });
+                $("#ModalViewDocumentApprove").modal("show");
+            } else {
+                $.ajax({
+                    url: '@Url.Action("GetSalesComissionDetailByDocEntry","PurchaseRequestSalesCommission")',
+                    type: "GET",
+                    data: {
+                        docNum: docEntry,
+                    },
+                    dataType: "JSON",
+                    beforeSend: function () {
+                        $('#Modalloder').modal('show');
+                    },
+                    success: function (data) {
+                        $('#Modalloder').modal('hide');
+                        $("#txtStatusComission").val(data.data.approveStatus);
+                        $("#reasonRemarksComission").val('');
+                        if (data.data.approveStatus !== "Pending") {
+                            $("#btnRejectComission").css('display', 'none');
+                            $("#btnApproveComission").css('display', 'none');
+                            $("#reasonRemarksComission").attr('disabled', 'disabled');
+                            $("#reasonRemarksComission").val(data.data.reason);
+                        } else {
+                            $("#btnRejectComission").css('display', '');
+                            $("#btnApproveComission").css('display', '');
+                            $("#reasonRemarksComission").removeAttr('disabled');
+                        }
+                        $("#txtDocEntryComission").val(data.data.docEntry);
+                        $("#txtIssueDateComission").val(data.data.issueDate);
+                        $("#txtIssueByNameComission").val(data.data.userName);
+                        $("#txtDueDateComission").val(data.data.issueDate);
+                        $("#txtVendorNameComission").val(data.data.vendorCode);
+                        $("#txtRefNoComission").val(data.data.webId);
+                        $("#txtAmountCurrencyComission").val(data.data.currency);
+                        $("#txtGrandTotalSellingComission").val(data.data.grandTotalSelling);
+                        $("#txtGrandTotalCostingComission").val(data.data.grandTotalCosting);
+                        $("#txtGrandTotalGrossProfitComission").val(data.data.grandTotalGrossProfit);
+                        $("#txtGrandTotalComission").val(data.data.grandTotalCommission);
+                        $("#reasonRemarksComission").val(data.data.reason);
+                        tbListInformationItemLineForComission.clear();
+                        tbListInformationItemLineForComission.rows.add(data.data.lines);
+                        tbListInformationItemLineForComission.search("").columns().search("").draw();
+                    },
+                    error: function (erro) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html(erro.responseText);
+                    }
+                });
+                $("#ModalViewDocumentApproveComission").modal("show");
+            }
+
+        }
+        $("#btnReject").click(function () {
+            if (confirm("Please Confirm Before Reject!")) {
+                //alert($("#txtDocEntry").val());
+                $.ajax({
+                    url: '@Url.Action("OnRejectListByDocumentType","ApprovePurchaseRequest")',
+                    type: "POST",
+                    data: {
+                        docNum: $("#txtDocEntry").val(),
+                        RemarksReson: $("#reasonRemarks").val()
+                    },
+                    dataType: "JSON",
+                    beforeSend: function () {
+                        $('#Modalloder').modal('show');
+                        $("#txtStatus").val("Reject");
+                        $("#btnReject").attr("style", "display:none");
+                        $("#btnApprove").attr("style", "display:none");
+                        //$("#ModalViewDocumentApprove").modal("hide");
+                    },
+                    success: function (data) {
+                        $('#Modalloder').modal('hide');
+                        RetriveDataFromPurchaseRequest();
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html("Success");
+                        //$("#ModalViewDocumentApprove").modal("show");
+                    },
+                    error: function (erro) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html(erro.responseText);
+                        $("#txtStatus").val("Error");
+                    }
+                });
+            }
+        });
+        $("#btnApprove").click(function () {
+            if (confirm("Please Confirm Before Approve!")) {
+                //alert($("#txtDocEntry").val());
+                $.ajax({
+                    url: '@Url.Action("OnApproveListByDocumentType","ApprovePurchaseRequest")',
+                    type: "POST",
+                    data: {
+                        docNum: $("#txtDocEntry").val(),
+                        RemarksReson: $("#reasonRemarks").val()
+                    },
+                    dataType: "JSON",
+                    beforeSend: function () {
+                        $('#Modalloder').modal('show');
+                        $("#txtStatus").val("Approve");
+                        $("#btnReject").attr("style", "display:none");
+                        $("#btnApprove").attr("style", "display:none");
+                        //$("#ModalViewDocumentApprove").modal("hide");
+                    },
+                    success: function (data) {
+                        $('#Modalloder').modal('hide');
+                        RetriveDataFromPurchaseRequest();
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html("Success");
+                        //$("#ModalViewDocumentApprove").modal("show");
+                    },
+                    error: function (erro) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html(erro.responseText);
+                        $("#txtStatus").val("Error");
+                    }
+                });
+            }
+        });
+        //Comission
+        $("#btnRejectComission").click(function () {
+            if (confirm("Please Confirm Before Reject!")) {
+                //alert($("#txtDocEntry").val());
+                $.ajax({
+                    url: '@Url.Action("RejectSalesCommissionDraftBySaleEmployee","PurchaseRequestSalesCommission")',
+                    type: "POST",
+                    data: {
+                        docNum: $("#txtDocEntryComission").val(),
+                        RemarksReson: $("#reasonRemarksComission").val()
+                    },
+                    dataType: "JSON",
+                    beforeSend: function () {
+                        $('#Modalloder').modal('show');
+                        //$("#ModalViewDocumentApproveComission").modal("hide");
+                        $("#txtStatus").val("Reject");
+                        $("#btnReject").attr("style", "display:none");
+                        $("#btnApprove").attr("style", "display:none");
+                    },
+                    success: function (data) {
+                        $('#Modalloder').modal('hide');
+                        RetriveDataFromPurchaseRequest();
+                        $('#ModalSuccess').modal('show');
+                        //$("#ModalViewDocumentApproveComission").modal("hide");
+                        $('#ErrMsg').html("Success");
+                    },
+                    error: function (erro) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html(erro.responseText);
+                    }
+                });
+            }
+        });
+        $("#btnApproveComission").click(function () {
+            if (confirm("Please Confirm Before Approve!")) {
+                //alert($("#txtDocEntry").val());
+                $.ajax({
+                    url: '@Url.Action("ApproveSalesCommissionDraftBySaleEmployee","PurchaseRequestSalesCommission")',
+                    type: "POST",
+                    data: {
+                        docEntry: $("#txtDocEntryComission").val(),
+                        RemarksReson: $("#reasonRemarksComission").val()
+                    },
+                    dataType: "JSON",
+                    beforeSend: function () {
+                        $('#Modalloder').modal('show');
+                        //$("#ModalViewDocumentApproveComission").modal("hide");
+                        $("#txtStatus").val("Approve");
+                        $("#btnReject").attr("style", "display:none");
+                        $("#btnApprove").attr("style", "display:none");
+                    },
+                    success: function (data) {
+                        $('#Modalloder').modal('hide');
+                        RetriveDataFromPurchaseRequest();
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html("Success");
+                    },
+                    error: function (erro) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html(erro.responseText);
+                    }
+                });
+            }
+        });
+        $("#btnLinkTo").change(function () {
+            if ($("#btnLinkTo").val() != "-1") {
+                window.open(
+                    '@Url.Action("ViewDetailJobSheetTrucking","JobSheetTrucking")?docEntry=' + $("#btnLinkTo").val(),
+                    '_blank' // <- This is what makes it open in a new window.
+                );
+            }
+        });
+        $("#btnLinkToCon").change(function () {
+            if ($("#btnLinkToCon").val() != "-1") {
+                window.open(
+                    '@Url.Action("ViewDetailConfirmBookingSheet","ConfirmBookingSheet")?docEntry=' + $("#btnLinkToCon").val(),
+                    '_blank' // <- This is what makes it open in a new window.
+                );
+            }
+        });
+                //End Comission
+    </script>
+}

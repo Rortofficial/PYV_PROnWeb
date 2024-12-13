@@ -1,0 +1,39 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Client.Models.Response.ResponseData<Client.Models.Gets.GetMessage>
+<title>@ViewData["Title"] - EWSystem</title>
+@if (Model.ErrorCode == 0)
+{
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row mt-2">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Send By"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" value="@Model.Data.UserName" disabled readonly>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row mt-2">
+                <div class="col-4" style="text-align:left;font-weight:bold;">@localizer["Message Header"]</div>
+                <div class="col-8">
+                    <textarea id="txtMessage" rows="2" class="form-control" disabled>@Model.Data.MessageHeader</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6" style="text-align:left;font-weight:bold;">
+            @localizer["Message Description"]
+        </div>
+        <div class="col-6"></div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-12">
+            <textarea id="txtMessageDescription" rows="5" class="form-control" disabled>@Model.Data.MessageDescription</textarea>
+        </div>
+    </div>
+}
+else
+{
+    <h2>Error @Model.ErrorMessage</h2>
+}

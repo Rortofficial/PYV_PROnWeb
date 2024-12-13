@@ -1,0 +1,412 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Client.Models.Response.ListMasterSalesQuotation
+<title>@ViewData["Title"] - EWSystem</title>
+@{
+    var a = DateTime.Today.ToString("yyyy-MM-dd");
+}
+<div class="row">
+    <div class="col-12">
+        <div style="float:right">
+            <h2>@localizer["SALES QUOTATION"]</h2>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div style="margin:auto;text-align:left;font-weight:bold;"><u>@localizer["HEADER SALESQUOTATION"]</u></div>
+        <input type="hidden" id="txtHiddenChk" />
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CUSTOMER TYPE"]</div>
+            <div class="col-8">
+                <select class="form-select" id="cboCustomerType">
+                    <option selected value="-1">@localizer["New Customer"]</option>
+                    <option value="1" data-bpCurrency="@Url.Action("GetBPCurrencyResponses","SalesQuotation")" data-getaddress="@Url.Action("GetAddressByCustomer","SalesQuotation")">@localizer["Existing Customer"]</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CURRENCY TYPE"]</div>
+            <div class="col-8">
+                <select class="form-select" id="cboBpCurrency">
+                    <option selected value="-1">Select Currency</option>
+                    @if (Model.GetCurrencyByCustomers != null)
+                    {
+                        @foreach (var z in Model.GetCurrencyByCustomers)
+                        {
+                            <option value="@z.CurrencyCode">@z.CurrencyName</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-6">
+        <div class="row">
+            <div id="showCustomerNew">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CUSTOMER NAME"]<span style="color:red">*</span></div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" id="txtCustomerCode" value="">
+                    </div>
+                </div>
+            </div>
+            <div id="existingCustomer" style="display:none;">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CUSTOMER CODE"]<span style="color:red">*</span></div>
+                    <div class="col-8">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search Code" data-COCode="" id="txtCO" value="" readonly>
+                            <button type="button" class="btn" style="background-color:#01295C;color:white" data-bs-toggle="modal" data-bs-target="#ModalCO">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["REF NO"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" id="txtRefNo" value="@Model.GetRefNos.RefNo" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" id="showContactPerson" style="display:none;">
+    <div class="col-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CONTACT PERSON"]</div>
+            <div class="col-8">
+                <select class="form-select" id="cboContactPerson">
+                    <option selected value="-1">Select Contact Person</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+    </div>
+</div>
+<div class="row" id="showAddNewContactPerson">
+    <div class="col-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["FIRST NAME"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" id="txtFirstName">
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["LAST NAME"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" id="txtLastName" value="">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-1">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TEL"]<span style="color:red">*</span></div>
+            <div class="col-8">
+                <input type="text" class="form-control" id="txtTel" value="" onchange="onCheckPhoneNumber('txtTel')">
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["DATE"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" id="txtDate" value="@a" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["EMAIL"]<span style="color:red">*</span></div>
+            <div class="col-8">
+                <input type="text" class="form-control" id="txtEmail" onchange="onCheckEmail('txtEmail')" value="">
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["VALIDITY COUNT"]<span style="color:red">*</span></div>
+            <div class="col-8">
+                <input type="number" class="form-control" id="txtValidityCount" min="1" onkeydown="onCheckValueNumber('txtValidityCount')">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ATTN"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" id="txtAttn" value="">
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["VALIDITY"]<span style="color:red">*</span></div>
+            <div class="col-8">
+                <input type="text" class="form-control" id="txtValidity" value="" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SERVICE TYPE"]<span style="color:red">*</span></div>
+            <div class="col-8">
+                <select class="form-select" id="cboServiceType">
+                    <option selected value="-1">Choose...</option>
+                    @foreach (var data in Model.GetServiceTypes)
+                    {
+                        <option value="@data.Code">@data.Name</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CREDIT TERM"]<span style="color:red">*</span></div>
+            <div class="col-8">
+                <select class="form-select" id="cboCreditTerm">
+                    <option selected value="-99">Choose...</option>
+                    @foreach (var data in Model.GetCreditTerms)
+                    {
+                        <option value="@data.Code">@data.Name</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ORIGIN"]<span style="color:red">*</span></div>
+            <div class="col-8">
+                <select class="form-select" id="cboOrigin">
+                    <option selected value="-1">Choose...</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["DESTINATION"]<span style="color:red">*</span></div>
+            <div class="col-8">
+                <select class="form-select" id="cboDestination">
+                    <option selected value="-1">Choose...</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SALE EMPLOYEE"]<span style="color:red">*</span></div>
+            <div class="col-8">
+                <select class="form-select" id="cboSaleEmployee">
+                    <option selected value="-1">Choose...</option>
+                    @foreach (var data in Model.GetSaleEmployees)
+                    {
+                        <option value="@data.SlpCode">@data.SlpName</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["COMMODITY TYPE"]<span style="color:red">*</span></div>
+            <div class="col-8">
+                <select class="form-select" id="cboCommodityType">
+                    <option selected value="-1">Choose...</option>
+                    <option value="FMCG">FMCG</option>
+                    <option value="Chemical">Chemical</option>
+                    <option value="Electronic part (high cargo value)">Electronic part (high cargo value)</option>
+                    <option value="Industrial part">Industrial part</option>
+                    <option value="Machinery">Machinery</option>
+                    <option value="Reefer (frozen foods / poultry / fruits /vege)">Reefer (frozen foods / poultry / fruits /vege)</option>
+                    <option value="Others">Others</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="text-align:left;font-weight:bold;">@localizer["ADDRESS"]<span style="color:red">*</span></div>
+            <div class="col-8" id="addressNew" style="display:block;">
+                <textarea id="txtAddressNew" rows="4" class="form-control"></textarea>
+            </div>
+            <div class="col-8" id="addressExist" style="display:none;">
+                <select class="form-select" id="cboAddressExist">
+                    <option selected value="-1">Choose...</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div id="plOther" style="display:none;">
+            <div class="row mb-2">
+                <div class="col-4" style="text-align:left;font-weight:bold;">@localizer["Other"]<span style="color:red">*</span></div>
+                <div class="col-8">
+                    <textarea id="txtOtherCommodityType" rows="4" class="form-control"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4" style="text-align:left;font-weight:bold;">
+                @localizer["Dangerous Goods"]:
+            </div>
+            <div class="col-8">
+                <select class="form-select" id="cboDamgeGoods">
+                    <option selected value="">Select</option>
+                    <option value="NON-DG">NON-DG</option>
+                    <option value="DG">DG</option>
+                    <option value="DG and NON-DG">DG and NON-DG</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-12">
+        <div style="margin:auto;text-align:left;font-weight:bold;"><u>@localizer["LINE SALESQUOTATION"]</u></div>
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-3" style="margin:auto;">
+                @localizer["Item Code"]
+            </div>
+            <div class="col-9">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search Code" data-ItemCode="" id="txtItemSalesQuotation" value="" readonly>
+                    <button type="button" class="btn" style="background-color:#01295C;color:white" data-bs-toggle="modal" data-bs-target="#ModalItemSalesQuotation">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-3" style="margin:auto;">
+                @localizer["Price"]
+            </div>
+            <div class="col-9">
+                <input type="text" id="txtPrice" class="form-control" value="" onchange="formartNumber('txtPrice')" onkeydown="onCheckValueNumber('txtPrice')">
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-3" style="margin:auto;">
+                @localizer["Remarks"]
+            </div>
+            <div class="col-9">
+                <textarea class="form-control" id="txtRemarksLine"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-6">
+    </div>
+    <div class="col-6">
+        <button class="btn" id="btnAddLineInfo" style="float:right;background-color:#01295C;color:white">Add Line</button>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <table id="TbListLineSalesQuotation" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0" style="background: #f0eff1; color: #696969;">
+            <thead>
+                <tr>
+                    <th>@localizer["Item Code"]</th>
+                    <th>@localizer["Item Name"]</th>
+                    <th>@localizer["Price"]</th>
+                    <th>@localizer["Remarks"]</th>
+                    <th>@localizer["Delete"]</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div style="margin:auto;text-align:left;font-weight:bold;"><u>@localizer["Remark"]</u></div>
+    </div>
+    <div class="col-6">
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-12">
+        <textarea id="remarks" rows="4" class="form-control"></textarea>
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-6">
+    </div>
+    <div class="col-6">
+        <button class="btn" id="btnConfirmTransaction" onclick="onConfirmTransaction('@Url.Action("OnSubmitSaleQuotation","SalesQuotation")','@Url.Action("ViewDetailSalesQuotation","SalesQuotation")')" style="float:right;background-color:#01295C;color:white">@localizer["Confirm Transaction"]</button>
+    </div>
+</div>
+@await Html.PartialAsync("Modal/ModalItemSalesQuotation", Model.GetItemSaleQuotations)
+@await Html.PartialAsync("Modal/modalCO", Model.GetCOs)
+@section scripts{
+    <script src="~/js/salesquotation/modal/ModalItemSalesQuotation.js"></script>
+    <script src="~/js/salesquotation/modal/modalCO.js"></script>
+    <script src="~/js/salesquotation/index.js"></script>
+    <script>
+        var selectOrigin = '@ViewBag.Origin';
+        $('#TbListLineSalesQuotation').DataTable({
+            columns:
+                [
+                    { data: "ItemCode", autoWidth: true },
+                    { data: "ItemName", autoWidth: true },
+                    { data: "Price", autoWidth: true },
+                    { data: "Remarks", autoWidth: true },
+                    {
+                        render: function (data, type, full, meta) {
+                            return '<button class="btn-sm btn-danger" style="margin-left: 40%;" onClick="DeleteLineItem(' + full.ID + ')"><i class="fas fa-trash-alt"></i></button>';
+                        }
+                    }
+                ],
+        });
+        setterObjectType(JSON.parse('@Json.Serialize(Model.GetOrigins)'), 'GetOrigins');
+        setterObjectType(JSON.parse('@Json.Serialize(Model.GetDestinations)'), 'GetDestinations');
+        setterObjectType(JSON.parse('@Json.Serialize(Model.GetCurrencyByCustomers)'), 'GetCurrencyByCustomers');
+        reRenderCbo(objGetOrigins, "cboOrigin");
+        reRenderCbo(objGetDestinations, "cboDestination");
+    </script>
+}

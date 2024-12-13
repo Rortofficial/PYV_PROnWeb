@@ -1,0 +1,309 @@
+﻿
+@model Client.Models.Response.ListMasterPettyCash
+@{
+    var dt = DateTime.Today.ToString("yyyy-MM-dd");
+    int i = 0;
+}
+<title>@ViewData["Title"] - EWSystem</title>
+<div class="row">
+    <div class="col-12">
+        <div style="float:right">
+            <h2>@localizer["PETTY CASH"]</h2>
+        </div>
+    </div>
+</div>
+<!--Header-->
+<h5><u>Header</u></h5>
+<!--Series Row-->
+<div class="row">
+    <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+        @localizer["Voucher No."]
+    </div>
+    <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+        @localizer["Series"]
+    </div>
+    <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+        @localizer["Posting Date"]
+    </div>
+    <div class="col-6" style="margin:auto;text-align:left;font-weight:bold;">
+        @localizer["Remarks"]
+    </div>
+</div>
+<div class="row">
+    <div class="col-2" style="text-align:left;font-weight:bold;">
+        <input type="text" class="form-control" value="@Model.GetMaxJournalVoucherNumber" id="txtVoucher" disabled>
+    </div>
+    <div class="col-2" style="text-align:left;font-weight:bold;">
+        <select class="form-select" id="cboItemOrServiceType">
+            @foreach (var a in Model.GetSeriesJournalVouchers)
+            {
+                if (i == 0)
+                {
+                    <option selected value="@a.Code">@a.Name</option>
+                    i++;
+                }
+                else
+                {
+                    <option value="@a.Code">@a.Name</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="col-2" style="text-align:left;font-weight:bold;">
+        <input type="date" class="form-control" value="@dt" id="txtPostingDate">
+    </div>
+    <div class="col-6" style="margin:auto;text-align:left;font-weight:bold;">
+        <textarea id="remarks" rows="1" class="form-control"></textarea>
+    </div>
+</div>
+<!--Reference Row-->
+<div class="row">
+    <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+        @localizer["Ref.1"]
+    </div>
+    <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+        @localizer["Ref.2"]
+    </div>
+    <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+        @localizer["Ref.3"]
+    </div>
+    <div class="col-6" style="margin:auto;text-align:left;font-weight:bold;">
+    </div>
+</div>
+<div class="row">
+    <div class="col-2" style="text-align:left;font-weight:bold;">
+        <input type="text" class="form-control" value="" id="txtRef1">
+    </div>
+    <div class="col-2" style="text-align:left;font-weight:bold;">
+        <input type="text" class="form-control" value="" id="txtRef2">
+    </div>
+    <div class="col-2" style="text-align:left;font-weight:bold;">
+        <input type="text" class="form-control" value="" id="txtRef3">
+    </div>
+    <div class="col-6" style="margin:auto;text-align:left;font-weight:bold;">
+    </div>
+</div>
+<!--End Header-->
+<hr />
+<!--Contents-->
+<h5><u>User Information</u></h5>
+<div class="row">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Account Name"]
+            </div>
+            <div class="col-9">
+                <input type="text" disabled class="form-control" value="@Model.GetEmployeeBudgets.Data.AccountName" data-cardCode="@Model.GetEmployeeBudgets.Data.AccountCode" id="txtEmployeeNameCreate">
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Budget Limit"]
+            </div>
+            <div class="col-9">
+                <input type="number" value="@Model.GetEmployeeBudgets.Data.BudgetLimit" disabled class="form-control" id="txtBudgetLimit">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Budget OnHand"]
+            </div>
+            <div class="col-9">
+                <input type="number" value="@Model.GetEmployeeBudgets.Data.BudgetOnHand" disabled class="form-control" id="txtBudgetOnHand">
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+    </div>
+</div>
+<h5><u>Contents</u></h5>
+<!--Account Information-->
+<div class="row mt-4">
+    <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+        @localizer["Account Type"]
+    </div>
+    <div class="col-5" style="margin:auto;text-align:left;font-weight:bold;">
+        <div id="lblAccountCode">@localizer["Account Code"]</div>
+    </div>
+    <div class="col-5" style="margin:auto;text-align:left;font-weight:bold;">
+        <div id="lblAccountName">@localizer["Account Name"]</div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-2" style="text-align:left;font-weight:bold;">
+        <select class="form-select" disabled>
+            <option selected value="-1">Account Code</option>
+        </select>
+    </div>
+    <div class="col-5" style="text-align:left;font-weight:bold;">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search AccountCode" data-AccountCode="" id="txtAccountCode" value="" readonly>
+            <button type="button" class="btn" style="background-color:#01295C;color:white" data-bs-toggle="modal" data-bs-target="#ModalAccountCodePettyCash">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+    </div>
+    <div class="col-5" style="text-align:left;font-weight:bold;">
+        <input type="text" class="form-control" value="" disabled id="txtAccountName">
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+        @localizer["Employee Data"]
+    </div>
+    <div class="col-5" style="margin:auto;text-align:left;font-weight:bold;">
+        <div id="lblBpCode">@localizer["BP Code"]</div>
+    </div>
+    <div class="col-5" style="margin:auto;text-align:left;font-weight:bold;">
+        <div id="lblBpName">@localizer["BP Name"]</div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-2" style="text-align:left;font-weight:bold;">
+        <select class="form-select" disabled>
+            <option value="1">Employee Data</option>
+        </select>
+    </div>
+    <div class="col-5" style="text-align:left;font-weight:bold;">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search BPCode" data-BPCode="" data-BPBalance="" id="txtBPCode" value="" readonly>
+            <button type="button" class="btn" style="background-color:#01295C;color:white" data-bs-toggle="modal" data-bs-target="#ModalBpCodePettyCash">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+    </div>
+    <div class="col-5" style="text-align:left;font-weight:bold;">
+        <input type="text" class="form-control" value="" disabled id="txtBpName">
+    </div>
+</div>
+<!--Debit Or Credit-->
+<div class="row mt-4">
+    <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+        @localizer["Total Expensed Amount"]
+    </div>
+    <div class="col-5" style="margin:auto;text-align:left;font-weight:bold;">
+        <input type="text" class="form-control" onchange="formartNumber('txtCreditOrDebit')" value="" id="txtCreditOrDebit">
+    </div>
+    <div class="col-5" style="margin:auto;text-align:left;font-weight:bold;">
+        <input type="date" class="form-control" value="" id="txtLineDate">
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-2" style="text-align:left;font-weight:bold;">
+        @localizer["Remarks"]
+    </div>
+    <div class="col-5" style="margin:auto;text-align:left;font-weight:bold;">
+        <textarea id="txtRemarkLine" rows="4" class="form-control"></textarea>
+    </div>
+    <div class="col-5" style="margin:auto;text-align:left;font-weight:bold;">
+    </div>
+</div>
+<!--Button Add line-->
+<div class="row mt-2">
+    <div class="col-12">
+        <button class="btn" id="btnAddLineInfo" style="float:right;background-color:#01295C;color:white">Add Line</button>
+    </div>
+</div>
+<!--End Contents-->
+<!--Table-->
+<div class="table-responsive mt-3">
+    <div class="row">
+        <div class="col-12">
+            <table id="TbListPettyCashLine" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0" style="background: #f0eff1; color: #696969;">
+                <thead>
+                    <tr>
+                        <th>No#</th>
+                        <th>Account Type</th>
+                        <th>Account Code</th>
+                        <th>Account Name</th>
+                        <th>Customer Name</th>
+                        <th>Debit</th>
+                        <th>Date</th>
+                        <th>Remark</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Total Debit"]</div>
+            <div class="col-8">
+                <input type="text" id="txtBalanceDebit" class="form-control" disabled />
+            </div>
+        </div>
+    </div>
+</div>
+<!--End Table-->
+<div class="row mt-5">
+    <div class="col-6">
+    </div>
+    <div class="col-6">
+        @*<button class="btn" id="btnConfirmTransaction" onclick="" style="float:right;background-color:#01295C;color:white"> Confirm Transaction</button>*@
+        <select class="form-select" style="float:right;background-color:#01295C;color:white;" id="cboConfrimTransaction">
+            <option selected value="-1">Select Document Type</option>
+            <option value="1">Send To SAP</option>
+            <option value="2">Add Document Draft</option>
+        </select>
+    </div>
+</div>
+@await Html.PartialAsync("Modal/ModalAccountCodePettyCash",Model.GetAccountCodeJournalVouchers)
+@await Html.PartialAsync("Modal/ModalBpCodePettyCash", Model.GetBPCodeJournalVouchers)
+@section scripts{
+    <script src="~/js/pettycash/modal/ModalAccountCodePettyCash.js"></script>
+    <script src="~/js/pettycash/modal/ModalBpCodePettyCash.js"></script>
+    <script src="~/js/pettycash/index.js"></script>
+    <script>
+        var ItemLineList = [];
+        var idLine = 1;
+        //$("#txtDistributionRule").select2({
+        //    placeholder: "Select a Distribution Rule",
+        //    maximumSelectionLength: 1
+        //});
+        //$("#txtJobNo").select2({
+        //    placeholder: "Select a JobNo",
+        //    maximumSelectionLength: 1
+        //});
+        $("#cboConfrimTransaction").change(function () {
+            var a = $("#cboConfrimTransaction").val();
+            if (a == "1") {
+                onConfirmTransaction('@Url.Action("OnSubmitPettyJECash","PettyCash")', '@Url.Action("ViewDetailPettyCashByDocEntry","PettyCash")', 'JE');
+            }
+            else if (a == "2") {
+                onConfirmTransaction('@Url.Action("OnSubmitPettyCashDraft","PettyCash")', '@Url.Action("ViewDetailPettyCashByDocEntry","PettyCash")', 'Draft');
+            }
+        });
+        $('#TbListPettyCashLine').DataTable({
+            columns:
+                [
+                    { data: "ID", autoWidth: true },
+                    { data: "AccountTypeName", autoWidth: true },
+                    { data: "AccountCodeOrBpCode", autoWidth: true },
+                    { data: "AccountNameOrBpName", autoWidth: true },
+                    { data: "CardName", autoWidth: true },
+                    { data: "Debit", autoWidth: true },
+                    { data: "DateLine", autoWidth: true },
+                    { data: "Remarks", autoWidth: true },
+                    {
+                        render: function (data, type, full, meta) {
+                            return '<button class="btn-sm btn-danger" style="margin-left: 40%;" onClick="DeleteLineItem(' + full.ID + ')"><i class="fas fa-trash-alt"></i></button>';
+                        }
+                    }
+                ],
+        });
+    </script>
+}

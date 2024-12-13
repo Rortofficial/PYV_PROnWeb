@@ -1,0 +1,215 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@using Client.Connection;
+@{
+    ViewData["Title"] = "Home Page";
+    await Configure.GetAllPermission(HttpContextAccessor.HttpContext.Request.Cookies["ID"]);
+}
+@if (Client.Connection.Configure.ListOfPermissionsByUser != null)
+{
+    <div id="other">
+        @if (Client.Connection.Configure.ListOfPermissionsByUser.FirstOrDefault().OtherCount != 0)
+        {
+            <div class="row">
+                <div class="col-12">
+                    <h3 style="color:#01295C"><u>@localizer["Other"]</u></h3>
+                </div>
+            </div>
+        }
+
+        <div class="row">
+            <center>
+                <div class="col-9">
+                    <div class="row">
+                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "PettyCash").First().Properties.IsPermission).Count() == 1)
+                        {
+                            <div class="alink col-lg-3 col-md-3 col-12">
+                                <a asp-controller="PettyCash" asp-action="ListPettyCash">
+                                    <div style="width: 100%; height: 100%; background: #01295C;border-radius:5px">
+                                        <div style="text-align: center">
+                                            <p style="text-align: center; padding-top: 15px;">
+                                                <b>@localizer["PETTY CASH"]</b><br>
+                                                <i id="Icon" class="fas fa-file-invoice" aria-hidden="true"></i>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "RequestReimbursement" || x.Key == "ApproveReimbursement").First().Properties.IsPermission).Count() == 1)
+                        {
+                            <div class="alink col-lg-3 col-md-3 col-12">
+                                <a asp-controller="Reimbursement" asp-action="ViewReimbursement">
+                                    <div style="width: 100%; height: 100%; background: #01295C;border-radius:5px">
+                                        <div style="text-align: center">
+                                            <p style="text-align: center; padding-top: 15px;">
+                                                <b>@localizer["REIMBURSEMENT"]</b><br>
+                                                <i id="Icon" class="fas fa-file-invoice" aria-hidden="true"></i>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "PurchaseRequestForAdmin").First().Properties.IsPermission).Count() == 1)
+                        {
+                            <div class="alink col-lg-3 col-md-3 col-12">
+                                <a asp-controller="PurchaseRequest" asp-action="ListPurchaseRequest">
+                                    <div style="width: 100%; height: 100%; background: #01295C;border-radius:5px">
+                                        <div style="text-align: center">
+                                            <p style="text-align: center; padding-top: 15px;">
+                                                <b>@localizer["PURCHASE REQUEST FOR ADMIN"]</b><br>
+                                                <i id="Icon" class="fas fa-file-invoice" aria-hidden="true"></i>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "PurchaseRequestCostOfSales").First().Properties.IsPermission).Count() == 1)
+                        {
+                            <div class="alink col-lg-3 col-md-3 col-12">
+                                <a asp-controller="PurchaseRequestCostOfSales" asp-action="ListPurchaseRequestCostOfSale">
+                                    <div style="width: 100%; height: 100%; background: #01295C;border-radius:5px">
+                                        <div style="text-align: center">
+                                            <p style="text-align: center; padding-top: 15px;">
+                                                <b>@localizer["PURCHASE REQUEST COST OF SALES"]</b><br>
+                                                <i id="Icon" class="fas fa-file-invoice" aria-hidden="true"></i>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "PurchaseRequestForAdvancePayment").First().Properties.IsPermission).Count() == 1)
+                        {
+                            <div class="alink col-lg-3 col-md-3 col-12">
+                                <a asp-controller="PurchaseRequestAdvancePayment" asp-action="ListPurchaseRequestAdvancePayment">
+                                    <div style="width: 100%; height: 100%; background: #01295C;border-radius:5px">
+                                        <div style="text-align: center">
+                                            <p style="text-align: center; padding-top: 15px;">
+                                                <b>@localizer["PURCHASE REQUEST FOR ADVANCE PAYMENT"]</b><br>
+                                                <i id="Icon" class="fas fa-file-invoice" aria-hidden="true"></i>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "PruchaseRequestForSalesCommission").First().Properties.IsPermission).Count() == 1)
+                        {
+                            <div class="alink col-lg-3 col-md-3 col-12">
+                                <a asp-controller="PurchaseRequestSalesCommission" asp-action="ListPurchaseRequestSalesCommission">
+                                    <div style="width: 100%; height: 100%; background: #01295C;border-radius:5px">
+                                        <div style="text-align: center">
+                                            <p style="text-align: center; padding-top: 15px;">
+                                                <b>@localizer["PURCHASE REQUEST FOR SALES COMMISSION"]</b><br>
+                                                <i id="Icon" class="fas fa-file-invoice" aria-hidden="true"></i>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "ApprovalDocument").First().Properties.IsPermission).Count() == 1)
+                        {
+                            <div class="alink col-lg-3 col-md-3 col-12">
+                                <a asp-controller="ApprovePurchaseRequest" asp-action="Index">
+                                    <div style="width: 100%; height: 100%; background: #01295C;border-radius:5px">
+                                        <div style="text-align: center">
+                                            <p style="text-align: center; padding-top: 15px;">
+                                                <b>@localizer["APPROVAL DOCUMENT"]</b><br>
+                                                <i id="Icon" class="fas fa-file-invoice" aria-hidden="true"></i>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "ApprovePlaceOfLoading_Delivery").First().Properties.IsPermission).Count() == 1)
+                        {
+                            <div class="alink col-lg-3 col-md-3 col-12">
+                                <a asp-controller="ApprovePlaceOfLoadingAndDelivery" asp-action="Index">
+                                    <div style="width: 100%; height: 100%; background: #01295C;border-radius:5px">
+                                        <div style="text-align: center">
+                                            <p style="text-align: center; padding-top: 15px;">
+                                                <b>
+                                                    @localizer["APPROVAL PlACE OF LOADING/DELIVERY"]
+                                                </b><br>
+                                                <i id="Icon" class="fas fa-file-invoice" aria-hidden="true"></i>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "PRForSettlement").First().Properties.IsPermission).Count() == 1)
+                        {
+                            <div class="alink col-lg-3 col-md-3 col-12">
+                                <a asp-controller="Settlement" asp-action="ListSettlement">
+                                    <div style="width: 100%; height: 100%; background: #01295C;border-radius:5px">
+                                        <div style="text-align: center">
+                                            <p style="text-align: center; padding-top: 15px;">
+                                                <b>@localizer["PR FOR SETTLEMENT"]</b><br>
+                                                <i id="Icon" class="fas fa-file-invoice" aria-hidden="true"></i>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "ContainerUpdateStatus").First().Properties.IsPermission).Count() == 1)
+                        {
+                            <div class="alink col-lg-3 col-md-3 col-12">
+                                <a asp-controller="Container" asp-action="ListContainer">
+                                    <div style="width: 100%; height: 100%; background: #01295C;border-radius:5px">
+                                        <div style="text-align: center">
+                                            <p style="text-align: center; padding-top: 15px;">
+                                                <b>@localizer["CONTAINER UPDATE STATUS"]</b><br>
+                                                <i id="Icon" class="fas fa-file-alt" aria-hidden="true"></i>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "Report").First().Properties.IsPermission).Count() == 1)
+                        {
+                            <div class="alink col-lg-3 col-md-3 col-12">
+                                <a asp-controller="Report" asp-action="Index">
+                                    <div style="width: 100%; height: 100%; background: #01295C;border-radius:5px">
+                                        <div style="text-align: center">
+                                            <p style="text-align: center; padding-top: 15px;">
+                                                <b>@localizer["REPORT"]</b><br>
+                                                <i id="Icon" class="fas fa-file-alt" aria-hidden="true"></i>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                        @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "Alert").First().Properties.IsPermission).Count() == 1)
+                        {
+                            <div class="alink col-lg-3 col-md-3 col-12">
+                                <a asp-controller="MessageAlert" asp-action="ListMessage" asp-route-userID="@HttpContextAccessor.HttpContext.Request.Cookies["EmpID"]">
+                                    <div style="width: 100%; height: 100%; background: #01295C;border-radius:5px">
+                                        <div style="text-align: center">
+                                            <p style="text-align: center; padding-top: 15px;">
+                                                <b>@localizer["ALERT"]</b><br>
+                                                <i id="Icon" class="fas fa-file-alt" aria-hidden="true"></i>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </center>
+        </div>
+    </div>
+}
+else
+{
+    <div>Refresh you browser</div>
+}

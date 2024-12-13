@@ -1,0 +1,41 @@
+Minute of Meeting 65-12-23
+
+Main Page
+Add Hamburger icon to open/close User information
+
+Booking Sheet's Page
+Loading Date cannot be backward date
+Cross border date cannot be backward date on loading date
+ETA Requirement date cannot be backward date on Cross border date
+Place of Loading it's refference by Origin (When you select origin in Thailand Place of Loading is show only thailand place.
+Expand Place of Loading and Place of Delivery when choose multiple place
+delete Thai Trucker field
+Add INCO Term Field
+Oversea Trucker and Oversea Forwarder is base on destination 
+Oversea Trucker and Oversea Forwarder you can choose multiple value
+Container Type can edit QTY  of container
+
+
+Confirm Booking Sheet's Page
+Route can show between format "origin-Destination
+-----------------------------------------------------
+create Add PR Button to create PR In Add-On
+Trucker cost is unnessesary to key in but When click add in PR Add-on and it show Trucker cost from Master Data
+-----------------------------------------------------------------
+Truck No is base on Truck Vendor
+Truck Vendor is Local Vender (Thailand Only)
+one SQ it can be copy to multiple SO
+Add Trailer No is base on Truck no and if not you can change it
+Container No. it user data from Serial Numbers (Container No) in Asset Master Data
+When you select container size 40HC container no it's show only 40HC Container typr
+Delete Truck Waybill by field and create button for generate Truck waybill is use the same no by job sheet
+Costing can add more one line item and Selling price is base on SQ and if you add 2 line it show 2 line and can add more item
+Add Document Status Column of confirm booking
+
+
+Sale Quotation
+Add Address field 
+
+
+SAP Fixed Asset Report
+Add Asset grop and Depreciation Type parameter to select in report -- use Queries Generator to use this parameter

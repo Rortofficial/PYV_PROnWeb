@@ -1,0 +1,249 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Client.Models.Response.GetDetailViewSalesQuotationResponse
+<title>@ViewData["Title"] - EWSystem</title>
+@{
+    var a = DateTime.Today.ToString("yyyy-MM-dd");
+}
+@if (Model.ErrorCode == 0)
+{
+    <div class="row">
+        <div class="col-2">
+            <ul class="navbar-nav flex-grow-1 btn" style="float:right;background-color:#01295C;color:white;width:100%">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown" href="#">@localizer["Print"]</a>
+                    @{
+                        var k = 1;
+                    }
+                    <ul class="dropdown-menu" style="border: 1px solid #01295C">
+                        @foreach(var z in Model.ListLayoutPrint)
+                        {
+                            @if(k==1){
+                                <li>
+                                    <a class="dropdown-item btn btn-info" target="_blank" asp-route-layoutCode="@z.Code" asp-route-docEntry="@Model.Data.DocEntry" asp-controller="CallLayout" asp-action="PrintLayout">
+                                        @z.Name
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item btn btn-info" target="_blank" asp-route-layoutCode="@z.Code" asp-route-docEntry="@Model.Data.DocEntry" asp-controller="CallLayout" asp-action="PrintLayout">
+                                        @z.Name
+                                    </a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="col-10">
+            <div style="float:right">
+                <h2>@localizer["SALES QUOTATION"]</h2>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div style="margin:auto;text-align:left;font-weight:bold;"><u>@localizer["HEADER SALESQUOTATION"]</u></div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CUSTOMER TYPE"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="txtCustomerType" disabled value="@Model.Data.CustomerType">
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-6">
+            <div class="row">
+                <div id="showCustomerNew">
+                    <div class="row">
+                        <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CUSTOMER NAME"]<span style="color:red">*</span></div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" id="txtCustomerCode" disabled value="@Model.Data.CustomerName">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["REF NO"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="txtRefNo" disabled value="@Model.Data.ReftNo" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ATTN"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="txtAttn" disabled value="@Model.Data.ATTN">
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["DATE"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="txtDate" disabled value="@Model.Data.Date" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["EMAIL"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="txtEmail" disabled value="@Model.Data.Email">
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["VALIDITY"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="txtValidity" disabled value="@Model.Data.Validity">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TEL"]<span style="color:red">*</span></div>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="txtTel" disabled value="@Model.Data.Tel">
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["VALIDITY COUNT"]<span style="color:red">*</span></div>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="txtValidaityCount" disabled value="@Model.Data.ValidityCount">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SERVICE TYPE"]<span style="color:red">*</span></div>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="txtTel" disabled value="@Model.Data.ServiceType">
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CREDIT TERM"]<span style="color:red">*</span></div>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="txtTel" disabled value="@Model.Data.PaymentTerm">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ORIGIN"]<span style="color:red">*</span></div>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="txtTel" disabled value="@Model.Data.Origin">
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["DESTINATION"]<span style="color:red">*</span></div>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="txtTel" disabled value="@Model.Data.Destination">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SALE PERSON"]<span style="color:red">*</span></div>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="txtSalePerson" disabled value="@Model.Data.SalePerson">
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">
+                    @localizer["Dangerous Goods"]:
+                </div>
+                <div class="col-8">
+                    <input type="text" disabled value="@Model.Data.DG" class="form-control" id="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-12">
+            <div style="margin:auto;text-align:left;font-weight:bold;"><u>@localizer["LINE SALESQUOTATION"]</u></div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <table id="TbListLineSalesQuotation" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0" style="background: #f0eff1; color: #696969;">
+                <thead>
+                    <tr>
+                        <th>@localizer["Item Code"]</th>
+                        <th>@localizer["Item Name"]</th>
+                        <th>@localizer["Price"]</th>
+                        <th>@localizer["Remarks"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var z in Model.Data.Lines)
+                    {
+                        <tr>
+                            <td>@z.ItemCode</td>
+                            <td>@z.ItemName</td>
+                            <td>@z.Price</td>
+                            <td>@z.Remarks</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6">
+            <div style="margin:auto;text-align:left;font-weight:bold;"><u>@localizer["Remark"]</u></div>
+        </div>
+        <div class="col-6">
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-12">
+            <textarea id="remarks" rows="4" disabled class="form-control">@Model.Data.Remarks</textarea>
+        </div>
+    </div>
+}
+else
+{
+    <h2>Empty Data or Error Message</h2>
+    <p>@Model.ErrorMessage</p>
+}
+@section scripts{
+    <script>
+        $('#TbListLineSalesQuotation').DataTable();
+    </script>
+}

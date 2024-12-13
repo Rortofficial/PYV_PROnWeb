@@ -1,0 +1,52 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Client.Models.Request.ReimbursementRequest
+<title>@ViewData["Title"] - EWSystem</title>
+<div class="row">
+    <div class="col-6">
+    </div>
+    <div class="col-6">
+        <div style="float:right">
+            <h2>@localizer["Update Reimbursement"]</h2>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Employee Name"]
+            </div>
+            <div class="col-9">
+                <input type="text" class="form-control" disabled value="@Model.CardName" id="txtAmountRequest">
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Amount"]
+            </div>
+            <div class="col-9">
+                <input type="number" disabled class="form-control" value="@Model.Amount" id="txtAmountRequest">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">@localizer["Remarks"]</div>
+    <div class="col-6"></div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <textarea id="txtRemark" disabled rows="4" class="form-control">@Model.Remark</textarea>
+    </div>
+</div>
+@section scripts{
+    <script>
+        //Sales Quotation
+        $("#txtEmployeeCode").select2({
+            placeholder: "Select list Employee",
+            maximumSelectionLength: 1
+        });
+    </script>
+}

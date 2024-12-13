@@ -1,0 +1,1125 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\obj\\Debug\\net7.0\\scopedcss\\projectbundle\\Client.bundle.scp.css",
+      "PackagePath": "staticwebassets\\Client.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\AR Invoice (ต่างประเทศ).rdl",
+      "PackagePath": "staticwebassets\\Report\\AR Invoice (ต่างประเทศ).rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\AR Invoice (ในประเทศ).rdl",
+      "PackagePath": "staticwebassets\\Report\\AR Invoice (ในประเทศ).rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\BookingConfirmationSeaAndAir.rdl",
+      "PackagePath": "staticwebassets\\Report\\BookingConfirmationSeaAndAir.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\BookingSheet.rdl",
+      "PackagePath": "staticwebassets\\Report\\BookingSheet.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\ConfirmBooking.rdl",
+      "PackagePath": "staticwebassets\\Report\\ConfirmBooking.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\ConfirmBookingCopy.rdl",
+      "PackagePath": "staticwebassets\\Report\\ConfirmBookingCopy.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\ContainerUpdateStatus.rdl",
+      "PackagePath": "staticwebassets\\Report\\ContainerUpdateStatus.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\CreditNote.rdl",
+      "PackagePath": "staticwebassets\\Report\\CreditNote.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\CreditNoteMultipleCurrency.rdl",
+      "PackagePath": "staticwebassets\\Report\\CreditNoteMultipleCurrency.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\DOImportForBKK.rdl",
+      "PackagePath": "staticwebassets\\Report\\DOImportForBKK.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\DebitNote.rdl",
+      "PackagePath": "staticwebassets\\Report\\DebitNote.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\DebitNoteMultipleCurrency.rdl",
+      "PackagePath": "staticwebassets\\Report\\DebitNoteMultipleCurrency.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\EWSalesQuotationNews.rdl",
+      "PackagePath": "staticwebassets\\Report\\EWSalesQuotationNews.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\GetListSettlement.rdl",
+      "PackagePath": "staticwebassets\\Report\\GetListSettlement.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\JOBSHEETTRUCKING - Copy.rdl",
+      "PackagePath": "staticwebassets\\Report\\JOBSHEETTRUCKING - Copy.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\JOBSHEETTRUCKING-Bkk.rdl",
+      "PackagePath": "staticwebassets\\Report\\JOBSHEETTRUCKING-Bkk.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\JOBSHEETTRUCKING.rdl",
+      "PackagePath": "staticwebassets\\Report\\JOBSHEETTRUCKING.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\JOBSHEETTRUCKINGSEAAIR.rdl",
+      "PackagePath": "staticwebassets\\Report\\JOBSHEETTRUCKINGSEAAIR.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\JOBSHEETTRUCKINGSEAAIR_DUTYTAX.rdl",
+      "PackagePath": "staticwebassets\\Report\\JOBSHEETTRUCKINGSEAAIR_DUTYTAX.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\JOBSHEETTRUCKINGSEAAIR_Summary.rdl",
+      "PackagePath": "staticwebassets\\Report\\JOBSHEETTRUCKINGSEAAIR_Summary.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\ListBookingSheet.rdl",
+      "PackagePath": "staticwebassets\\Report\\ListBookingSheet.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\ListConfirmBookingSheet.rdl",
+      "PackagePath": "staticwebassets\\Report\\ListConfirmBookingSheet.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\ListCreditNote.rdl",
+      "PackagePath": "staticwebassets\\Report\\ListCreditNote.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\ListCreditNoteSeaAir.rdl",
+      "PackagePath": "staticwebassets\\Report\\ListCreditNoteSeaAir.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\ListJobSheetTrucking.rdl",
+      "PackagePath": "staticwebassets\\Report\\ListJobSheetTrucking.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\ListOfReimbursement.rdl",
+      "PackagePath": "staticwebassets\\Report\\ListOfReimbursement.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\ListPRSaleCommissionBySaleEmployee.rdl",
+      "PackagePath": "staticwebassets\\Report\\ListPRSaleCommissionBySaleEmployee.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\ListPettyCash.rdl",
+      "PackagePath": "staticwebassets\\Report\\ListPettyCash.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\ListPurchaseRequest.rdl",
+      "PackagePath": "staticwebassets\\Report\\ListPurchaseRequest.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\ListPurchaseRequestSalesCommission.rdl",
+      "PackagePath": "staticwebassets\\Report\\ListPurchaseRequestSalesCommission.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\ListSalesQuotation.rdl",
+      "PackagePath": "staticwebassets\\Report\\ListSalesQuotation.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\MultimodalTransportBillOfLadingNegotiable.rdl",
+      "PackagePath": "staticwebassets\\Report\\MultimodalTransportBillOfLadingNegotiable.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\MultimodalTransportBillOfLadingOriginal.rdl",
+      "PackagePath": "staticwebassets\\Report\\MultimodalTransportBillOfLadingOriginal.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\PettyCashLayout.rdl",
+      "PackagePath": "staticwebassets\\Report\\PettyCashLayout.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\PettyCashReport.rdl",
+      "PackagePath": "staticwebassets\\Report\\PettyCashReport.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\PreAlert.rdl",
+      "PackagePath": "staticwebassets\\Report\\PreAlert.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\PurchaseRequest-CostOfSales.rdl",
+      "PackagePath": "staticwebassets\\Report\\PurchaseRequest-CostOfSales.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\PurchaseRequest-SC.rdl",
+      "PackagePath": "staticwebassets\\Report\\PurchaseRequest-SC.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\PurchaseRequest-Settlement.rdl",
+      "PackagePath": "staticwebassets\\Report\\PurchaseRequest-Settlement.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\PurchaseRequest.rdl",
+      "PackagePath": "staticwebassets\\Report\\PurchaseRequest.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\SaleQuotationLayout.rdl",
+      "PackagePath": "staticwebassets\\Report\\SaleQuotationLayout.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\SaleReport.rdl",
+      "PackagePath": "staticwebassets\\Report\\SaleReport.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\ShippingParticular.rdl",
+      "PackagePath": "staticwebassets\\Report\\ShippingParticular.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\StatusContainer.rdl",
+      "PackagePath": "staticwebassets\\Report\\StatusContainer.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\TruckWayBill - Copy.rdl",
+      "PackagePath": "staticwebassets\\Report\\TruckWayBill - Copy.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\TruckWayBill-Bkk.rdl",
+      "PackagePath": "staticwebassets\\Report\\TruckWayBill-Bkk.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\TruckWayBill.rdl",
+      "PackagePath": "staticwebassets\\Report\\TruckWayBill.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\tes.rpt",
+      "PackagePath": "staticwebassets\\Report\\tes.rpt"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\test123.rdl",
+      "PackagePath": "staticwebassets\\Report\\test123.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\Report\\testReport.rdl",
+      "PackagePath": "staticwebassets\\Report\\testReport.rdl"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\css\\Login.css",
+      "PackagePath": "staticwebassets\\css\\Login.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\css\\site.css",
+      "PackagePath": "staticwebassets\\css\\site.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\favicon.ico",
+      "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\favicon_1.ico",
+      "PackagePath": "staticwebassets\\favicon_1.ico"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\images\\Flag_of_Thailand.svg.png",
+      "PackagePath": "staticwebassets\\images\\Flag_of_Thailand.svg.png"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\images\\file-circle-check-solid.svg",
+      "PackagePath": "staticwebassets\\images\\file-circle-check-solid.svg"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\images\\logoEW.png",
+      "PackagePath": "staticwebassets\\images\\logoEW.png"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\images\\logoEW_1.png",
+      "PackagePath": "staticwebassets\\images\\logoEW_1.png"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\images\\usa.png",
+      "PackagePath": "staticwebassets\\images\\usa.png"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\ContainerInfoSeaAndAir\\default.js",
+      "PackagePath": "staticwebassets\\js\\ContainerInfoSeaAndAir\\default.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\ContainerInfo\\default.js",
+      "PackagePath": "staticwebassets\\js\\ContainerInfo\\default.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\PrintMultipleLayout\\Index.js",
+      "PackagePath": "staticwebassets\\js\\PrintMultipleLayout\\Index.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\advancepayment\\default.js",
+      "PackagePath": "staticwebassets\\js\\advancepayment\\default.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\bookingsheet\\autoSave.js",
+      "PackagePath": "staticwebassets\\js\\bookingsheet\\autoSave.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\bookingsheet\\index.js",
+      "PackagePath": "staticwebassets\\js\\bookingsheet\\index.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\bookingsheet\\modal\\modalCO.js",
+      "PackagePath": "staticwebassets\\js\\bookingsheet\\modal\\modalCO.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\bookingsheet\\modal\\modalconsignee.js",
+      "PackagePath": "staticwebassets\\js\\bookingsheet\\modal\\modalconsignee.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\bookingsheet\\modal\\modalshipper.js",
+      "PackagePath": "staticwebassets\\js\\bookingsheet\\modal\\modalshipper.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\bookingsheet\\onConfirmTransaction.js",
+      "PackagePath": "staticwebassets\\js\\bookingsheet\\onConfirmTransaction.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\bookingsheet\\onLoadingDataViewDetail.js",
+      "PackagePath": "staticwebassets\\js\\bookingsheet\\onLoadingDataViewDetail.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\bookingsheet\\onRecoveryData.js",
+      "PackagePath": "staticwebassets\\js\\bookingsheet\\onRecoveryData.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\bookingsheetseaandair\\index.js",
+      "PackagePath": "staticwebassets\\js\\bookingsheetseaandair\\index.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\bookingsheetseaandair\\onConfirmTransaction.js",
+      "PackagePath": "staticwebassets\\js\\bookingsheetseaandair\\onConfirmTransaction.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\bookingsheetseaandair\\onLoadingDataViewDetail.js",
+      "PackagePath": "staticwebassets\\js\\bookingsheetseaandair\\onLoadingDataViewDetail.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\bookingsheetseaandair\\onRecoveryData.js",
+      "PackagePath": "staticwebassets\\js\\bookingsheetseaandair\\onRecoveryData.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\confirmbookingsheet\\index.js",
+      "PackagePath": "staticwebassets\\js\\confirmbookingsheet\\index.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\confirmbookingsheet\\listbookingsheet.js",
+      "PackagePath": "staticwebassets\\js\\confirmbookingsheet\\listbookingsheet.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\confirmbookingsheet\\modal\\modalContainer.js",
+      "PackagePath": "staticwebassets\\js\\confirmbookingsheet\\modal\\modalContainer.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\confirmbookingsheet\\modal\\modalCostType.js",
+      "PackagePath": "staticwebassets\\js\\confirmbookingsheet\\modal\\modalCostType.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\confirmbookingsheet\\modal\\modalEmployee.js",
+      "PackagePath": "staticwebassets\\js\\confirmbookingsheet\\modal\\modalEmployee.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\confirmbookingsheet\\modal\\modalTruck.js",
+      "PackagePath": "staticwebassets\\js\\confirmbookingsheet\\modal\\modalTruck.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\confirmbookingsheet\\modal\\modalVendor.js",
+      "PackagePath": "staticwebassets\\js\\confirmbookingsheet\\modal\\modalVendor.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\confirmbookingsheetseaandair\\index.js",
+      "PackagePath": "staticwebassets\\js\\confirmbookingsheetseaandair\\index.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\confirmbookingsheetseaandair\\listbookingsheet.js",
+      "PackagePath": "staticwebassets\\js\\confirmbookingsheetseaandair\\listbookingsheet.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\confirmbookingsheetseaandair\\modal\\modalContainer.js",
+      "PackagePath": "staticwebassets\\js\\confirmbookingsheetseaandair\\modal\\modalContainer.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\confirmbookingsheetseaandair\\modal\\modalCostType.js",
+      "PackagePath": "staticwebassets\\js\\confirmbookingsheetseaandair\\modal\\modalCostType.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\confirmbookingsheetseaandair\\modal\\modalEmployee.js",
+      "PackagePath": "staticwebassets\\js\\confirmbookingsheetseaandair\\modal\\modalEmployee.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\confirmbookingsheetseaandair\\modal\\modalTruck.js",
+      "PackagePath": "staticwebassets\\js\\confirmbookingsheetseaandair\\modal\\modalTruck.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\confirmbookingsheetseaandair\\modal\\modalVendor.js",
+      "PackagePath": "staticwebassets\\js\\confirmbookingsheetseaandair\\modal\\modalVendor.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\jobsheettruckingSeaAndAir\\index.js",
+      "PackagePath": "staticwebassets\\js\\jobsheettruckingSeaAndAir\\index.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\jobsheettruckingSeaAndAir\\modal\\ModalListItemSalesQuotationJobSheet.js",
+      "PackagePath": "staticwebassets\\js\\jobsheettruckingSeaAndAir\\modal\\ModalListItemSalesQuotationJobSheet.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\jobsheettruckingSeaAndAir\\modal\\ModalListSalesQuotationJobSheet.js",
+      "PackagePath": "staticwebassets\\js\\jobsheettruckingSeaAndAir\\modal\\ModalListSalesQuotationJobSheet.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\jobsheettrucking\\index.js",
+      "PackagePath": "staticwebassets\\js\\jobsheettrucking\\index.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\jobsheettrucking\\modal\\ModalListItemSalesQuotationJobSheet.js",
+      "PackagePath": "staticwebassets\\js\\jobsheettrucking\\modal\\ModalListItemSalesQuotationJobSheet.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\jobsheettrucking\\modal\\ModalListSalesQuotationJobSheet.js",
+      "PackagePath": "staticwebassets\\js\\jobsheettrucking\\modal\\ModalListSalesQuotationJobSheet.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\pettycash\\index.js",
+      "PackagePath": "staticwebassets\\js\\pettycash\\index.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\pettycash\\modal\\ModalAccountCodePettyCash.js",
+      "PackagePath": "staticwebassets\\js\\pettycash\\modal\\ModalAccountCodePettyCash.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\pettycash\\modal\\ModalBpCodePettyCash.js",
+      "PackagePath": "staticwebassets\\js\\pettycash\\modal\\ModalBpCodePettyCash.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\purchaseRequestSalesCommission\\index.js",
+      "PackagePath": "staticwebassets\\js\\purchaseRequestSalesCommission\\index.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\purchaserequest\\index.js",
+      "PackagePath": "staticwebassets\\js\\purchaserequest\\index.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\purchaserequest\\modal\\ModalItemPurchaseRequest.js",
+      "PackagePath": "staticwebassets\\js\\purchaserequest\\modal\\ModalItemPurchaseRequest.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\purchaserequest\\modal\\ModalServicePurchaseRequest.js",
+      "PackagePath": "staticwebassets\\js\\purchaserequest\\modal\\ModalServicePurchaseRequest.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\purchaserequest\\onconfirmtransaction-vm.js",
+      "PackagePath": "staticwebassets\\js\\purchaserequest\\onconfirmtransaction-vm.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\purchaserequest\\onconfirmtransaction.js",
+      "PackagePath": "staticwebassets\\js\\purchaserequest\\onconfirmtransaction.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\salesquotation\\index.js",
+      "PackagePath": "staticwebassets\\js\\salesquotation\\index.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\salesquotation\\modal\\ModalItemSalesQuotation.js",
+      "PackagePath": "staticwebassets\\js\\salesquotation\\modal\\ModalItemSalesQuotation.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\salesquotation\\modal\\modalCO.js",
+      "PackagePath": "staticwebassets\\js\\salesquotation\\modal\\modalCO.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\js\\site.js",
+      "PackagePath": "staticwebassets\\js\\site.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\adminLTE\\adminlte.min.css",
+      "PackagePath": "staticwebassets\\lib\\adminLTE\\adminlte.min.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\LICENSE",
+      "PackagePath": "staticwebassets\\lib\\bootstrap"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-select.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-select.min.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap-select.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap-select.min.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\datatable\\dataTables.fixedHeader.min.js",
+      "PackagePath": "staticwebassets\\lib\\datatable\\dataTables.fixedHeader.min.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\datatable\\dataTables.min.js",
+      "PackagePath": "staticwebassets\\lib\\datatable\\dataTables.min.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\datatable\\dataTables.rowGroup.min.js",
+      "PackagePath": "staticwebassets\\lib\\datatable\\dataTables.rowGroup.min.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\datatable\\datetime-moment.js",
+      "PackagePath": "staticwebassets\\lib\\datatable\\datetime-moment.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\datatable\\fixedHeader.dataTables.min.css",
+      "PackagePath": "staticwebassets\\lib\\datatable\\fixedHeader.dataTables.min.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\datatable\\jquery-3.5.1.js",
+      "PackagePath": "staticwebassets\\lib\\datatable\\jquery-3.5.1.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\datatable\\jquery.dataTables.min.css",
+      "PackagePath": "staticwebassets\\lib\\datatable\\jquery.dataTables.min.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\datatable\\jquery.dataTables.min.js",
+      "PackagePath": "staticwebassets\\lib\\datatable\\jquery.dataTables.min.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\datatable\\moment.min.js",
+      "PackagePath": "staticwebassets\\lib\\datatable\\moment.min.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\datatable\\rowGroup.dataTables.min.css",
+      "PackagePath": "staticwebassets\\lib\\datatable\\rowGroup.dataTables.min.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\fontawesome-free\\css\\all.min.css",
+      "PackagePath": "staticwebassets\\lib\\fontawesome-free\\css\\all.min.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\fontawesome-free\\webfonts\\fa-brands-400.woff2",
+      "PackagePath": "staticwebassets\\lib\\fontawesome-free\\webfonts\\fa-brands-400.woff2"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\fontawesome-free\\webfonts\\fa-regular-400.woff2",
+      "PackagePath": "staticwebassets\\lib\\fontawesome-free\\webfonts\\fa-regular-400.woff2"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\fontawesome-free\\webfonts\\fa-solid-900.woff2",
+      "PackagePath": "staticwebassets\\lib\\fontawesome-free\\webfonts\\fa-solid-900.woff2"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\LICENSE.md"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.min.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.min.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\jquery\\LICENSE.txt",
+      "PackagePath": "staticwebassets\\lib\\jquery\\LICENSE.txt"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\jquery\\dist\\jquery-ui.css",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery-ui.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\jquery\\dist\\jquery-ui.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery-ui.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\jquery\\dist\\jquery.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\css\\select2.css",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\css\\select2.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\css\\select2.min.css",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\css\\select2.min.css"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\af.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\af.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\ar.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\ar.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\az.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\az.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\bg.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\bg.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\bn.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\bn.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\bs.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\bs.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\ca.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\ca.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\cs.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\cs.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\da.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\da.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\de.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\de.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\dsb.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\dsb.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\el.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\el.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\en.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\en.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\eo.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\eo.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\es.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\es.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\et.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\et.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\eu.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\eu.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\fa.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\fa.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\fi.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\fi.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\fr.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\fr.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\gl.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\gl.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\he.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\he.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\hi.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\hi.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\hr.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\hr.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\hsb.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\hsb.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\hu.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\hu.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\hy.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\hy.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\id.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\id.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\is.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\is.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\it.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\it.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\ja.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\ja.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\ka.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\ka.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\km.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\km.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\ko.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\ko.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\lt.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\lt.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\lv.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\lv.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\mk.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\mk.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\ms.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\ms.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\nb.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\nb.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\ne.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\ne.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\nl.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\nl.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\pa.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\pa.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\pl.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\pl.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\ps.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\ps.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\pt-BR.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\pt-BR.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\pt.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\pt.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\ro.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\ro.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\ru.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\ru.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\sk.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\sk.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\sl.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\sl.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\sq.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\sq.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\sr-Cyrl.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\sr-Cyrl.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\sr.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\sr.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\sv.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\sv.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\te.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\te.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\th.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\th.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\tk.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\tk.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\tr.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\tr.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\uk.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\uk.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\vi.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\vi.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\zh-CN.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\zh-CN.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\i18n\\zh-TW.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\i18n\\zh-TW.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\select2.full.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\select2.full.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\select2.full.min.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\select2.full.min.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\select2.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\select2.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\select2\\dist\\js\\select2.min.js",
+      "PackagePath": "staticwebassets\\lib\\select2\\dist\\js\\select2.min.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\lib\\signalr\\dist\\browser\\signalr.js",
+      "PackagePath": "staticwebassets\\lib\\signalr\\dist\\browser\\signalr.js"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\logoEW.ico",
+      "PackagePath": "staticwebassets\\logoEW.ico"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\logoEW_1.ico",
+      "PackagePath": "staticwebassets\\logoEW_1.ico"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\1.PNG",
+      "PackagePath": "staticwebassets\\mediaUpload\\1.PNG"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\2.png",
+      "PackagePath": "staticwebassets\\mediaUpload\\2.png"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\3.txt",
+      "PackagePath": "staticwebassets\\mediaUpload\\3.txt"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\AP Purchase Request (Items)- CR.pdf",
+      "PackagePath": "staticwebassets\\mediaUpload\\AP Purchase Request (Items)- CR.pdf"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\BKKSCRIPTCONTAINER.txt",
+      "PackagePath": "staticwebassets\\mediaUpload\\BKKSCRIPTCONTAINER.txt"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\ContainerUpdateStatus (27).xls",
+      "PackagePath": "staticwebassets\\mediaUpload\\ContainerUpdateStatus (27).xls"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\ITEM-Admin.txt",
+      "PackagePath": "staticwebassets\\mediaUpload\\ITEM-Admin.txt"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\MOM 65-12-23.txt",
+      "PackagePath": "staticwebassets\\mediaUpload\\MOM 65-12-23.txt"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\PurchaseRequestNewLayout.pdf",
+      "PackagePath": "staticwebassets\\mediaUpload\\PurchaseRequestNewLayout.pdf"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\RDLC.pdf",
+      "PackagePath": "staticwebassets\\mediaUpload\\RDLC.pdf"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\Sales Report (5).pdf",
+      "PackagePath": "staticwebassets\\mediaUpload\\Sales Report (5).pdf"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\TWB-41.pdf",
+      "PackagePath": "staticwebassets\\mediaUpload\\TWB-41.pdf"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\tes.rpt",
+      "PackagePath": "staticwebassets\\mediaUpload\\tes.rpt"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\word (1).doc",
+      "PackagePath": "staticwebassets\\mediaUpload\\word (1).doc"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\word (2).doc",
+      "PackagePath": "staticwebassets\\mediaUpload\\word (2).doc"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\word (3).doc",
+      "PackagePath": "staticwebassets\\mediaUpload\\word (3).doc"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\word (4).doc",
+      "PackagePath": "staticwebassets\\mediaUpload\\word (4).doc"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\word (5) (1).doc",
+      "PackagePath": "staticwebassets\\mediaUpload\\word (5) (1).doc"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\word (5).doc",
+      "PackagePath": "staticwebassets\\mediaUpload\\word (5).doc"
+    },
+    {
+      "Id": "C:\\Mr_Rort\\PYV_PROnWeb\\EWProject\\wwwroot\\mediaUpload\\word.doc",
+      "PackagePath": "staticwebassets\\mediaUpload\\word.doc"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.Client.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.build.Client.props",
+      "PackagePath": "build\\Client.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildMultiTargeting.Client.props",
+      "PackagePath": "buildMultiTargeting\\Client.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildTransitive.Client.props",
+      "PackagePath": "buildTransitive\\Client.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

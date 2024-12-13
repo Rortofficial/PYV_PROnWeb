@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>wwwroot\logoEW.ico</ApplicationIcon>
+    <PackageIcon>favicon.ico</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Resources\Views\BookingSheet\Index.en-US.resx" />
+    <EmbeddedResource Remove="Resources\Views\Home\Index.en-US.resx" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <Folder Include="Views\PurchaseRequest\" />
+    <Folder Include="wwwroot\lib\adminLTE\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Resources\Views\BookingSheet\Index.en-US.resx" />
+    <None Include="Resources\Views\Home\Index.en-US.resx" />
+    <None Include="wwwroot\favicon.ico">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle.NetCore" Version="2.2.1" />
+    <PackageReference Include="itext7" Version="8.0.5" />
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
+    <PackageReference Include="Microsoft.AspNet.SignalR.Core" Version="2.4.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="ReportViewerCore.NETCore" Version="15.1.22" />
+    <PackageReference Include="System.CodeDom" Version="8.0.0" />
+    <PackageReference Include="System.Data.Odbc" Version="8.0.0" />
+    <PackageReference Include="System.Data.OleDb" Version="8.0.0" />
+    <PackageReference Include="System.Security.Permissions" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="SAPBusinessOneSDK">
+      <HintPath>SDK\SAPBusinessOneSDK.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

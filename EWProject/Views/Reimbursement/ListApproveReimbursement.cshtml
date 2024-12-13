@@ -1,0 +1,208 @@
+﻿@using Client.Connection;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Client.Models.Gets.ListApproveReimbursementMasterData
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    string htmlRaw = "<select multiple=\"multiple\" class=\"form-control\" id=\"cboAccount-@DocNum\">";
+    string jsRaw = "<script defer>";
+    foreach (var a in Model.GetAccountReimbursments)
+    {
+        htmlRaw += "<option value=\"" + a.AccountCode + "\">" + a.AccountName + "</option>";
+
+    }
+    htmlRaw += "</select>";
+    await Configure.GetAllPermission(HttpContextAccessor.HttpContext.Request.Cookies["ID"]);
+}
+<div class="row">
+    <div class="col-6">
+    </div>
+    <div class="col-6">
+        <div style="float:right">
+            <h2>@localizer["Approve Document Reimbursement"]</h2>
+        </div>
+    </div>
+</div>
+<div class="table-responsive mt-3">
+    <div class="row">
+        <div class="col-12">
+            <table id="TbListBookingSheet" class="table table-striped table-bordered dt-responsive" width="100%" cellspacing="0" style="background: #f0eff1; color: #696969;">
+                <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>Document Number</th>
+                        <th>Account Code</th>
+                        <th>Customer Name</th>
+                        <th>Amount</th>
+                        <th>Remark</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var a in Model.ReimbursementRequests)
+                    {
+                        jsRaw += "$(\"#cboAccount-@DocNum\").select2({placeholder: \"Select list Account\",maximumSelectionLength: 1});".Replace("@DocNum", a.DocEntry.ToString());
+                        <tr>
+                            <td>
+                                <select class="form-control" id="cboTypeApprove-@a.DocEntry">
+                                    <option selected value="-99">Select Approval Type</option>
+                                    <option value="Approve">Approve</option>
+                                    <option value="Reject">Reject</option>
+                                </select>
+                            </td>
+                            <td>@a.DocEntry</td>
+                            <td>@Html.Raw(htmlRaw.Replace("@DocNum",a.DocEntry.ToString()))</td>
+                            <td>@a.CardName</td>
+                            <td>@a.Amount</td>
+                            <td>@a.Remark</td>
+                            <td><textarea id="txtReason-@a.DocEntry" class="form-control"></textarea></td>
+                        </tr>
+                    }
+                    @{
+                        jsRaw += "</script>";
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-6">
+    </div>
+    <div class="col-6">
+        @if (Configure.ListOfPermissionsByUser.Where(x =>
+                          x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "ApproveReimbursement").First().Properties.IsPermission
+                       && x.IsAllowAdd == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "ApproveReimbursement").First().Properties.IsAllowReadOnly).Count() == 1)
+        {
+            <button class="btn" id="btnConfirmTransaction" onclick="onConfirmTransaction('@Url.Action("PostApproveDocumentAction","Reimbursement")','@Url.Action("ListApproveReimbursement","Reimbursement")')" style="float:right;background-color:#01295C;color:white">Confirm Transaction</button>
+        }
+    </div>
+</div>
+<!--Import Modal OnSubmitBookingSheet-->
+@section scripts{
+    <script>
+        // $('#TbListBookingSheet thead tr')
+        //     .clone(true)
+        //     .addClass('filters')
+        //     .appendTo('#TbListBookingSheet thead');
+        var tbListItemLine = $('#TbListBookingSheet').DataTable({
+            orderCellsTop: true,
+            // fixedHeader: true,
+            initComplete: function () {
+                var api = this.api();
+                // For each column
+                api
+                    .columns()
+                    .eq(0)
+                    .each(function (colIdx) {
+                        // Set the header cell to contain the input element
+                        var cell = $('.filters th').eq(
+                            $(api.column(colIdx).header()).index()
+                        );
+                        var title = $(cell).text();
+                        $(cell).html('<input type="text" placeholder="' + title + '" />');
+
+                        // On every keypress in this input
+                        $(
+                            'input',
+                            $('.filters th').eq($(api.column(colIdx).header()).index())
+                        )
+                            .off('keyup change')
+                            .on('change', function (e) {
+                                // Get the search value
+                                $(this).attr('title', $(this).val());
+                                var regexr = '({search})'; //$(this).parents('th').find('select').val();
+
+                                var cursorPosition = this.selectionStart;
+                                // Search the column for that value
+                                api
+                                    .column(colIdx)
+                                    .search(
+                                        this.value != ''
+                                            ? regexr.replace('{search}', '(((' + this.value + ')))')
+                                            : '',
+                                        this.value != '',
+                                        this.value == ''
+                                    )
+                                    .draw();
+                            })
+                            .on('keyup', function (e) {
+                                e.stopPropagation();
+
+                                $(this).trigger('change');
+                                $(this)
+                                    .focus()[0]
+                                    .setSelectionRange(cursorPosition, cursorPosition);
+                            });
+                    });
+            },
+            scrollCollapse: true,
+            scrollX: true,
+            scrollY: 500
+        });
+        var lineRow = @Json.Serialize(Model.ReimbursementRequests);
+        function onConfirmTransaction(url, urlPDF) {
+            if (lineRow.length != 0) {
+                if (confirm("Please Confirm Transaction Before Add Make sure it correct !")) {
+
+                    var postReimbursementRequest = [];
+                    for (var i = 0; i < lineRow.length; i++) {
+                        //console.log($("#cboAccount-" + lineRow[i].docEntry).val())[0];
+                        if ($("#cboTypeApprove-" + lineRow[i].docEntry).val() !== "-99") {
+                            if ($("#cboTypeApprove-" + lineRow[i].docEntry).val() == "Approve") {
+                                if ($("#cboAccount-" + lineRow[i].docEntry).val()[0] == undefined) {
+                                    alert("Please Select Account for Document that Approved!");
+                                    return;
+                                } else {
+                                    postReimbursementRequest.push({
+                                        "ApproveType": $("#cboTypeApprove-" + lineRow[i].docEntry).val(),
+                                        "AccountCode": $("#cboAccount-" + lineRow[i].docEntry).val()[0],
+                                        "DocEntry": lineRow[i].docEntry,
+                                        "Reason": $("#txtReason-" + lineRow[i].docEntry).val(),
+                                        "UserID": $("#UserID").attr("data-id"),
+                                        "CardCode": lineRow[i].cardCode,
+                                    });
+                                }
+                            } else if ($("#cboTypeApprove-" + lineRow[i].docEntry).val() == "Reject") {
+                                postReimbursementRequest.push({
+                                    "ApproveType": $("#cboTypeApprove-" + lineRow[i].docEntry).val(),
+                                    "AccountCode": "",
+                                    "DocEntry": lineRow[i].docEntry,
+                                    "Reason": $("#txtReason-" + lineRow[i].docEntry).val(),
+                                    "UserID": $("#UserID").attr("data-id"),
+                                    "CardCode": lineRow[i].cardCode,
+                                });
+                            }
+                        }
+                    }
+                    if (postReimbursementRequest.length!=0){
+                        $.ajax({
+                            url: url,
+                            type: "POST",
+                            data: { listApproveReimbursements: postReimbursementRequest },
+                            dataType: "JSON",
+                            beforeSend: function () {
+                                $('#Modalloder').modal('show');
+                            },
+                            success: function (data) {
+                                $('#Modalloder').modal('hide');
+                                $('#ModalSuccess').modal('show');
+                                $('#ErrMsg').html("Success");
+                                window.location.href = urlPDF /*+ "?docEntry=" + data.docEntry*/;
+                            },
+                            error: function (erro) {
+                                $('#Modalloder').modal('hide');
+                                $('#ModalSuccess').modal('show');
+                                $('#ErrMsg').html(erro.responseText);
+                            }
+                        });
+                    }else{
+                        alert("Please Select Approve Type First");
+                    }
+                }
+            }else{
+                alert("Don't have record");
+            }
+        }
+    </script>
+    @Html.Raw(jsRaw);
+}

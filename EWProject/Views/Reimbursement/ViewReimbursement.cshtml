@@ -1,0 +1,40 @@
+﻿@using Client.Connection;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    await Configure.GetAllPermission(HttpContextAccessor.HttpContext.Request.Cookies["ID"]);
+}
+<div class="row">
+    @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "RequestReimbursement").First().Properties.IsPermission).Count() == 1)
+    {
+        <div class="alink col-lg-3 col-md-3 col-12">
+            <a asp-controller="Reimbursement" asp-action="ListReimbursement">
+                <div style="width: 100%; height: 100%; background: #01295C;border-radius:5px">
+                    <div style="text-align: center">
+                        <p style="text-align: center; padding-top: 15px;">
+                            <b>@localizer["Request Reimbursement"]</b><br>
+                            @* <i id="Icon" class="fas fa-user-plus" aria-hidden="true"></i>*@
+                            <i id="Icon" class="fas fa-file-alt" aria-hidden="true"></i>
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+    @if (Client.Connection.Configure.ListOfPermissionsByUser.Where(x => x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "ApproveReimbursement").First().Properties.IsPermission).Count() == 1)
+    {
+        <div class="alink col-lg-3 col-md-3 col-12">
+            <a asp-controller="Reimbursement" asp-action="ListApproveReimbursement">
+                <div style="width: 100%; height: 100%; background: #01295C;border-radius:5px">
+                    <div style="text-align: center">
+                        <p style="text-align: center; padding-top: 15px;">
+                            <b>@localizer["Approve Reimbursement"]</b><br>
+                            @* <i id="Icon" class="fas fa-user-plus" aria-hidden="true"></i>*@
+                            <i id="Icon" class="fas fa-file-alt" aria-hidden="true"></i>
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+</div>

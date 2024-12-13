@@ -1,0 +1,238 @@
+﻿@model Client.Models.Response.GetDetailInformationDocumentApproveResponse;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@if (Model.ErrorCode != 0)
+{
+    <h2 style="color:red;">Errore: @Model.ErrorMessage</h2>
+}
+else
+{
+    <div class="row">
+        <div class="col-2">
+            <ul class="navbar-nav flex-grow-1 btn" style="float:right;background-color:#01295C;color:white;width:100%">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown" href="#">@localizer["Print"]</a>
+                    @{
+                        var k = 1;
+                    }
+                    <ul class="dropdown-menu" style="border: 1px solid #01295C">
+                        @foreach (var z in Model.ListLayoutPrint)
+                        {
+                            @if (k == 1)
+                            {
+                                <li>
+                                    <a class="dropdown-item btn btn-info" target="_blank" asp-route-layoutCode="@z.Code" asp-route-docEntry="@Model.Data.DocEntry-@ViewBag.type" asp-controller="CallLayout" asp-action="PrintLayout">
+                                        @z.Name
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item btn btn-info" target="_blank" asp-route-layoutCode="@z.Code" asp-route-docEntry="@Model.Data.DocEntry-@ViewBag.type" asp-controller="CallLayout" asp-action="PrintLayout">
+                                        @z.Name
+                                    </a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="col-10">
+            <div style="float:right">
+                <h2>@localizer["Purchase Order View Detail"]</h2>
+            </div>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-12">
+                <div style="margin:auto;text-align:left;font-weight:bold;"><u>@localizer["HEADER PURCHASE ORDER"]</u></div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Document Number"]</div>
+                    <div class="col-8">
+                        <input type="hidden" id="txtDocEntry" value="" />
+                        <input type="text" class="form-control" id="txtStatus" value="@Model.Data.DocNum" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["REF NO"]</div>
+                    <div class="col-8">
+                        <input type="hidden" id="txtDocEntry" value="" />
+                        <input type="text" class="form-control" id="txtRefNo" value="@Model.Data.RefNo" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ISSUE DATE"]</div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" id="txtIssueDate" disabled value="@Model.Data.IssueDate">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ISSUE BY"]</div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" id="txtIssueByName" value="@Model.Data.IssueBy" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Due DATE"]</div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" id="txtDueDate" disabled value="@Model.Data.DueDate">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                        @localizer["Vendor Name"]
+                    </div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" disabled id="txtVendorName" value="@Model.Data.VendorName">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                        @localizer["Job No"]
+                    </div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" id="txtJobNo" disabled value="@Model.Data.JobNo">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                        @localizer["Ammount Currency"]
+                    </div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" disabled id="txtAmountCurrency" value="@Model.Data.AmountCurrency">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-12">
+                <div style="margin:auto;text-align:left;font-weight:bold;"><u>@localizer["LINE PURCHASE ORDER"]</u></div>
+            </div>
+        </div>
+        <div class="table-line">
+            <div id="itemType">
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <table id="TbListLineItemPurchaseRequest" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0" style="background: #f0eff1; color: #696969;">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Service Type</th>
+                                    <th>Paid</th>
+                                    <th>Job Number</th>
+                                    <th>Customer Name</th>
+                                    <th>Ref Invoice</th>
+                                    <th>Transportation No</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var a in Model.Data.Lines)
+                                {
+                                    <tr>
+                                        <td>@a.ItemName</td>
+                                        <td>@a.ServiceType</td>
+                                        <td>@a.Amount</td>
+                                        <td>@a.JobNo</td>
+                                        <td>@a.CustomerName</td>
+                                        <td>@a.RefInv</td>
+                                        <td>@a.TransportationNo</td>
+                                        <td>@a.remark</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                        @localizer["Grand Total"]
+                    </div>
+                    <div class="col-9">
+                        <input type="number" class="form-control" id="txtGrandTotal" value="@Model.Data.GrandTotal" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Grand Total THB"]</div>
+                    <div class="col-9">
+                        <input type="number" class="form-control" id="txtAmountTHB" value="@Model.Data.AmountTHB" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Grand Total Paid"]</div>
+                    <div class="col-9">
+                        <input type="number" class="form-control" id="txtAmountTHB" value="@Model.Data.TotalPaid" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-6">
+                <div style="margin:auto;text-align:left;font-weight:bold;"><u>@localizer["Remark"]</u></div>
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-12">
+                <textarea id="remarks" rows="4" disabled class="form-control">@Model.Data.Remarks</textarea>
+            </div>
+        </div>
+    </div>
+    @section scripts {
+    <script>
+        $('#TbListLineItemPurchaseRequest').DataTable();
+    </script>
+    }
+}

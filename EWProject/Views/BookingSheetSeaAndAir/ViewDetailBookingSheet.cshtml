@@ -1,0 +1,1132 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Client.Models.Response.ResponseData<Client.Models.Gets.GetBookingSheetSeaAndAir>
+<title>@ViewData["Title"] - EWSystem</title>
+@if (Model.ErrorCode != 0)
+{
+    <h2>Error: @Model.ErrorCode</h2>
+    <h2>Error: @Model.ErrorMessage</h2>
+}
+else
+{
+    <div class="row">
+        <div class="col-2">
+            <ul class="navbar-nav flex-grow-1 btn" style="float:right;background-color:#01295C;color:white;width:100%">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown" href="#">@localizer["Print"]</a>
+                    @{
+                        var k = 1;
+                    }
+                    <ul class="dropdown-menu" style="border: 1px solid #01295C">
+                        @if (Model.ListLayoutPrint != null)
+                        {
+                            @foreach (var z in Model.ListLayoutPrint)
+                            {
+                                @if (k == 1)
+                                {
+                                    <li>
+                                        <a class="dropdown-item btn btn-info" target="_blank" asp-route-layoutCode="@z.Code" asp-route-docEntry="@Model.Data.HeaderObj.BookingID" asp-controller="CallLayout" asp-action="PrintLayout">
+                                            @z.Name
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item btn btn-info" target="_blank" asp-route-layoutCode="@z.Code" asp-route-docEntry="@Model.Data.HeaderObj.BookingID" asp-controller="CallLayout" asp-action="PrintLayout">
+                                            @z.Name
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        }
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="col-10">
+            <div style="float:right">
+                <h2>@localizer["BOOKING SHEET SEA & AIR"]</h2>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-6">
+        </div>
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["BOOKING ID"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" value="@Model.Data.HeaderObj.BookingID" disabled>
+                    @*@HttpContextAccessor.HttpContext.Session.GetString("Sereis")@Model.GetDocNumBookingSheets.BookingID*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-6">
+        </div>
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="row mt-2">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["JOB NO."]<!--<span style="color:red">*</span>--></div>
+                <div class="col-8">
+                    <input type="text" class="form-control" value="@Model.Data.HeaderObj.JobNo" disabled />
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-0 col-md-6 col-lg-6">
+        </div>
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="row mt-2">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["BOOKING DATE"]</div>
+                <div class="col-8">
+                    <div class="row">
+                        <div class="col-12">
+                            <input readonly type="text" id="txtBookingDate" value="@Model.Data.HeaderObj.BookingDate" disabled class="form-control"> @*.ToString("dd/MM/yyyy")*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="row mt-2">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SALE PERSON"]</div>
+                <div class="col-8">
+                    <div class="row">
+                        <div class="col-12">
+                            <select class="form-select" id="cboSalePerson1" disabled>
+                                <option selected value="-1">@Model.Data.HeaderObj.SalePerson</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="row mt-2">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ROUTE"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="txtShowDestination" value="@Model.Data.HeaderObj.Route" disabled />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="row mt-2">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["JOB TYPE"]</div>
+                <div class="col-8">
+                    <div class="row">
+                        <div class="col-12">
+                            <input type="text" class="form-control" placeholder="JOB TYPE" value="@Model.Data.HeaderObj.JobType" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="row mt-2">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SERVICE TYPE"]</div>
+                <div class="col-8">
+                    <div class="row">
+                        <div class="col-12">
+                            <select class="form-select" id="cboServiceType" disabled>
+                                <option selected value="-1">@Model.Data.HeaderObj.ServiceType</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr style="color:black;font-weight:bold" />
+    <div class="row">
+        <div class="col-12">
+            <h5>
+                <u>CUSTOMER DATA</u>
+            </h5>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3" style="margin:auto;">
+            @localizer["BOOING NO"]
+        </div>
+        <div class="col-9">
+            <input type="text" class="form-control" placeholder="Booking Number" value="@Model.Data.HeaderObj.BookingNo" disabled>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-3" style="margin:auto;">
+            @localizer["COLOADER"]
+        </div>
+        <div class="col-9">
+            <select class="form-control" size="@Model.Data.ListCOLoader.Count()" multiple="multiple" disabled>
+                @foreach (var a in Model.Data.ListCOLoader)
+                {
+                    <option>@a.COLOADER</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-3" style="margin:auto;">
+            @localizer["CUSTOMER NAME"]
+        </div>
+        <div class="col-9">
+            <select class="form-control" multiple="multiple" disabled size="@Model.Data.ListCustomer.Count()">
+                @foreach (var a in Model.Data.ListCustomer)
+                {
+                    <option>@a.CUSTOMERCODE</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-3" style="margin:auto;">
+            @localizer["FREIGHT"]
+        </div>
+        <div class="col-9">
+            <div class="row">
+                <div class="col-6" style="margin:auto;">
+                    <div class="form-check">
+                        <input class="form-check-input" disabled value="REPAID" type="radio" @((@Model.Data.HeaderObj.Freight=="REPAID")?"checked":"") name="REPAID/COLLECTION" id="rdoREPAIDOrCOLLECTION">
+                        <label class="form-check-label" for="loloyard">
+                            PREPAID
+                        </label>
+                    </div>
+                </div>
+                <div class="col-6" style="margin:auto;">
+                    <div class="form-check">
+                        <input class="form-check-input" disabled value="UNLOADING" type="radio" @((@Model.Data.HeaderObj.Freight=="COLLECTION")?"checked":"") name="REPAID/COLLECTION" id="rdoREPAIDOrCOLLECTION">
+                        <label class="form-check-label" for="loloyard">
+                            COLLECTION
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item" style="padding-left:20px" role="presentation">
+                <button class="nav-link active" id="pills-COMMODITY-tab" data-bs-toggle="pill" data-bs-target="#pills-COMMODITY" type="button" role="tab" aria-controls="pills-COMMODITY" aria-selected="true">
+                    <h5>
+                        @localizer["Sea Information"]
+                    </h5>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-Air-tab" data-bs-toggle="pill" data-bs-target="#pills-Air" type="button" role="tab" aria-controls="pills-Air" aria-selected="false">
+                    <h5>
+                        @localizer["Air Information"]
+                    </h5>
+                </button>
+            </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent">
+            <!--Sea Information-->
+            <div class="tab-pane fade show active" id="pills-COMMODITY" role="tabpanel" aria-labelledby="pills-COMMODITY-tab" tabindex="0">
+                <div class="row mt-3">
+                    <div class="col-3" style="margin:auto;">
+                        @localizer["SHIPPER"]
+                    </div>
+                    <div class="col-9">
+                        <select class="form-control" multiple="multiple" disabled size="@Model.Data.ListShipper.Count()">
+                            @foreach (var a in Model.Data.ListShipper)
+                            {
+                                <option>@a.SHIPPER</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-3" style="margin:auto;">
+                        @localizer["CONSIGNEE"]
+                    </div>
+                    <div class="col-9">
+                        <select class="form-control" multiple="multiple" disabled size="@Model.Data.ListConsignee.Count()">
+                            @foreach (var a in Model.Data.ListConsignee)
+                            {
+                                <option>@a.CONSIGNEE</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-3" style="margin:auto;">
+                        @localizer["SHIPPING LINE"]
+                    </div>
+                    <div class="col-9">
+                        <select class="form-control" multiple="multiple" disabled size="@Model.Data.ListShippingLine.Count()">
+                            @foreach (var a in Model.Data.ListShippingLine)
+                            {
+                                <option>@a.SHIPPINGLINE</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-3" style="margin:auto;">
+                        @localizer["DEST. AGENT"]
+                    </div>
+                    <div class="col-9">
+                        <select class="form-control" multiple="multiple" disabled size="@Model.Data.ListDestAgent.Count()">
+                            @foreach (var a in Model.Data.ListDestAgent)
+                            {
+                                <option>@a.DESTAGENT</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["FEEDER"]:
+                            </div>
+                            <div class="col-7">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="@localizer["FEEDER"]" value="@Model.Data.HeaderObj.Feeder" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["Voy."]:
+                            </div>
+                            <div class="col-7">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="@localizer["Voy."]" value="@Model.Data.HeaderObj.FeederVoy" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["VESSEL"]:
+                            </div>
+                            <div class="col-7">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="@localizer["VESSEL"]" value="@Model.Data.HeaderObj.Vessel" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["Voy."]:
+                            </div>
+                            <div class="col-7">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="@localizer["Voy."]" value="@Model.Data.HeaderObj.VesselVoy" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5>
+                            <u>@localizer["COMMODITY"]</u>
+                        </h5>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-3" style="margin:auto;">
+                        @localizer["INVOICE NO#"]:
+                    </div>
+                    <div class="col-9">
+                        <select class="form-control" multiple="multiple" disabled size="@Model.Data.ListCommodities.Count()">
+                            @foreach (var a in Model.Data.ListCommodities)
+                            {
+                                <option>@a.Invoice</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-3" style="margin:auto;">
+                        @localizer["GOODS DESCRIPTION"]:
+                    </div>
+                    <div class="col-9">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="@localizer["GOODS DESCRIPTION"]" value="@Model.Data.HeaderObj.GoodsDescription" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-3" style="margin:auto;">
+                        @localizer["TOTAL PACKAGE"]:
+                    </div>
+                    <div class="col-9">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="@localizer["TOTAL PACKAGE"]" value="@Model.Data.HeaderObj.TotalPackage" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["NET WEIGHT(KGS)"]:
+                            </div>
+                            <div class="col-7">
+                                <div class="input-group">
+                                    <input type="number" class="form-control" placeholder="@localizer["NET WEIGHT(KGS)"]" value="@Model.Data.HeaderObj.NetWeight" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["GROSS WEIGHT(KGS)"]:
+                            </div>
+                            <div class="col-7">
+                                <div class="input-group">
+                                    <input type="number" class="form-control" placeholder="@localizer["GROSS WEIGHT(KGS)"]" value="@Model.Data.HeaderObj.GrossWeight" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <u style="font-weight:bold">@localizer["SHIPMENT DETAILS"] <span class="d-md-none d-lg-none">@localizer["& TRANSPORTER AND FORWARDER"]</span></u>
+                    </div>
+                    <div class="col-12 d-none d-md-block d-lg-block col-md-6 col-lg-6">
+                        <u style="font-weight:bold">@localizer["TRANSPORTER AND FORWARDER"]</u>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["LOADING DATE"]:
+                            </div>
+                            <div class="col-7">
+                                <div class="input-group">
+                                    <input type="text" min="" class="form-control" value="@Model.Data.HeaderObj.LoadingDate" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["CROSS BORDER DATE"]:
+                            </div>
+                            <div class="col-7">
+                                <div class="input-group">
+                                    <input type="text" min="" class="form-control" value="@Model.Data.HeaderObj.CrossBorderDate" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["ETA REQUIREMENT"]:
+                            </div>
+                            <div class="col-7">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" value="@Model.Data.HeaderObj.ETARequirement" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["OVERSEA TRANSPORT"]:
+                            </div>
+                            <div class="col-7">
+                                <select class="form-control" multiple="multiple" disabled size="@Model.Data.ListOverseaTransportSeaAndAir.Count()">
+                                    @foreach (var a in Model.Data.ListOverseaTransportSeaAndAir)
+                                    {
+                                        <option>@a.OVEARSEATRANSPORT</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["PORT OF RECEIPT"]:
+                            </div>
+                            <div class="col-7">
+                                <select class="form-control" multiple="multiple" disabled size="@Model.Data.ListPortOfReceiptSeaAndAir.Count()">
+                                    @foreach (var a in Model.Data.ListPortOfReceiptSeaAndAir)
+                                    {
+                                        <option>@a.PORTOFRECEIPT</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["PORT OF DISCHARGE"]:
+                            </div>
+                            <div class="col-7">
+                                <select class="form-control" multiple="multiple" disabled size="@Model.Data.ListPortOfDischargeSeaAndAir.Count()">
+                                    @foreach (var a in Model.Data.ListPortOfDischargeSeaAndAir)
+                                    {
+                                        <option>@a.PORTOFDISCHARGE</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["PLACE OF LOADING"]:
+                            </div>
+                            <div class="col-7">
+                                <select class="form-control" multiple="multiple" disabled size="@Model.Data.ListPlaceOfLoadingSeaAndAir.Count()">
+                                    @foreach (var a in Model.Data.ListPlaceOfLoadingSeaAndAir)
+                                    {
+                                        <option>@a.PLACEOFLOADING</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row" style="margin-top:10px;">
+                            <div class="col-4">
+                                <input type="text" class="form-control" id="txtLoloYardRemark" value="@Model.Data.HeaderObj.RemarkLOLOYard" placeholder="LOLO/Yard" disabled>
+                            </div>
+                            <div class="col-4" style="margin:auto;">
+                                <div class="form-check">
+                                    <input class="form-check-input" disabled value="LOLO YARD" @((@Model.Data.HeaderObj.LOLOYARD_UNLOADING=="LOLO YARD")?"checked":"") type="radio" name="typeloloyard/unloading" id="rdoLoloYardOrUnloading">
+                                    <label class="form-check-label" for="loloyard">
+                                        LOLO YARD
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-4" style="margin:auto;">
+                                <div class="form-check">
+                                    <input class="form-check-input" disabled value="UNLOADING" @((@Model.Data.HeaderObj.LOLOYARD_UNLOADING=="UNLOADING")?"checked":"") type="radio" name="typeloloyard/unloading" id="rdoLoloYardOrUnloading">
+                                    <label class="form-check-label" for="loloyard">
+                                        UNLOADING
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["PLACE OF DELIVERY"]:
+                            </div>
+                            <div class="col-7">
+                                <select class="form-control" disabled size="@Model.Data.ListPlaceOfDeliverySeaAndAir.Count()" multiple="multiple">
+                                    @foreach (var a in Model.Data.ListPlaceOfDeliverySeaAndAir)
+                                    {
+                                        <option>@a.PLACEOFDELIVERY</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["THAI FORWARDER"]:
+                            </div>
+                            <div class="col-7">
+                                <select class="form-control" multiple="multiple" disabled size="@Model.Data.ListThaiForwarderSeaAndAir.Count()">
+                                    @foreach (var a in Model.Data.ListThaiForwarderSeaAndAir)
+                                    {
+                                        <option>@a.THAIFORWARDER</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-4" style="margin:auto;">
+                                @localizer["CONTAINER TYPE"]:
+                            </div>
+                            <div class="col-8">
+                                @foreach (var a in Model.Data.ListContainerTypeSeaAndAir)
+                                {
+                                    <div class="row">
+                                        <div class="col-3">
+                                            @a.Qty
+                                        </div>
+                                        <div class="col-3">
+                                            @a.ContainerType
+                                        </div>
+                                        <div class="col-3">
+                                            @a.Weight
+                                        </div>
+                                        <div class="col-3">
+                                            @a.ListInvoice
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["OVERSEA FORWARDER"]:
+                            </div>
+                            <div class="col-7">
+                                <select class="form-control" multiple="multiple" disabled size="@Model.Data.ListOverSeaForwarderSeaAndAir.Count()">
+                                    @foreach (var a in Model.Data.ListOverSeaForwarderSeaAndAir)
+                                    {
+                                        <option>@a.OVERSEAFORWARDER</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-12" id="rowVolume">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["CBM"]:
+                            </div>
+                            <div class="col-7">
+                                <input type="number" class="form-control" placeholder="@localizer["CBS WEIGHT(KGS)"]" value="@Model.Data.HeaderObj.CBM" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["THAI BORDER"]:
+                            </div>
+                            <div class="col-7">
+                                <select class="form-control" multiple="multiple" disabled size="@Model.Data.ListThaiBorderSeaAndAir.Count()">
+                                    @foreach (var a in Model.Data.ListThaiBorderSeaAndAir)
+                                    {
+                                        <option>@a.THAIBORDER</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-3" style="margin:auto;">
+                                @localizer["TRUCK TYPE"]:
+                            </div>
+                            <div class="col-9">
+                                @foreach (var a in Model.Data.ListTruckTypeSeaAndAir)
+                                {
+                                    <div class="row">
+                                        <div class="col-3">
+                                            @a.Qty
+                                        </div>
+                                        <div class="col-3">
+                                            @a.ContainerType
+                                        </div>
+                                        <div class="col-3">
+                                            @a.Weight
+                                        </div>
+                                        <div class="col-3">
+                                            @a.ListInvoice
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["CY Date"]:
+                            </div>
+                            <div class="col-7">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" value="@Model.Data.HeaderObj.CYDate" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row" style="margin-top:10px;">
+                            <div class="col-6" style="margin:auto;">
+                                <div class="form-check">
+                                    <input class="form-check-input" disabled value="LCL" type="radio" @((@Model.Data.HeaderObj.LCL_FCL_CY_CFS=="LCL")?"checked":"") name="lcl/fcl" id="rdoLCLOrFCL">
+                                    <label class="form-check-label" for="loloyard">
+                                        LCL
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6" style="margin:auto;">
+                                <div class="form-check">
+                                    <input class="form-check-input" disabled value="FCL" @((@Model.Data.HeaderObj.LCL_FCL_CY_CFS=="FCL")?"checked":"") type="radio" name="lcl/fcl" id="rdoLCLOrFCL">
+                                    <label class="form-check-label" for="loloyard">
+                                        FCL
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row" style="margin-top:10px;">
+                            <div class="col-6" style="margin:auto;">
+                                <div class="form-check">
+                                    <input class="form-check-input" disabled value="CY" type="radio" @((@Model.Data.HeaderObj.LCL_FCL_CY_CFS=="CY")?"checked":"") name="lcl/fcl" id="rdoLCLOrFCL">
+                                    <label class="form-check-label" for="loloyard">
+                                        CY
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6" style="margin:auto;">
+                                <div class="form-check">
+                                    <input class="form-check-input" disabled value="CFS" type="radio" @((@Model.Data.HeaderObj.LCL_FCL_CY_CFS=="CFS")?"checked":"") name="lcl/fcl" id="rdoLCLOrFCL">
+                                    <label class="form-check-label" for="loloyard">
+                                        CFS
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="row mt-3">
+            <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+            <div class="row">
+            <div class="col-5" style="margin:auto;">
+            @localizer["RETURN DATE"]:
+            </div>
+            <div class="col-7">
+            <input type="text" class="form-control" disabled value="@Model.Data.HeaderObj.ReturnDate">
+            </div>
+            </div>
+            </div>
+            <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+            <div class="row" style="margin-top:10px">
+            <div class="col-5" style="margin:auto;">
+            @localizer["CY AT / CONTACT"]:
+            </div>
+            <div class="col-7">
+            <select class="form-control" multiple="multiple" disabled size="@Model.Data.ListCYAt_ContactSeaAndAir.Count()">
+            @foreach (var a in Model.Data.ListCYAt_ContactSeaAndAir)
+            {
+            <option>@a.CYAt_Contact</option>
+            }
+            </select>
+            </div>
+            </div>
+            </div>
+            </div>
+            <div class="row mt-3">
+            <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+            <div class="row" style="margin-top:10px">
+            <div class="col-5" style="margin:auto;">
+            @localizer["RETURN AT / CONTACT"]:
+            </div>
+            <div class="col-7">
+            <select class="form-control" multiple="multiple" disabled size="@Model.Data.ListReturnAt_ContactSeaAndAir.Count()">
+            @foreach (var a in Model.Data.ListReturnAt_ContactSeaAndAir)
+            {
+            <option>@a.ReturnAt_Contact</option>
+            }
+            </select>
+            </div>
+            </div>
+            </div>
+            <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+            <div class="row" style="margin-top:10px">
+            <div class="col-5" style="margin:auto;">
+            @localizer["LAST RETURN DATE"]:
+            </div>
+            <div class="col-7">
+            <input type="text" class="form-control" disabled value="@Model.Data.HeaderObj.LastReturnDate">
+            </div>
+            </div>
+            </div>
+            </div>
+            <div class="row mt-3">
+            <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+            <div class="row" style="margin-top:10px">
+            <div class="col-5" style="margin:auto;">
+            @localizer["RETURN BEFORE"]:
+            </div>
+            <div class="col-7">
+            <input type="text" class="form-control" value="@Model.Data.HeaderObj.ReturnBefore" disabled>
+            </div>
+            </div>
+            </div>
+            <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+            <div class="row" style="margin-top:10px">
+            <div class="col-5" style="margin:auto;">
+            @localizer["LOADING AT"]:
+            </div>
+            <div class="col-7">
+            <select class="form-control" multiple="multiple" disabled size="@Model.Data.ListLoadingAtSeaAndAir.Count()">
+            @foreach (var a in Model.Data.ListLoadingAtSeaAndAir)
+            {
+            <option>@a.LoadingAt</option>
+            }
+            </select>
+            </div>
+            </div>
+            </div>
+            </div>*@
+                <div class="row mt-3">
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["CY AT / CONTACT"]:
+                            </div>
+                            <div class="col-7">
+                                <select class="form-control" disabled multiple="multiple" disabled size="@Model.Data.ListCYAt_ContactSeaAndAir.Count()">
+                                    @foreach (var a in Model.Data.ListCYAt_ContactSeaAndAir)
+                                    {
+                                        <option>@a.CYAt_Contact</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["CY Date"]:
+                            </div>
+                            <div class="col-7">
+                                <div class="input-group">
+                                    <input type="text" disabled value="@Model.Data.HeaderObj.CYDate" class="form-control" id="txtCYDate">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["RETURN AT / CONTACT"]:
+                            </div>
+                            <div class="col-7">
+                                <select class="form-control" disabled multiple="multiple" disabled size="@Model.Data.ListReturnAt_ContactSeaAndAir.Count()">
+                                    @foreach (var a in Model.Data.ListReturnAt_ContactSeaAndAir)
+                                    {
+                                        <option>@a.ReturnAt_Contact</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["RETURN DATE"]:
+                            </div>
+                            <div class="col-7">
+                                <input type="text" disabled value="@Model.Data.HeaderObj.ReturnDate" class="form-control" id="txtReturnDate">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["LAST RETURN DATE"]:
+                            </div>
+                            <div class="col-7">
+                                <input type="text" disabled value="@Model.Data.HeaderObj.LastReturnDate" class="form-control" id="txtLastReturnDate">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["RETURN BEFORE"]:
+                            </div>
+                            <div class="col-7">
+                                <input type="text"disabled value="@Model.Data.HeaderObj.ReturnBefore" class="form-control" id="txtreturnBefore">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["LOADING AT"]:
+                            </div>
+                            <div class="col-7">
+                                <select class="form-control" disabled multiple="multiple" disabled size="@Model.Data.ListLoadingAtSeaAndAir.Count()">
+                                    @foreach (var a in Model.Data.ListLoadingAtSeaAndAir)
+                                    {
+                                        <option>@a.LoadingAt</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["LOADING DATE"]:
+                            </div>
+                            <div class="col-7">
+                                <div class="input-group">
+                                    <input type="text" disabled value="@Model.Data.HeaderObj.LoadingDate" class="form-control" id="txtLoadingDate">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["CLOSING DATE"]:
+                            </div>
+                            <div class="col-7">
+                                <input type="text" disabled value="@Model.Data.HeaderObj.CLOSINGDATE" class="form-control" id="txtClosingDate">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["CLOSING BEFORE"]:
+                            </div>
+                            <div class="col-7">
+                                <input type="text" disabled value="@Model.Data.HeaderObj.CLOSINGTIME" class="form-control" id="txtclosingBefore">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["Dangerous  Goods"]:
+                            </div>
+                            <div class="col-7">
+                                <input type="text" disabled value="@Model.Data.HeaderObj.DG" class="form-control" id="txtDamageGoods">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        
+                    </div>
+                </div>
+            </div>
+            <!--End Sea Information-->
+            <div class="tab-pane fade" id="pills-Air" role="tabpanel" aria-labelledby="pills-Air-tab" tabindex="0">
+                <div class="row mt-3">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-5" style="margin:auto;">
+                                @localizer["MAWB"]:
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="MAWB" value="@Model.Data.HeaderObj.MAWB" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5>
+                            <u>Flights Information</u>
+                        </h5>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="row mt-3">
+                        <table id="TbListAirInformation" class="table table-striped table-bordered dt-responsive table-condensed display" width="100%" cellspacing="0" style="background: #f0eff1; color: #696969;">
+                            <thead>
+                                <tr>
+                                    <th>Flights From To</th>
+                                    <th>Flights Number</th>
+                                    <th>Flights Arrival</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var a in Model.Data.FlightsInformations)
+                                {
+                                    <tr>
+                                        <td>@a.FlightFromTo</td>
+                                        <td>@a.FlightNo</td>
+                                        <td>@a.FlightArrival</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="row">
+                                <div class="col-5" style="margin:auto;">
+                                    @localizer["Loading Date"]:
+                                </div>
+                                <div class="col-7">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="@localizer["Loading Date"]" value="@Model.Data.HeaderObj.LoadingDateAir" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                            <div class="row">
+                                <div class="col-5" style="margin:auto;">
+                                    @localizer["Cut-Off Time"]:
+                                </div>
+                                <div class="col-7">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" disabled value="@Model.Data.HeaderObj.CutOffDate : @Model.Data.HeaderObj.CutOffTime">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="row">
+                                <div class="col-5" style="margin:auto;">
+                                    @localizer["Loading Place"]:
+                                </div>
+                                <div class="col-7">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="@localizer["Loading Place"]" disabled value="@Model.Data.HeaderObj.LoadingPlaceAir">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                            <div class="row">
+                                <div class="col-5" style="margin:auto;">
+                                    @localizer["Warehouse"]:
+                                </div>
+                                <div class="col-7">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="@localizer["Warehouse"]" disabled value="@Model.Data.HeaderObj.Warehouse">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="row">
+                                <div class="col-5" style="margin:auto;">
+                                    @localizer["Contact"]:
+                                </div>
+                                <div class="col-7">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="@localizer["Contact"]" disabled value="@Model.Data.HeaderObj.Contact">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                            <div class="row">
+                                <div class="col-5" style="margin:auto;">
+                                    @localizer["Address"]:
+                                </div>
+                                <div class="col-7">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="@localizer["Address"]" disabled value="@Model.Data.HeaderObj.Address">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="row">
+                                <div class="col-5" style="margin:auto;">
+                                    @localizer["Tel."]:
+                                </div>
+                                <div class="col-7">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="@localizer["Tel."]" disabled value="@Model.Data.HeaderObj.Tel">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+            <u style="font-weight:bold">DOCUMENT REQUIREMENT</u>
+        </div>
+        <div class="col-12 d-none d-md-block d-lg-block mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+            <u style="font-weight:bold">SPECIAL REQUEST</u>
+        </div>
+        <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+            <textarea disabled id="documentRequirement" rows="4" class="form-control">@Model.Data.HeaderObj.DocumentRequest</textarea>
+        </div>
+        <div class="col-12 d-md-none d-lg-none">
+            <u style="font-weight:bold">SPECIAL REQUEST</u>
+        </div>
+        <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+            <textarea disabled id="specialRequest" rows="4" class="form-control">@Model.Data.HeaderObj.SpecialRequest</textarea>
+        </div>
+    </div>
+    @section Scripts{
+    <script>
+        //$("#TbListAirInformation").DataTable();
+    </script>
+    }
+}

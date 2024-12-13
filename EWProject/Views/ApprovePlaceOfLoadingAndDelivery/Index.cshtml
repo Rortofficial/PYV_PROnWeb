@@ -1,0 +1,306 @@
+﻿@using Client.Connection;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Client.Models.Response.ListMasterConfirmBookingSheet
+<div class="row">
+    <div class="col-6">
+    </div>
+    <div class="col-6">
+        <div style="float:right">
+            <h2>@localizer["Approve Document"]</h2>
+        </div>
+    </div>
+</div>
+@if (Configure.ListOfPermissionsByUser.Where(x =>
+             x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "ApprovePlaceOfLoading_Delivery").First().Properties.IsPermission
+         && x.IsAllowReadOnly == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "ApprovePlaceOfLoading_Delivery").First().Properties.IsAllowReadOnly).Count() == 1)
+{
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+            @localizer["Date From"]
+        </div>
+        <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+            @localizer["Date To"]
+        </div>
+        <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+            @localizer["Document Type"]
+        </div>
+        <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+            <input type="date" class="form-control" value="" id="txtDateFrom">
+        </div>
+        <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+            <input type="date" class="form-control" value="" id="txtDateTo">
+        </div>
+        <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+            <select class="form-control" @*multiple="multiple"*@ id="txtDocumentType">
+                <option selected value="1">Select Place Of Loading And Delivery</option>
+            </select>
+        </div>
+        <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+            <button class="btn" id="btnSearch" style="float:left;background-color:#01295C;color:white">Search</button>
+        </div>
+    </div>
+}
+<div class="table-responsive mt-3">
+    <div class="row">
+        <div class="col-12">
+            <table id="TbListBookingSheet" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0" style="background: #f0eff1; color: #696969;">
+                <thead>
+                    <tr>
+                        <th>View</th>
+                        <th>Document Status</th>
+                        <th>Document Number</th>
+                        <th>Booking ID</th>
+                        <th>Project Number</th>
+                        <th>New Place Of Loading</th>
+                        <th>Loading Of District</th>
+                        <th>New Place Of Delivery</th>
+                        <th>Delivery Of District</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!--Import Modal OnSubmitBookingSheet-->
+@await Html.PartialAsync("Modal/ModalViewDocumentApprove"/*, Model.GetCOs*/)
+@section scripts{
+    <script>
+        $('#TbListBookingSheet thead tr')
+            .clone(true)
+            .addClass('filters')
+            .appendTo('#TbListBookingSheet thead');
+        var tbListItemLine = $('#TbListBookingSheet').DataTable(
+            {
+                columns:
+                    [
+                        {
+                            render: function (data, type, full, meta) {
+                                return '<button class="btn-sm btn-success" style="" onClick="ShowModal(\'' + full.docEntry.toString() + '\',' + full.bookingID + ',\'' + full.status + '\')">View Document</button>';
+                            }
+                        },
+                        { data: "status", autoWidth: true },
+                        { data: "docEntry", autoWidth: true },
+                        { data: "bookingID", autoWidth: true },
+                        { data: "jobNumber", autoWidth: true },
+                        { data: "placeOfLoading", autoWidth: true },
+                        { data: "loadingOfDistrict", autoWidth: true },
+                        { data: "placeOfDelivery", autoWidth: true },
+                        { data: "deliveryOfDistrict", autoWidth: true },
+                    ],
+                orderCellsTop: true,
+                fixedHeader: true,
+                initComplete: function () {
+                    var api = this.api();
+                    // For each column
+                    api
+                        .columns()
+                        .eq(0)
+                        .each(function (colIdx) {
+                            // Set the header cell to contain the input element
+                            var cell = $('.filters th').eq(
+                                $(api.column(colIdx).header()).index()
+                            );
+                            var title = $(cell).text();
+                            $(cell).html('<input type="text" placeholder="' + title + '" />');
+
+                            // On every keypress in this input
+                            $(
+                                'input',
+                                $('.filters th').eq($(api.column(colIdx).header()).index())
+                            )
+                                .off('keyup change')
+                                .on('change', function (e) {
+                                    // Get the search value
+                                    $(this).attr('title', $(this).val());
+                                    var regexr = '({search})'; //$(this).parents('th').find('select').val();
+
+                                    var cursorPosition = this.selectionStart;
+                                    // Search the column for that value
+                                    api
+                                        .column(colIdx)
+                                        .search(
+                                            this.value != ''
+                                                ? regexr.replace('{search}', '(((' + this.value + ')))')
+                                                : '',
+                                            this.value != '',
+                                            this.value == ''
+                                        )
+                                        .draw();
+                                })
+                                .on('keyup', function (e) {
+                                    e.stopPropagation();
+
+                                    $(this).trigger('change');
+                                    $(this)
+                                        .focus()[0]
+                                        .setSelectionRange(cursorPosition, cursorPosition);
+                                });
+                        });
+                },
+                scrollCollapse: true,
+                scrollX: true,
+                scrollY: 500
+            });
+        $("#btnSearch").click(function () {
+            if ($("#txtDocumentType").val() === "") {
+                alert("Please Select Document Type!");
+                return;
+            }
+            RetriveDataFromPurchaseRequest();
+        });
+        function RetriveDataFromPurchaseRequest() {
+            $.ajax({
+                url: '@Url.Action("RetriveDataPlaceOfLoadingDate","ApprovePlaceOfLoadingAndDelivery")',
+                type: "GET",
+                data: {
+                    dateFrom: $("#txtDateFrom").val(),
+                    dateTo: $("#txtDateTo").val(),
+                },
+                dataType: "JSON",
+                beforeSend: function () {
+                    $('#Modalloder').modal('show');
+                },
+                success: function (data) {
+                    $('#Modalloder').modal('hide');
+                    tbListItemLine.clear();
+                    tbListItemLine.rows.add(data);
+                    tbListItemLine.search("").columns().search("").draw();
+                },
+                error: function (erro) {
+                    $('#Modalloder').modal('hide');
+                    $('#ModalSuccess').modal('show');
+                    $('#ErrMsg').html(erro.responseText);
+                }
+            });
+        }
+        function ShowModal(docEntry, bookingID, documentType) {
+            $.ajax({
+                url: '@Url.Action("GetDataInformationPlaceOfLoadingDate","ApprovePlaceOfLoadingAndDelivery")',
+                type: "GET",
+                data: {
+                    Code: docEntry,
+                    BookingID: bookingID,
+                },
+                dataType: "JSON",
+                beforeSend: function () {
+                    $('#Modalloder').modal('show');
+                },
+                success: function (data) {
+                    $('#Modalloder').modal('hide');
+                    $("#txtStatus").val(documentType);
+                    if (documentType !== "Pending") {
+                        $("#btnReject").css('display', 'none');
+                        $("#btnApprove").css('display', 'none');
+                        //$("#reasonRemarks").attr('disabled', 'disabled');
+                        //$("#reasonRemarks").val(data.data.reason);
+                    } else {
+                        $("#btnReject").css('display', '');
+                        $("#btnApprove").css('display', '');
+                        //$("#reasonRemarks").removeAttr('disabled');
+                    }
+                    $("#btnLinkTo").empty();
+                    $("#btnLinkTo").append("<option selected value='-1'>Select Document Link</option>");
+                    $("#btnLinkTo").append("<option value='" + data.bookingID + "'>" + data.jobNumber + "</option>");
+                    //Place Of Loading
+                    $("#txtPlaceOfLoadingCurrent").val(data.placeOfLoadingCurrent);
+                    $("#txtPlaceOfLoadingNewValue").val(data.placeOfLoading);
+                    $("#txtDistrictOfLoadingCurrent").val(data.loadingDistrictCurrenct);
+                    $("#txtDistrictOfLoadingNewValue").val(data.loadingOfDistrict);
+                    //Place Of Delivery
+                    $("#txtDeliveryCurrent").val(data.placeOfDeliveryCurrent);
+                    $("#txtDeliveryNewValue").val(data.placeOfDelivery);
+                    $("#txtDistrictOfDeliveryCurrent").val(data.deliveryDistrictCurrenct);
+                    $("#txtDistrictOfDeliveryNewValue").val(data.deliveryOfDistrict);
+                    $("#txtCreateBy").val(data.createBy);
+                    //Assign Code And Booking
+                    $("#txtBookingID").val(data.bookingID);
+                    $("#txtCode").val(data.docEntry);
+                },
+                error: function (erro) {
+                    $('#Modalloder').modal('hide');
+                    $('#ModalSuccess').modal('show');
+                    $('#ErrMsg').html(erro.responseText);
+                }
+            });
+            $("#ModalViewDocumentApprove").modal("show");
+        }
+        $("#btnReject").click(function () {
+            if (confirm("Please Confirm Before Reject!")) {
+                //alert($("#txtDocEntry").val());
+                $.ajax({
+                    url: '@Url.Action("ApproveOrReject","ApprovePlaceOfLoadingAndDelivery")',
+                    type: "POST",
+                    data: {
+                        Code: $("#txtCode").val(),
+                        BookingID: $("#txtBookingID").val(),
+                        type: "Reject",
+                        CreateUser: $("#UserID").attr("data-id"),
+                    },
+                    dataType: "JSON",
+                    beforeSend: function () {
+                        $('#Modalloder').modal('show');
+                        $("#ModalViewDocumentApprove").modal("hide");
+                    },
+                    success: function (data) {
+                        $('#Modalloder').modal('hide');
+                        RetriveDataFromPurchaseRequest();
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html("Success");
+                    },
+                    error: function (erro) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html(erro.responseText);
+                    }
+                });
+            }
+        });
+        $("#btnApprove").click(function () {
+            if (confirm("Please Confirm Before Approve!")) {
+                //alert($("#txtDocEntry").val());
+                $.ajax({
+                    url: '@Url.Action("ApproveOrReject","ApprovePlaceOfLoadingAndDelivery")',
+                    type: "POST",
+                    data: {
+                        Code: $("#txtCode").val(),
+                        BookingID: $("#txtBookingID").val(),
+                        type: "Approve",
+                        CreateUser: $("#UserID").attr("data-id"),
+                    },
+                    dataType: "JSON",
+                    beforeSend: function () {
+                        $('#Modalloder').modal('show');
+                        $("#ModalViewDocumentApprove").modal("hide");
+                    },
+                    success: function (data) {
+                        $('#Modalloder').modal('hide');
+                        RetriveDataFromPurchaseRequest();
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html("Success");
+                    },
+                    error: function (erro) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html(erro.responseText);
+                    }
+                });
+            }
+        });
+        $("#btnLinkTo").change(function () {
+            if ($("#btnLinkTo").val() != "-1") {
+                window.open(
+                    '@Url.Action("ViewDetailBookingSheet","BookingSheet")?docEntry=' + $("#btnLinkTo").val(),
+                    '_blank' // <- This is what makes it open in a new window.
+                );
+            }
+        });
+    </script>
+}

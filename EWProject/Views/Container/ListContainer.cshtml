@@ -1,0 +1,106 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Client.Models.Response.ResponseData<List<Client.Models.Gets.GetListOfInventoryTransfer>>
+<title>@ViewData["Title"] - EWSystem</title>
+<div class="row mt-1">
+    <div class="col-4"><h5><u>@localizer["List Of Container"]</u></h5></div>
+    <div class="col-8">
+        <a asp-controller="Container" asp-action="Index" class="btn float-end" style="background-color:#01295C;color:white">
+            Add NewData
+        </a>
+    </div>
+</div>
+@if (Model.ErrorCode != 0)
+{
+    <h2>@Model.ErrorMessage</h2>
+}
+else
+{
+    <div class="table-responsive mt-3">
+        <div class="row">
+            <div class="col-12">
+                <table id="TbListContainer" class="table table-striped table-bordered dt-responsive table-condensed nowrap" width="100%" cellspacing="0" style="background: #f0eff1; color: #696969;">
+                    <thead>
+                        <tr>
+                            <th>View</th>
+                            <th>Cancel</th>
+                            <th>Status</th>
+                            <th>Document Number Of Container</th>
+                            <th>Create Date</th>
+                            <th>Origin</th>
+                            <th>Destination</th>
+                            <th>Remark</th>
+                            <th>Create By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var a in Model.Data)
+                        {
+                            <tr>
+                                <td>
+                                    <button class="btn" style="background-color:#01295C;color:white" onclick="ViewLayout('@Url.Action("ViewDetailContainer","Container")?docEntry=@a.DocEntry')">ViewLayout</button>
+                                </td>
+                                <td>
+                                    @if (a.Status == "OPEN")
+                                    {
+                                        <button class="btn btn-danger" onclick="DeleteBookingSheet('@a.DocEntry','@Url.Action("DeleteInventoryTransfer","Container")','@Url.Action("ListContainer","Container")')">Cancel</button>
+                                    }
+                                </td>
+                                <td>@a.Status</td>
+                                <td>
+                                    @a.ContainerNumber
+                                </td>
+                                <td>
+                                    @a.DocDate
+                                </td>
+                                <td>
+                                    @a.Origin
+                                </td>
+                                <td>
+                                    @a.Destination
+                                </td>
+                                <td>
+                                    @a.Remark
+                                </td>
+                                <td>
+                                    @a.IssueBy
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+@section scripts{
+    <script>
+        $('#TbListContainer').DataTable();
+        function ViewLayout(url) {
+            window.location.href = url;
+        }
+        function DeleteBookingSheet(docNum, url, urlPDF) {
+            if (confirm("Are you sure to Cancel Document ?")) {
+                $.ajax({
+                    url: url,
+                    type: "DELETE",
+                    data: { docNum: docNum },
+                    dataType: "JSON",
+                    beforeSend: function () {
+                        $('#Modalloder').modal('show');
+                    },
+                    success: function (data) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html("Success");
+                        window.location.href = urlPDF;
+                    },
+                    error: function (erro) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html(erro.responseText);
+                    }
+                });
+            }
+        }
+    </script>
+}

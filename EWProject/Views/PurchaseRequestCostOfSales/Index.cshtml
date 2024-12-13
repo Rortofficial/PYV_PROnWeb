@@ -1,0 +1,1035 @@
+﻿@using Newtonsoft.Json;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@{
+    var dt = DateTime.Today.ToString("yyyy-MM-dd");
+}
+@model Client.Models.Response.ListMasterPurchaseRequest
+<title>@ViewData["Title"] - EWSystem</title>
+@{
+    var a = DateTime.Today.ToString("yyyy-MM-dd");
+    string cboSelect = "";
+    foreach (var k in Model.GetVendorLists)
+    {
+        cboSelect += $"<option value='{@k.CustomerCode}' data-obj='{@JsonConvert.SerializeObject(k)}'>{@k.CustomerName}</option>";
+    }
+    string cboTruckNoAll = "";
+    foreach (var k in Model.GetTruckNoAll)
+    {
+        cboTruckNoAll += $"<option value='{@k.TruckCode}'>{@k.TruckName}</option>";
+    }
+}
+
+<div class="card" style="border: 3px solid rgb(1 41 92);">
+    <div class="card-header" style="background-color: rgb(1 41 92);color: white;">
+        @localizer["PURCHASE REQUEST COST OF SALES"]
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div style="margin:auto;text-align:left;font-weight:bold;"><u>@localizer["HEADER PURCHASEREQUEST"]</u></div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Job Type"]</div>
+                    <div class="col-8">
+                        <select class="form-select" id="cboJobTypePanel">
+                            <option selected value="1">Single Job</option>
+                            <option value="2">Multiple  Job</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Series"]</div>
+                    <div class="col-8">
+                        <select class="form-select" id="cboSelectedSeries">
+                            @{
+                                var i = 0;
+                            }
+                            @foreach (var a1 in Model.GetSeriesJournalVouchers)
+                            {
+                                if (i == 0)
+                                {
+                                    <option selected value="@a1.Code">@a1.Name</option>
+                                    i++;
+                                }
+                                else
+                                {
+                                    <option value="@a1.Code">@a1.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Document Number"]</div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" disabled id="txtMAxDocNum" value="@Model.DocNum">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["REF NO"]</div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" id="txtRefNo" value="@Model.GetRefNoPurchaseRequest" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ISSUE DATE"]</div>
+                    <div class="col-8">
+                        <input type="date" class="form-control" id="txtIssueDate" value="@a">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ISSUE BY"]</div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" id="txtCustomerCode" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Due DATE"]</div>
+                    <div class="col-8">
+                        <input type="date" class="form-control" id="txtDueDate" value="@a">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                        @localizer["Vendor Name"]
+                    </div>
+                    <div class="col-9">
+                        <select class="form-control" multiple="multiple" id="txtVendorCode">
+                            @Html.Raw(cboSelect);
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="plJobNoHeaderDisplay">
+                    <div class="row">
+                        <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                            @localizer["Job No"]
+                        </div>
+                        <div class="col-2" style="margin:auto;">
+                            <div id="plRetriveData" style="display:none;">
+                                <button class="btn" id="btnRetriveData" style="float:right;background-color:#01295C;color:white">Retrive Data</button>
+                            </div>
+                        </div>
+                        <div class="col-7" style="margin:auto">
+                            <select class="form-control" multiple="multiple" id="txtJobNo">
+                                @foreach (var k in Model.GetProjectManagmentLists)
+                                {
+                                    <option data-JobSheetTruckDocEntry="@k.DocEntryJobSheet" value="@k.ProjectCode">@k.ProjectName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                        @localizer["Amount Currency"]
+                    </div>
+                    <div class="col-9">
+                        <select class="form-control" multiple="multiple" disabled id="cboAmountCurrency">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    @* <div id="plJobSheetTrucking" style="display:none;">*@
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                        @localizer["Link To JobSheet"]
+                    </div>
+                    <div class="col-9">
+                        <select class="form-select" id="btnLinkTo" style="float:right;background-color:#01295C;color:white;">
+                            <option selected value="-1">Select Document Link</option>
+                        </select>
+                    </div>
+                    @*</div>*@
+                </div>
+            </div>
+            @*<div class="col-6 mt-2">
+            <div id="plRetriveDataTruck" style="display:none;">
+            <div class="row">
+            <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+            @localizer["Truck Number"]
+            </div>
+            <div class="col-9">
+            <input type="text" class="form-control" id="txtShowTruckRetriveData" value="" disabled>
+            </div>
+            </div>
+            </div>
+            </div>
+            <div class="col-6 mt-2">
+            </div>*@
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <div style="margin:auto;text-align:left;font-weight:bold;"><u>@localizer["LINE PURCHASEREQUEST"]</u></div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+
+                <div id="showCustomerNew">
+                    <div class="row">
+                        <div class="col-3" style="margin:auto;">
+                            @localizer["Item Code"]
+                        </div>
+                        <div class="col-9">
+                            <select class="form-control" disabled multiple="multiple" id="txtItemPurchaseRequest">
+                                @foreach (var k in Model.ListGetItemCodePurchaseRequest)
+                                {
+                                    <option value="@k.ItemCode" data-itemName="@k.ItemName" data-serviceType="@k.ServiceType">@k.ItemName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="existingCustomer" style="display:none;">
+                    <div class="row">
+                        <div class="col-3" style="margin:auto;">
+                            @localizer["Service"]
+                        </div>
+                        <div class="col-9">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Service Code" data-ItemCode="" id="txtServicePurchaseRequest" value="" readonly>
+                                <button type="button" class="btn" style="background-color:#01295C;color:white" data-bs-toggle="modal" data-bs-target="#ModalServicePurchaseRequest">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;">
+                        @localizer["Price"]
+                    </div>
+                    <div class="col-9">
+                        <input type="text" disabled id="txtPrice" class="form-control" onchange="formartNumber('txtPrice')" value="">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;">
+                        @localizer["Remarks"]
+                    </div>
+                    <div class="col-9">
+                        <textarea class="form-control" disabled id="txtRemarksLine"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;">
+                        @localizer["Distr. Rule"]
+                    </div>
+                    <div class="col-9">
+                        <select class="form-control" multiple="multiple" id="txtDistributionRule">
+                            @foreach (var k in Model.GetDistributionRuless)
+                            {
+                                <option value="@k.Code">@k.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;">
+                        @localizer["Ref Inv"]
+                    </div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" id="txtRefInv">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;">
+                        @localizer["Tax Code"]
+                    </div>
+                    <div class="col-9">
+                        <select class="form-control" multiple="multiple" id="txtVatCode">
+                            @foreach (var k in Model.GetTaxCodes)
+                            {
+                                <option data-rate="@k.Rate" value="@k.Code">@k.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="plJobLine" style="display:none;">
+                    <div class="row">
+                        <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                            @localizer["Job No"]
+                        </div>
+                        <div class="col-9" style="margin:auto">
+                            <select class="form-control" multiple="multiple" id="txtJobNoLine">
+                                @foreach (var k in Model.GetProjectManagmentLists)
+                                {
+                                    <option data-JobSheetTruckDocEntry="@k.DocEntryJobSheet" value="@k.AbsEntry">@k.ProjectName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 mt-2">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;">
+                        @localizer["Truck Code"]
+                    </div>
+                    <div class="col-9">
+                        <select class="form-control" multiple="multiple" id="txtTruckNo">
+                            @Html.Raw(cboTruckNoAll)
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;">
+                        @localizer["Container Type"]
+                    </div>
+                    <div class="col-9">
+                        <select class="form-control" multiple="multiple" id="txtServiceType">
+                            @foreach (var k in Model.GetPaymentTerms)
+                            {
+                                <option value="@k.Code">@k.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+                <button class="btn" id="btnAddLineInfo" style="float:right;background-color:#01295C;color:white">Add Line</button>
+            </div>
+        </div>
+
+        <div class="table-line">
+            <div id="itemType">
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <table id="TbListLineItemPurchaseRequest" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0" style="background: #f0eff1; color: #696969;">
+                            <thead>
+                                <tr>
+                                    <th>Item Code</th>
+                                    <th>Description</th>
+                                    <th>Service Type</th>
+                                    <th>Container Type</th>
+                                    <th>Truck No</th>
+                                    @*<th>Origin</th>
+                                    <th>Destination</th>*@
+                                    <th>Distr.Rule</th>
+                                    <th>RefInv</th>
+                                    <th>Tax Code</th>
+                                    <th>Job No</th>
+                                    <th>Amount</th>
+                                    <th>Remarks</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                        @localizer["Total Tax Amount"]
+                    </div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" onchange="formartNumber('txtTotalTax')" id="txtTotalTax" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                        @localizer["Total Amount"]
+                    </div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" onchange="formartNumber('txtTotalAmount')" id="txtTotalAmount" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                        @localizer["Grand Total"]
+                    </div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" onchange="formartNumber('txtGrandTotal')" id="txtGrandTotal" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Grand Total THB"]</div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" onchange="formartNumber('txtAmountTHB')" id="txtAmountTHB" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                        @localizer["Bank Account"]
+                    </div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" id="txtBankAccount" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Branch"]</div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" id="txtBranch" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Country"]</div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" id="txtCountry" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                        @localizer["Bank Name"]
+                    </div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" id="txtBankName" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Swift Code"]</div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" id="txtSwiftCode" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-6">
+                <div style="margin:auto;text-align:left;font-weight:bold;"><u>@localizer["Remark"]</u></div>
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-12">
+                <textarea id="remarks" rows="4" class="form-control"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="row mt-3">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+                <button class="btn" id="btnConfirmTransaction" onclick="onConfirmTransaction('@Url.Action("OnSubmitPurchaseRequest","PurchaseRequestCostOfSales")','@Url.Action("ViewDetailPurchaseRequest","PurchaseRequest")')" style="float:right;background-color:#01295C;color:white;margin-left:10px;">Confirm Transaction</button>
+            </div>
+        </div>
+    </div>
+</div>
+@*@await Html.PartialAsync("~/Views/Shared/Components/PurchaseRequest/Modal/ModalItemPurchaseRequest.cshtml",Model.ListGetItemCodePurchaseRequest)*@
+@*@await Html.PartialAsync("~/Views/Shared/Components/PurchaseRequest/Modal/ModalServicePurchaseRequest.cshtml",Model.ListGetAccountCodePurchaseRequest)*@
+@*<script src="~/js/purchaserequest/modal/ModalItemPurchaseRequest.js" defer></script>
+<script src="~/js/purchaserequest/modal/ModalServicePurchaseRequest.js" defer></script>
+<script src="~/js/purchaserequest/index.js" defer></script>*@
+@section scripts{
+    <script defer>
+        var itemLinePR = [];
+        var countItemLine = 1;
+        var jobNoChange = 0;
+        var confirmBookingID = "";
+        var getVendorList = @Html.Raw(Json.Serialize(Model.GetVendorLists))
+            $("#txtItemPurchaseRequest").select2({
+                placeholder: "Select a ItemCode",
+                maximumSelectionLength: 1
+            });
+        $("#txtVatCode").select2({
+            placeholder: "Select a Tax Code",
+            maximumSelectionLength: 1
+        });
+        $("#txtTruckNo").select2({
+            placeholder: "Select a Truck Code",
+            maximumSelectionLength: 1
+        });
+        $("#txtDistributionRule").select2({
+            placeholder: "Select a Distribution Rule",
+            maximumSelectionLength: 1
+        });
+        $("#txtServiceType").select2({
+            placeholder: "Select a Container Type",
+            maximumSelectionLength: 1
+        });
+        function RenderTruckCode(jobNo) {
+            //data
+            $.ajax({
+                url: '@Url.Action("GetTruckByJobNumber","PurchaseRequest")',
+                type: "GET",
+                data: {
+                    jobNo: jobNo
+                },
+                dataType: "JSON",
+                beforeSend: function () {
+                    $('#Modalloder').modal('show');
+                },
+                success: function (data) {
+                    $('#Modalloder').modal('hide');
+                    $("#txtTruckNo").empty().trigger('change');
+                    for (var i = 0; i < data.data.length; i++) {
+                        $("#txtTruckNo").append("<option value='" + data.data[i].truckCode + "' data-obj='" + JSON.stringify(data.data[i]) + "'>" + data.data[i].truckName + "</option>");
+                    }
+                    $('#txtTruckNo').trigger('change');
+                },
+                error: function (erro) {
+                    $('#Modalloder').modal('hide');
+                    $('#ModalSuccess').modal('show');
+                    $('#ErrMsg').html(erro.responseText);
+                }
+            });
+        }
+        function RenderVendorList() {
+            $('#Modalloder').modal('show');
+            $('#txtVendorCode').empty().trigger('change');
+            for (var i = 0; i < getVendorList.length; i++) {
+                $("#txtVendorCode").append("<option value='" + getVendorList[i].customerCode + "' data-obj='" + JSON.stringify(getVendorList[i]) + "'>" + getVendorList[i].customerCode + " - " + getVendorList[i].customerName + "</option>");
+            }
+            $('#txtVendorCode').trigger('change');
+            $('#Modalloder').modal('hide');
+        }
+        $("#txtItemPurchaseRequest").change(function () {
+            if ($("#txtItemPurchaseRequest").val()[0] !== undefined) {
+                $.ajax({
+                    url: '@Url.Action("GetPriceByItem","PurchaseRequest")',
+                    type: "GET",
+                    data: {
+                        ItemCode: $("#txtItemPurchaseRequest").val()[0]
+                        , CardCode: $("#txtVendorCode").val()[0]
+                        , PriceList: $("#cboPriceList").val()
+                    },
+                    dataType: "JSON",
+                    beforeSend: function () {
+                        $('#Modalloder').modal('show');
+                    },
+                    success: function (data) {
+                        $('#Modalloder').modal('hide');
+                        $("#txtPrice").val(data.data.price);
+                        $("#txtPrice").prop("disabled", JSON.parse(data.data.isEnable));
+                    },
+                    error: function (erro) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html(erro.responseText);
+                    }
+                });
+            }
+        });
+        $("#txtVendorCode").select2({
+            placeholder: "Select a CardCode",
+            maximumSelectionLength: 1
+        });
+        $("#txtVendorCode").change(function () {
+            if ($("#txtVendorCode").val()[0] !== undefined) {
+                var obj = $("#txtVendorCode option:selected").attr("data-obj");
+                var setobj = JSON.parse(obj);
+                if (jobNoChange == 1) {
+                    var setobjItemCode = JSON.parse($("#txtVendorCode option:selected").attr("data-item"));
+                    confirmBookingID = setobj.confirmBookingID;
+                    for (var i = 0; i < setobjItemCode.length; i++) {
+                        var objItemLine = {};
+                        objItemLine.ID = @Html.Raw($"countItemLine{ViewBag.PRID};".Trim())
+                            objItemLine.ItemCode = setobjItemCode[i].itemCode;
+                        objItemLine.ItemName = setobjItemCode[i].itemName;
+                        objItemLine.VatAmount = 0;
+                        objItemLine.ServiceType = setobjItemCode[i].servicetype;
+                        objItemLine.TruckNumber = setobjItemCode[i].truckNumber;
+                        objItemLine.ServiceTypeID = "";
+                        objItemLine.ServiceTypeName = "";
+                        objItemLine.TruckName = setobjItemCode[i].truckName;
+                        objItemLine.Origin = "";
+                        objItemLine.Destination = "";
+                        objItemLine.Amount = setobjItemCode[i].amount;
+                        objItemLine.Remark = "";
+                        objItemLine.DistributionRule = "";
+                        objItemLine.VatCode = "P00";
+                        objItemLine.RefInv = "";
+                        objItemLine.JobNo = "";
+                        objItemLine.LineNumber = setobjItemCode[i].lineNumber;
+                        itemLinePR.push(objItemLine);
+                    }
+                    countItemLine++;
+                    reRenderDataTableLine();
+                }
+                $.ajax({
+                    url: '@Url.Action("GetCurrencyByCustomer","PurchaseRequest")',
+                    type: "GET",
+                    data: {
+                        cardCode: $("#txtVendorCode").val()[0]
+                    },
+                    dataType: "JSON",
+                    beforeSend: function () {
+                        $('#Modalloder').modal('show');
+                    },
+                    success: function (data) {
+                        $('#Modalloder').modal('hide');
+                        $("#cboAmountCurrency").empty().trigger("change");
+                        for (var i = 0; i < data.data.length; i++) {
+                            if (data.data[i].defualt === "Y") {
+                                $("#cboAmountCurrency").append("<option selected data-exchangeUSD='" + data.data[i].exchangeRateSystemCurrency + "'" +
+                                    "data-exchangeTHB='" + data.data[i].exchangeRateLocalCurrency + "'" +
+                                    "data-exchangeBase='" + data.data[i].exchangerate + "'" +
+                                    " value='" + data.data[i].currencyCode + "'>" + data.data[i].currencyName + "</option>");
+                            } else {
+                                $("#cboAmountCurrency").append("<option data-exchangeUSD='" + data.data[i].exchangeRateSystemCurrency + "'" +
+                                    "data-exchangeTHB='" + data.data[i].exchangeRateLocalCurrency + "'" +
+                                    "data-exchangeBase='" + data.data[i].exchangerate + "'" +
+                                    " value='" + data.data[i].currencyCode + "'>" + data.data[i].currencyName + "</option>");
+                                $("#cboAmountCurrency").val([]).trigger("change");
+                            }
+                        }
+                        CalculateDateBaseOnCreditTerm(setobj.CreditTermDay);
+                    },
+                    error: function (erro) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html(erro.responseText);
+                        return;
+                    }
+                });
+                $("#txtBankAccount").val(setobj.BankAccount);
+                $("#txtBranch").val(setobj.Branch);
+                $("#txtCountry").val(setobj.BankCountry);
+                $("#txtBankName").val(setobj.BankName);
+                $("#txtSwiftCode").val(setobj.SwiftCode);
+                $('#cboAmountCurrency').prop('disabled', false);
+                $('#txtItemPurchaseRequest').prop('disabled', false);
+                $('#txtPrice').prop('disabled', false);
+                $('#txtRemarksLine').prop('disabled', false);
+            } else {
+                $("#txtBankAccount").val("");
+                $("#txtBranch").val("");
+                $("#txtCountry").val("");
+                $("#txtBankName").val("");
+                $("#txtSwiftCode").val("");
+                $('#cboAmountCurrency').val([]).trigger("change");
+                $('#cboAmountCurrency').prop('disabled', true);
+                $('#txtItemPurchaseRequest').prop('disabled', true);
+                $('#txtPrice').prop('disabled', true);
+                $('#txtRemarksLine').prop('disabled', true);
+                itemLinePR = [];
+                reRenderDataTableLine();
+            }
+        });
+        $("#cboAmountCurrency").select2({
+            placeholder: "Select a CardCode",
+            maximumSelectionLength: 1
+        });
+        $("#txtJobNo").select2({
+            placeholder: "Select a JobNo",
+            maximumSelectionLength: 1
+        });
+        $("#txtJobNo").change(function () {
+            if ($("#txtJobNo option:selected").attr("data-JobSheetTruckDocEntry") == "") {
+                //$("#plJobSheetTrucking").css("display", "none");
+                $("#plRetriveData").css("display", "");
+                //$("#plRetriveDataTruck").css("display", "");
+            } else {
+                //$("#plJobSheetTrucking").css("display", "");
+                $("#plRetriveData").css("display", "none");
+                //$("#plRetriveDataTruck").css("display", "none");
+                if (jobNoChange == 1) {
+                    RenderVendorList();
+                    itemLinePR = [];
+                    reRenderDataTableLine();
+                }
+                jobNoChange = 0;
+                OnchangeJobNumber($("#txtJobNo option:selected").attr("data-JobSheetTruckDocEntry"), $("#txtJobNo").val());
+            }
+            if ($("#txtJobNo").val()[0] !== undefined) {
+                RenderTruckCode($("#txtJobNo").val()[0]);
+            } else {
+                $("#txtTruckNo").empty().trigger('change');
+                $("#txtTruckNo").append("@Html.Raw(cboTruckNoAll)").trigger('change');
+            }
+        });
+        $("#txtJobNoLine").change(function () {
+            if ($("#txtJobNoLine").val()[0] !== undefined) {
+                RenderTruckCode($("#txtJobNoLine option:selected").text());
+            } else {
+                $("#txtTruckNo").empty().trigger('change');
+                $("#txtTruckNo").append("@Html.Raw(cboTruckNoAll)").trigger('change');
+            }
+        });
+        $("#txtItemPurchaseRequest").change(function () {
+            $("#txtPrice").val($("#txtItemPurchaseRequest option:selected").attr("data-price"));
+        });
+        $("#txtCustomerCode").val($("#UserName").text());
+        $('#TbListLineItemPurchaseRequest').DataTable({
+            columns:
+                [
+                    { data: "ItemCode", autoWidth: true },
+                    { data: "ItemName", autoWidth: true },
+                    { data: "ServiceType", autoWidth: true },
+                    { data: "ServiceTypeName", autoWidth: true },
+                    { data: "TruckName", autoWidth: true },
+                    //{ data: "Origin", autoWidth: true },
+                    //{ data: "Destination", autoWidth: true },
+                    { data: "DistributionRule", autoWidth: true },
+                    { data: "RefInv", autoWidth: true },
+                    { data: "VatCode", autoWidth: true },
+                    { data: "JobNo", autoWidth: true },
+                    { data: "Amount", autoWidth: true },
+                    { data: "Remark", autoWidth: true },
+                    {
+                        render: function (data, type, full, meta) {
+                            return '<button class="btn-sm btn-danger" style="margin-left: 40%;" onClick="DeleteLineItem(' + full.ID + ')"><i class="fas fa-trash-alt"></i></button>';
+                        }
+                    }
+                ],
+        });
+        //$('#TbListLineServicePurchaseRequest').DataTable({
+        //    columns:
+        //        [
+        //            { data: "ItemCode", autoWidth: true },
+        //            { data: "ItemName", autoWidth: true },
+        //            { data: "Price", autoWidth: true },
+        //            { data: "Remarks", autoWidth: true },
+        //            {
+        //                render: function (data, type, full, meta) {
+        //                    return '<button class="btn-sm btn-danger" style="margin-left: 40%;" onClick="DeleteLineItem(' + full.ID + ')"><i class="fas fa-trash-alt"></i></button>';
+        //                }
+        //            }
+        //        ],
+        //});
+        function onConfirmTransaction(url, urlPDF) {
+            event.preventDefault();
+            if ($("#txtTel").val() == 0) {
+                alert("Please Enter Tel");
+                return;
+            } else if ($("#cboCreditTerm").val() == "-99") {
+                alert("Please Enter Credit Term");
+                return;
+            } else if ($("#cboOrigin").val() == "-1") {
+                alert("Please Enter Origin");
+                return;
+            } else if ($("#cboDestination").val() == "-1") {
+                alert("Please Enter Destination");
+                return;
+            } else if ($("#cboItemOrServiceType").val() === '-1') {
+                if (ItemLineList.length == 0) {
+                    alert("Please Enter Add Item");
+                    return;
+                }
+            } else if ($("#cboItemOrServiceType").val() === '1') {
+                if (ItemLineListService.length == 0) {
+                    alert("Please Enter Service Item");
+                    return;
+                }
+            }
+            if (confirm("Please confirm transaction make the data is correct !")) {
+                var purchaseRequest = {};
+                purchaseRequest.Series = $("#cboSelectedSeries").val();
+                purchaseRequest.RefNo = $("#txtRefNo").val();
+                purchaseRequest.JobNo = $("#txtJobNo").val();
+                purchaseRequest.IssueBy = $("#UserID").attr("data-empid"); //data-empid
+                purchaseRequest.IssueDate = $("#txtIssueDate").val();
+                purchaseRequest.VendorCode = $("#txtVendorCode").val()[0];
+                purchaseRequest.VendorName = $("#txtVendorCode option:selected").text();
+                purchaseRequest.DueDate = $("#txtDueDate").val();
+                purchaseRequest.AmountCurrency = $("#cboAmountCurrency").val()[0];
+                purchaseRequest.AmountTHB = (parseFloat($("#txtTotalAmount").val().replaceAll(",", "")) * $("#cboAmountCurrency option:selected").attr("data-exchangeBase"));
+                purchaseRequest.GrandTotal = $("#txtTotalAmount").val();
+                purchaseRequest.Remarks = $("#remarks").val();
+                purchaseRequest.BankAccount = $("#txtBankAccount").val();
+                purchaseRequest.BranchName = $("#txtBranch").val();
+                purchaseRequest.Country = $("#txtCountry").val();
+                purchaseRequest.BankName = $("#txtBankName").val();
+                purchaseRequest.SwiftCode = $("#txtSwiftCode").val();
+                if (jobNoChange == 1) {
+                    purchaseRequest.ConfirmBookingID = confirmBookingID;
+                } else {
+                    purchaseRequest.ConfirmBookingID = "";
+                }
+                for (var i = 0; i < itemLinePR.length; i++) {
+                    itemLinePR[i].Amount = parseFloat(((itemLinePR[i].Amount == 0 || itemLinePR[i].Amount > 0) ? itemLinePR[i].Amount : itemLinePR[i].Amount.replaceAll(",", "")));
+                }
+                purchaseRequest.Lines = itemLinePR;
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {
+                        postPurchaseRequestRequest: purchaseRequest,
+                        typePurchaseRequest: "PRCOS",
+                    },
+                    dataType: "JSON",
+                    beforeSend: function () {
+                        $('#Modalloder').modal('show');
+                    },
+                    success: function (data) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html("Success");
+                        window.location.href = urlPDF + "?docEntry=" + data.docEntry;
+                    },
+                    error: function (erro) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html(erro.responseText);
+                    }
+                });
+            }
+        }
+        $("#btnAddLineInfo").click(function () {
+            if ($("#cboAmountCurrency").val()[0] === undefined) {
+                alert("Select Curreny first!")
+                return;
+            }
+            if ($("#txtDistributionRule").val()[0] === undefined) {
+                alert("Select Distr. Rule!")
+                return;
+            }
+            if ($("#txtVatCode").val()[0] === undefined) {
+                alert("Select Tax Code!")
+                return;
+            }
+            var objItemLine = {};
+            objItemLine.ID = @Html.Raw($"countItemLine{ViewBag.PRID};".Trim())
+            objItemLine.ItemCode = $("#txtItemPurchaseRequest").val()[0];
+            objItemLine.ItemName = $("#txtItemPurchaseRequest option:selected").attr("data-itemName");
+            objItemLine.VatAmount = (parseFloat($("#txtPrice").val().replaceAll(",", "")) * ($("#txtVatCode option:selected").attr("data-rate") / 100)).toFixed(2);
+            objItemLine.ServiceType = $("#txtItemPurchaseRequest option:selected").attr("data-serviceType");
+            objItemLine.TruckNumber = ($("#txtTruckNo").val()[0] == undefined) ? "" : $("#txtTruckNo").val()[0];
+            objItemLine.TruckName = ($("#txtTruckNo").val()[0] == undefined) ? "" : $("#txtTruckNo option:selected").text();
+            objItemLine.Origin = "";
+            objItemLine.Destination = "";
+            objItemLine.Amount = $("#txtPrice").val();
+            objItemLine.Remark = $("#txtRemarksLine").val();
+            objItemLine.DistributionRule = $("#txtDistributionRule").val();
+            objItemLine.VatCode = $("#txtVatCode").val()[0];
+            objItemLine.RefInv = $("#txtRefInv").val();
+            if ($("#cboJobTypePanel").val() == "2") {
+                objItemLine.JobNo = ($("#txtJobNoLine").val()[0] === undefined) ? "" : $("#txtJobNoLine").val()[0];
+            } else {
+                objItemLine.JobNo = "";
+            }
+            objItemLine.ServiceTypeID = $("#txtServiceType").val();
+            objItemLine.ServiceTypeName = $("#txtServiceType option:selected").text();
+            itemLinePR.push(objItemLine);
+            countItemLine++;
+            reRenderDataTableLine();
+            $("#txtRemarksLine").val("");
+            $("#txtPrice").val("");
+            $("#txtRefInv").val("");
+            $("#txtVatCode").val([]).trigger("change");
+            $("#txtItemPurchaseRequest").val([]).trigger("change");
+            $("#txtDistributionRule").val([]).trigger("change");
+            $("#txtJobNoLine").val([]).trigger("change");
+            $("#txtTruckNo").val([]).trigger("change");
+            $("#txtServiceType").val([]).trigger("change");
+            $("#txtPrice").prop("disabled", false);
+        });
+        $("#txtRefInv").change(function () {
+            $.ajax({
+                url: "@Url.Action("GetRefInvChecking", "PurchaseRequestCostOfSales")",
+                type: "GET",
+                data: {
+                    RefInv: $("#txtRefInv").val()
+                },
+                dataType: "JSON",
+                beforeSend: function () {
+                    $('#Modalloder').modal('show');
+                },
+                async:true,
+                success: function (data) {
+                    $('#Modalloder').modal('hide');
+                },
+                error: function (erro) {
+                    $('#Modalloder').modal('hide');
+                    $('#ModalSuccess').modal('show');
+                    $('#ErrMsg').html(erro.responseText);
+                }
+            });
+        });
+        function reRenderDataTableLine() {
+            var tbListItemLine = $('#TbListLineItemPurchaseRequest').DataTable();
+            tbListItemLine.clear();
+            tbListItemLine.rows.add(itemLinePR);
+            tbListItemLine.search("").columns().search("").draw();
+            CalculateExchangeRate();
+        }
+        function DeleteLineItem(id) {
+            itemLinePR = itemLinePR.filter(e => e.ID !== id);
+            reRenderDataTableLine();
+            CalculateExchangeRate();
+        }
+        function CalculateExchangeRate() {
+            var obj = itemLinePR
+            var totalUSD = 0;
+            var vatTotal = 0;
+            for (var i = 0; i < obj.length; i++) {
+                totalUSD += parseFloat((obj[i].Amount == 0 || obj[i].Amount > 0) ? obj[i].Amount : obj[i].Amount.replaceAll(",", ""));
+                vatTotal += parseFloat(obj[i].VatAmount);
+            }
+            var totalthb = $("#cboAmountCurrency option:selected").attr("data-exchangeBase");
+            $("#txtTotalTax").val(vatTotal);
+            $("#txtTotalAmount").val(totalUSD);
+            $("#txtAmountTHB").val(((totalUSD + vatTotal) * totalthb).toFixed(2));
+            $("#txtGrandTotal").val((totalUSD + vatTotal).toFixed(2))
+        }
+        function OnchangeJobNumber(jobSheetDocEntry, jobNumber) {
+            $("#btnLinkTo").empty();
+            $("#btnLinkTo").append("<option selected value='-1'>Select Document Link</option>");
+            if (jobSheetDocEntry !== undefined) {
+                var objJobSheetDocEntry = jobSheetDocEntry.split(",");
+                for (var i = 0; i < objJobSheetDocEntry.length; i++) {
+                    $("#btnLinkTo").append("<option value='" + objJobSheetDocEntry[i] + "'>" + objJobSheetDocEntry[i] + " - " + jobNumber + "</option>");
+                }
+            }
+        }
+        $("#btnLinkTo").change(function () {
+            if ($("#btnLinkTo").val() != "-1") {
+                window.open(
+                    '@Url.Action("ViewDetailJobSheetTrucking","JobSheetTrucking")?docEntry=' + $("#btnLinkTo").val(),
+                    '_blank' // <- This is what makes it open in a new window.
+                );
+            }
+        });
+        $("#btnRetriveData").click(function () {
+            if ($("#txtJobNo option:selected").attr("data-JobSheetTruckDocEntry") == "") {
+                $.ajax({
+                    url: "@Url.Action("GetRetriveData","PurchaseRequestCostOfSales")",
+                    type: "GET",
+                    data: {
+                        confirmBooking: $("#txtJobNo").val()[0]
+                    },
+                    dataType: "JSON",
+                    beforeSend: function () {
+                        $('#Modalloder').modal('show');
+                    },
+                    success: function (data) {
+                        $('#Modalloder').modal('hide');
+                        jobNoChange = 1;
+                        $('#txtVendorCode').empty().trigger('change');
+                        for (var i = 0; i < data.data.length; i++) {
+                            $("#txtVendorCode").append("<option value='" + data.data[i].vendorCode + "' data-obj='" + JSON.stringify(data.data[i]) + "' data-item='" + JSON.stringify(data.data[i].itemByJobNo) + "'>" + data.data[i].vendorCode + " - " + data.data[i].vendorName + "</option>").trigger('change');
+                        }
+                    },
+                    error: function (erro) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html(erro.responseText);
+                    }
+                });
+            }
+        });
+        $("#txtJobNoLine").select2({
+            placeholder: "Select a Job Number",
+            maximumSelectionLength: 1
+        });
+        $("#cboJobTypePanel").change(function () {
+            if ($("#cboJobTypePanel").val() == "1") {
+                $("#plJobLine").css('display', 'none');
+                $("#plJobNoHeaderDisplay").css('display', '');
+                $("#txtJobNoLine").val([]).trigger("change");
+            }
+            else if ($("#cboJobTypePanel").val() == "2") {
+                $("#plJobLine").css('display', '');
+                $("#plJobNoHeaderDisplay").css('display', 'none');
+                $("#txtJobNo").val([]).trigger("change");
+            }
+            itemLinePR = [];
+            reRenderDataTableLine();
+        });
+        function CalculateDateBaseOnCreditTerm(addDate) {
+            const date = new Date($("#txtIssueDate").val());
+            date.setDate(date.getDate() + parseInt(addDate))
+            var day = ("0" + date.getDate()).slice(-2);
+            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+            var today = (date.getFullYear()) + "-" + (month) + "-" + (day);
+            if (today !== "NaN-aN-aN") {
+                $("#txtDueDate").val(today);
+            } else {
+                $("#txtDueDate").val("");
+            }
+        }
+    </script>
+}

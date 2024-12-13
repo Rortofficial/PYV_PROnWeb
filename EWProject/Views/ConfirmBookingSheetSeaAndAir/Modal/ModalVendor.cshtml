@@ -1,0 +1,41 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model List<Client.Models.Gets.GetVendor>;
+<div class="modal fade" id="ModalVendor" data-VendorCode data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:#01295C;color:white">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">@localizer["List Vendor"]</h1>
+                <button type="button" class="btn-close" style="background-color: white;opacity: 1;" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <div class="row">
+                        <div class="col-12">
+                            <table id="TbVendorList" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0" style="background: #f0eff1; color: #696969;">
+                                <thead>
+                                    <tr>
+                                        <th>@localizer["CUSTOMER CODE"]</th>
+                                        <th>@localizer["CUSTOMER NAME"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var a in Model)
+                                    {
+                                        <tr>
+                                            <td>@a.CustomerCode</td>
+                                            <td>@a.CustomerName</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">@localizer["Close"]</button>
+                <button type="button" class="btn" id="btnChooseVendor" style="background-color:#01295C;color:white">@localizer["Choose"]</button>
+            </div>
+        </div>
+    </div>
+</div>

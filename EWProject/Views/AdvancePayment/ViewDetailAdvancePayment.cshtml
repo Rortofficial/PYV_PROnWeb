@@ -1,0 +1,118 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Client.Models.Response.GetDetailAdvancePaymentByDocEntryResponse
+<div class="card" style="border:none;">
+    <div class="card-header" style="background-color: rgb(1 41 92);color: white;">
+        @localizer["ADVANCE PAYMENT"]
+    </div>
+    <div class="card-body">
+        <!--Header-->
+        <h5><u>Header</u></h5>
+        <!--Series Row-->
+        <div class="row">
+            <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Voucher No."]
+            </div>
+            <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Series"]
+            </div>
+            <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Posting Date"]
+            </div>
+            <div class="col-6" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Remarks"]
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2" style="text-align:left;font-weight:bold;">
+                <input type="text" class="form-control" value="@Model.Data.DocNum" id="txtVoucher" disabled>
+            </div>
+            <div class="col-2" style="text-align:left;font-weight:bold;">
+                <input type="text" class="form-control" value="@Model.Data.SeriesName" id="cboSeries" disabled>
+
+            </div>
+            <div class="col-2" style="text-align:left;font-weight:bold;">
+                <input type="text" class="form-control" value="@Model.Data.DocDate" disabled id="txtPostingDate" />
+            </div>
+            <div class="col-6" style="margin:auto;text-align:left;font-weight:bold;">
+                <textarea id="remarks" disabled rows="1" class="form-control">@Model.Data.Remark</textarea>
+            </div>
+        </div>
+        <!--Reference Row-->
+        <div class="row">
+            <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Ref.1"]
+            </div>
+            <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Ref.2"]
+            </div>
+            <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Ref.3"]
+            </div>
+            <div class="col-6" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Project Management"]
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2" style="text-align:left;font-weight:bold;">
+                <input type="text" class="form-control" value="@Model.Data.Ref1" disabled id="txtRef1">
+            </div>
+            <div class="col-2" style="text-align:left;font-weight:bold;">
+                <input type="text" class="form-control" value="@Model.Data.Ref2" disabled id="txtRef2">
+            </div>
+            <div class="col-2" style="text-align:left;font-weight:bold;">
+                <input type="text" class="form-control" value="@Model.Data.Ref3" disabled id="txtRef3">
+            </div>
+            <div class="col-6" style="margin:auto;text-align:left;font-weight:bold;">
+                <input type="text" class="form-control" value="@Model.Data.ProjectManagement" disabled id="cboJobType" />
+            </div>
+
+        </div>
+        <!--End Header-->
+        <!--Satrt Detail-->
+        <h5 class="mt-3"><u>Detail</u></h5>
+        <!--Table-->
+        <div class="table-responsive mt-3">
+            <div class="row mt-5">
+                <div class="col-12">
+                    <table id="TbListPettyCashLine" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0" style="background: #f0eff1; color: #696969;">
+                        <thead>
+                            <tr>
+                                <th>No#</th>
+                                <th>Employee Code / Employee Name</th>
+                                <th>Account Code / Account Name</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var i = 1;
+                            }
+                            @foreach (var a in Model.Data.Lines)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@a.bpCodeOrBpName</td>
+                                    <td>@a.accountCodeOrAccountName</td>
+                                    <td>@a.amount</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!--End Table-->
+        <!--End Detail-->
+    </div>
+</div>
+<script defer>
+    $('#TbListPettyCashLine').DataTable({
+        columns:
+            [
+                { data: "ID", autoWidth: true },
+                { data: "BpCodeOrBpName", autoWidth: true },
+                { data: "AccountCodeOrAccountName", autoWidth: true },
+                { data: "Amount", autoWidth: true }
+            ],
+    });
+</script>

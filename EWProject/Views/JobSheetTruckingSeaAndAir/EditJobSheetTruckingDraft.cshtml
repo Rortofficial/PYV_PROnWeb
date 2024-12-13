@@ -1,0 +1,1028 @@
+﻿@using Newtonsoft.Json;
+<title>@ViewData["Title"] - EWSystem</title>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Client.Models.Response.ListMasterJobSheetTruckingSeaAir
+<div class="row">
+    <div class="col-12">
+        <div style="float:right">
+            <h2>@localizer["JOB SHEET TRUCKING"]</h2>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6"></div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["BOOKING ID"]</div>
+            <div class="col-8">
+                <input type="hidden" value="@Model.GetDetailJobSheetTruckings[0].CONFIRMBOOKINGID.ToString()" id="txtConfirmBookingID" readonly />
+                <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].BOOKINGID.ToString()" id="txtBookingID" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["JOB NO."]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" id="txtJobNo" value="@Model.GetDetailJobSheetTruckings[0].JOBNO" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ROUTE"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].ROUTE" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["BOOKING DATE"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].BOOKINGDATE" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["IMPORT TYPE"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].IMPORTTYPE" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SALE PERSON"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].SALEEMPLOYEE" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SHIPPER"]</div>
+            <div class="col-8">
+                <select class="form-control" multiple="multiple" size="@Model.GetDetailJobSheetTruckings[0].SHIPPERNAME.Count()" id="txtShipper" disabled>
+                    @foreach (var a in Model.GetDetailJobSheetTruckings[0].SHIPPERNAME)
+                    {
+                        <option>@a</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TOTAL PACKAGE"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].TOTALPACKAGE" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["C/O"]</div>
+            <div class="col-8">
+                <textarea readonly class="form-control" id="txtCO" data-COCode="@Model.GetDetailJobSheetTruckings[0].COCODE">@Model.GetDetailJobSheetTruckings[0].CO</textarea>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">
+                        N.W(KGS)
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].NETWEIGHT" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">
+                        G.W(KGS)
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].GROSSWEIGHT" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CONSIGNEE"]</div>
+            <div class="col-8">
+                <select class="form-control" multiple="multiple" size="@Model.GetDetailJobSheetTruckings[0].CONSIGNEE.Count()" id="txtShipper" disabled>
+                    @foreach (var a in Model.GetDetailJobSheetTruckings[0].CONSIGNEE)
+                    {
+                        <option>@a</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["LOADING DATE"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].LOADINGDATE" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CROSS BORDER DATE"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].CORSSBORDERDATE" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ETA REQUIREMENT"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].ETAREQUIREMENT" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["PLACE OF LOADING"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].PLACEOFLOADING" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["PLACE OF DELIVERY"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].PLACEOFDELIVERY" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["GOODS DESCRIPTION"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].GOODSDESCRIPTION" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["VOLUME"]</div>
+            <div class="col-8">
+                <textarea readonly class="form-control">@Model.GetDetailJobSheetTruckings[0].VOLUME</textarea>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        @*<div class="row mt-2">
+        <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SALE QUOTATION"]<span style="color:red">*</span></div>
+        <div class="col-8">
+        <input type="text" class="form-control" placeholder="Search Quotation" data-DocEntry="" id="txtSaleQuotation" value="" readonly>
+        </div>
+        </div>*@
+    </div>
+    <div class="col-6">
+    </div>
+</div>
+<hr />
+<div class="row mt-2">
+    <div class="col-12" style="margin:auto;text-align:left;font-weight:bold;">
+        <h5><u>@localizer["List Of Invoice"]</u></h5>
+    </div>
+</div>
+<div class="row" style="margin:auto;text-align:left;font-weight:bold;">
+    <div class="row mt-2">
+        @{
+            int i = 1;
+        }
+        @foreach (var a in Model.GetDetailJobSheetTruckings[0].Invoices)
+        {
+            if (i % 2 != 0)
+            {
+                <div class="col-6">
+                    <div class="row mt-2">
+                        <div class="col-5">INVOICE NO @i:</div>
+                        <div class="col-7">@a</div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-6">
+                    <div class="row mt-2">
+                        <div class="col-5">INVOICE NO @i:</div>
+                        <div class="col-7">@a</div>
+                    </div>
+                </div>
+            }
+            i++;
+        }
+
+
+    </div>
+</div>
+<hr />
+<div class="row mt-2" style="margin:auto;text-align:left;font-weight:bold;">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-3">TRUCK NO</div>
+            <div class="col-2">TRUCK WEIGHT(KGS)</div>
+            <div class="col-3">CONTAINER NO.</div>
+            <div class="col-2">CONTAINER WEIGHT(KGS)</div>
+            <div class="col-2">TRANSPORTER</div>
+        </div>
+    </div>
+</div>
+<!--Transport Information-->
+<div class="row mt-2" style="margin:auto;text-align:left;font-weight:bold;">
+    @{
+        int z = 1;
+    }
+    @foreach (var a in Model.GetDetailJobSheetTruckings[0].TRUCKINFORMATIONS)
+    {
+        <div class="col-12">
+            <div class="row mt-2">
+                <div class="col-3">@z.@a.TRUCKNO</div>
+                <div class="col-2">@a.TruckWeight</div>
+                <div class="col-3">@a.CONTAINERTRUCK</div>
+                <div class="col-2">@a.ContainerWeight</div>
+                <div class="col-2">@a.TRANSPORTER</div>
+            </div>
+        </div>
+        z++;
+    }
+</div>
+<!--End Transport Information-->
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["THAI FORWARDER"]</div>
+            <div class="col-8">
+                <select class="form-control" multiple="multiple" size="@Model.GetDetailJobSheetTruckings[0].THAIFORWARDER.Count()" id="txtShipper" disabled>
+                    @foreach (var a in Model.GetDetailJobSheetTruckings[0].THAIFORWARDER)
+                    {
+                        <option>@a</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["OVERSEA FORWARDER"]</div>
+            <div class="col-8">
+                <select class="form-control" multiple="multiple" size="@Model.GetDetailJobSheetTruckings[0].OVERSEAFORWARDER.Count()" id="txtShipper" disabled>
+                    @foreach (var a in Model.GetDetailJobSheetTruckings[0].OVERSEAFORWARDER)
+                    {
+                        <option>@a</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["THAI BORDER"]</div>
+            <div class="col-8">
+                <select class="form-control" multiple="multiple" size="@Model.GetDetailJobSheetTruckings[0].THAIBORDER.Count()" id="txtShipper" disabled>
+                    @foreach (var a in Model.GetDetailJobSheetTruckings[0].THAIBORDER)
+                    {
+                        <option>@a</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row d-none">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Customer Name"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" id="txtCustomer" data-SHIPPINGLINE="@Model.GetDetailJobSheetTruckings[0].ShippingLine" data-cardCode="@Model.GetDetailJobSheetTruckings[0].COCODE" value="@Model.GetDetailJobSheetTruckings[0].CO" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TRUCK WAYBILL BY"]</div>
+            <div class="col-8">
+                <ul class="navbar-nav flex-grow-1 btn" style="float:right;background-color:#01295C;color:white;width:100%">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown" href="#">@localizer["Print Truck WayBill"]</a>
+                        @{
+                            var k = 1;
+                        }
+                        <ul class="dropdown-menu" style="border: 1px solid #01295C">
+                            @foreach (var z1 in Model.GetDetailJobSheetTruckings[0].Layout.Data)
+                            {
+                                @if (k == 1)
+                                {
+                                    <li>
+                                        <a class="dropdown-item btn btn-info" target="_blank" asp-route-layoutCode="@z1.Code" asp-route-docEntry="@Model.GetDetailJobSheetTruckings[0].CONFIRMBOOKINGID" asp-controller="CallLayout" asp-action="PrintLayout">
+                                            @z1.Name
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item btn btn-info" target="_blank" asp-route-layoutCode="@z1.Code" asp-route-docEntry="@Model.GetDetailJobSheetTruckings[0].CONFIRMBOOKINGID" asp-controller="CallLayout" asp-action="PrintLayout">
+                                            @z1.Name
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;"></div>
+        </div>
+    </div>
+    <div class="col-2"></div>
+    <div class="col-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="input-group">
+                    <select class="form-select" id="cboSelectItemType">
+                        @*<option selected value="-1">-Select Item-</option>*@
+                        <option value="1" selected>Select From Item</option>
+                        @*<option value="2">Select From Sale Quotations</option>*@
+                    </select>
+                    <button type="button" id="btnSelectItemFrom" class="btn" style="background-color:#01295C;color:white" @*data-bs-toggle="modal" data-bs-target="#ModalItemSalesQuotationJobSheet"*@>
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="row mt-2">
+    <div class="col-12" style="margin:auto;text-align:left;font-weight:bold;">
+        <h5><u>@localizer["REVENUE"]</u></h5>
+    </div>
+</div>
+<!--Information Item Selling Binding Data-->
+<div class="row mt-2">
+    <div class="col-12">
+        <table id="TbListItemRevenue" class="table table-striped table-bordered dt-responsive table-condensed display" width="100%" cellspacing="0" style="background: #f0eff1; color: #696969;">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Item Name</th>
+                    <th>Rate</th>
+                    <th>Currency</th>
+                    <th>Qty</th>
+                    <th>Unit</th>
+                    <th>Exchange</th>
+                    <th>Received From</th>
+                    <th>BAHT</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!--End Binding Data Information Item-->
+<div class="row mt-2">
+    <div class="col-12" style="margin:auto;text-align:left;font-weight:bold;">
+        <h5><u>@localizer["COST"]</u></h5>
+    </div>
+</div>
+<!--Information Item Costing Binding Data-->
+<div class="row mt-2">
+    <div class="col-12">
+        <table id="TbListItemCosting" class="table table-striped table-bordered dt-responsive table-condensed display" width="100%" cellspacing="0" style="background: #f0eff1; color: #696969;">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Item Name</th>
+                    <th>Rate</th>
+                    <th>Currency</th>
+                    <th>Qty</th>
+                    <th>Unit</th>
+                    <th>Exchange</th>
+                    @* <th>Received From</th> *@
+                    <th>Pay To</th>
+                    <th>BAHT</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!--End Binding Data Information Item-->
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TOTAL COSTING"]: &nbsp;<span id="lblCurrencyTextTotalCosting"></span></div>
+            <div class="col-8">
+                <input type="number" class="form-control" value="" id="txtTotalCosting" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TOTAL SELLING"]: &nbsp;<span id="lblCurrencyTextTotalSelling"></span></div>
+            <div class="col-8">
+                <input type="number" class="form-control" value="" id="txtTotalSelling" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["REBATE"]</div>
+            <div class="col-8">
+                <input type="number" class="form-control" onchange="onCalculateTotalPrice()" value="" id="txtRebate">
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["GRAND TOTAL COSTING"]: &nbsp;<span id="lblCurrencyGrandTotalCosting"></span></div>
+            <div class="col-8">
+                <input type="number" class="form-control" value="" id="txtGrandTotalCosting" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["GRAND TOTAL SELLING"]: &nbsp;<span id="lblCurrencyGrandTotalSelling"></span></div>
+            <div class="col-8">
+                <input type="number" class="form-control" value="" id="txtGrandTotalSelling" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-2">
+    <div class="col-6"></div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["PROFIT"]: &nbsp;<span>THB</span></div>
+            <div class="col-8">
+                <input type="number" class="form-control" value="" id="txtProfit" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["DUTY TAX AMOUNT"]</div>
+            <div class="col-8">
+                <input type="number" class="form-control" value="" onchange="onAmountChangeTaxAndAdvance('txtDutyTaxAmountCosting','txtDutyTaxAmountSelling')" id="txtDutyTaxAmountCosting">
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["DUTY TAX AMOUNT"]</div>
+            <div class="col-8">
+                <input type="number" class="form-control" value="" id="txtDutyTaxAmountSelling" onchange="onAmountChangeTaxAndAdvance('txtDutyTaxAmountSelling','txtDutyTaxAmountCosting')">
+            </div>
+        </div>
+    </div>
+</div>
+@*<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ADVANCE AMOUNT"]</div>
+            <div class="col-8">
+                <input type="number" class="form-control" value="" onchange="onAmountChangeTaxAndAdvance('txtAdvanceAmountCosting','txtAdvanceAmountSelling')" id="txtAdvanceAmountCosting">
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ADVANCE AMOUNT"]</div>
+            <div class="col-8">
+                <input type="number" class="form-control" value="" onchange="onAmountChangeTaxAndAdvance('txtAdvanceAmountSelling','txtAdvanceAmountCosting')" id="txtAdvanceAmountSelling">
+            </div>
+        </div>
+    </div>
+</div>*@
+<div class="row mt-2">
+    <div class="col-6">
+        <button class="btn" id="btnConfirmCosting" style="float:right;background-color:#01295C;color:white">Confirm Costing</button>
+    </div>
+    <div class="col-6">
+        @*<button class="btn" id="btnConfirmSelling" style="float:right;background-color:#01295C;color:white">Confirm Selling</button>*@
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <u style="font-weight:bold">REMARK FOR COSTING</u>
+    </div>
+    <div class="col-6">
+        <u style="font-weight:bold">REMARK FOR SELLING</u>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <textarea id="remarkForCosting" rows="4" class="form-control"></textarea>
+    </div>
+    <div class="col-6">
+        <textarea id="remarkForSelling" rows="4" class="form-control"></textarea>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <input type="file" class="form-control" multiple name="AddAttachmentfile" id="btnAddAttachmentFile" style="float:left;background-color:#0dcaf0;color:white">
+        @*<input type="file" id="fileUpload" multiple class="fileUpload">*@
+    </div>
+    <div class="col-6">
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6" id="txtAttachmentFile">
+    </div>
+    <div class="col-6">
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-6">
+    </div>
+    <div class="col-6">
+        <select class="form-select" style="float:right;background-color:#01295C;color:white;" onchange="onConfirmTransactionSelection()" id="cboConfrimTransaction">
+            <option selected value="-1">Select Document Type</option>
+            <option value="1">Send To SAP</option>
+            <option value="2">Update Document Draft</option>
+        </select>
+        @* <button class="btn" id="btnConfirmTransaction" onclick="onConfirmTransaction('@Url.Action("OnSubmitJobSheetTrucking","JobSheetTruckingSeaAndAir")','@Url.Action("ViewDetailJobSheetTrucking","JobSheetTruckingSeaAndAir")','@Url.Action("OnPostMyUploader","JobSheetTruckingSeaAndAir")')" style="float:right;background-color:#01295C;color:white"> Confirm Transaction</button> *@
+    </div>
+</div>
+@await Html.PartialAsync("Modal/ModalListItemSalesQuotationJobSheet"/*,Model.GetSaleQuotationJobSheets[0].Lines*/)
+@section scripts {
+    <script src="~/js/jobsheettruckingSeaAndAir/modal/ModalListSalesQuotationJobSheet.js"></script>
+    <script src="~/js/jobsheettruckingSeaAndAir/modal/ModalListItemSalesQuotationJobSheet.js"></script>
+    <script src="~/js/jobsheettruckingSeaAndAir/index.js"></script>
+    <script>
+        var listObject = @Json.Serialize(Model.GetItemDetailByItemTypes);
+        var listCurrency = @Json.Serialize(Model.GetDetailJobSheetTruckings[0].CurrencyByCustomers);
+        var listVendor = @Json.Serialize(Model.GetVendorByConfirmJobSheetSeaAirs);
+        var soDocEntrty = @Model.GetJobSheetTruckings.ObjectHeader.SALESORDERDOCNUM;
+        var listItemLineAdd = [];
+        var dataFile = new FormData();
+        var lineIndex = 1;
+        var confirmcosting = false;
+        $("#btnAddAttachmentFile").change(function () {
+            var myFile = $('#btnAddAttachmentFile').prop('files');
+            for (var i = 0; i < myFile.length; i++) {
+                dataFile.append('MyUploader', myFile[i]);
+            }
+            reRenderAttachment();
+        });
+        function DeleteAttachmentfile(index) {
+            var tmpAttachment = dataFile.getAll("AddAttachmentfile");
+            dataFile = new FormData();
+            for (var i = 0; i < tmpAttachment.length; i++) {
+                if (i !== index) {
+                    dataFile.append('MyUploader', tmpAttachment[i]);
+                }
+            }
+            reRenderAttachment();
+        }
+        function reRenderAttachment() {
+            $("#txtAttachmentFile").empty();
+            for (var i = 0; i < dataFile.getAll("MyUploader").length; i++) {
+                $("#txtAttachmentFile").append('<div class="row mt-2"><div class="col-10"><input type="text" disabled class="form-control" value="' + dataFile.getAll("MyUploader")[i].name + '"></div><div class="col-2"><button onclick="DeleteAttachmentfile(' + i + ')" class="btn btn-outline-danger">Delete</button></div></div>');
+            }
+        }
+        function onAmountChangeTaxAndAdvance(id, ToId) {
+            $("#" + ToId).val($("#" + id).val());
+        }
+        function onAmountChangeTaxAndAdvance(id, ToId) {
+            $("#" + ToId).val($("#" + id).val());
+        }
+        $("#btnSelectItemFrom").click(function () {
+            if ($("#cboSelectItemType").val() === "-1") {
+                alert("Require Select!");
+                return;
+            }
+            if ($("#cboSelectItemType").val() === "1") { //Select Type Item
+                var tbListItemLine = $('#TbListItemSalesQuotationJobSheet').DataTable();
+                tbListItemLine.clear();
+                tbListItemLine.rows.add(listObject);
+                tbListItemLine.search("").columns().search("").draw();
+                $("#ModalItemSalesQuotationJobSheet").modal("show");
+            } else { //Select Type SQ
+                if ($("#txtSaleQuotation").val() === "-1") {
+                    alert("Please Select Sale Quotation before Select Item!");
+                    return;
+                }
+                var obj = JSON.parse($("#txtSaleQuotation option:selected").attr("data-objline"));
+                var tbListItemLine = $('#TbListItemSalesQuotationJobSheet').DataTable();
+                tbListItemLine.clear();
+                tbListItemLine.rows.add(obj);
+                tbListItemLine.search("").columns().search("").draw();
+                $("#ModalItemSalesQuotationJobSheet").modal("show");
+            }
+        });
+
+        $('#btnChooseItemQuotation').click(function () {
+            var index = tbListItemSalesQuotationJobSheet.row('.selected').index();
+            var data = tbListItemSalesQuotationJobSheet.row(index).data();
+            $.ajax({
+                url: '@Url.Action("GetUomCode", "JobSheetTrucking")',
+                type: "GET",
+                data: { UomCode: data.uomCodeList },
+                dataType: "JSON",
+                beforeSend: function () {
+                    $('#Modalloder').modal('show');
+                },
+                success: function (dataAjax) {
+                    $('#Modalloder').modal('hide');
+                    //console.log(dataAjax);
+                    listItemLineAdd.push({
+                        "itemCode": data.itemCode,
+                        "itemName": data.itemName,
+                        "itemType": data.itemType,
+                        "priceCosting": data.priceCosting,
+                        "priceSelling": data.priceSelling,
+                        "qtyCosting": data.qtyCosting,
+                        "qtySelling": data.qtySelling,
+                        "lineIndex": lineIndex,
+                        "lineNum": data.lineNum,
+                        "UomCodeList": data.uomCodeList,
+                        "UomCode": '',
+                        "UomCodeCosting": '',
+                        "CurrencySelling": '',
+                        "CurrencyCosting": '',
+                        "ExchangeRateAmountCosting": 0,
+                        "ExchangeRateAmountSelling": 0,
+                        "UomGroupList": dataAjax.data,
+                        "ListCurrency": listCurrency,
+                    });
+                    lineIndex = lineIndex + 1;
+                    tbListItemSalesQuotationJobSheet.$('tr.selected').removeClass('selected');
+                    $("#ModalItemSalesQuotationJobSheet").modal("hide");
+                    //renderItemList();
+                    reRenderDataTableLine();
+                },
+                error: function (erro) {
+                    $('#Modalloder').modal('hide');
+                    $('#ModalSuccess').modal('show');
+                    $('#ErrMsg').html(erro.responseText);
+                }
+            });
+            //reCalculate();
+        });
+        $('#TbListItemRevenue').DataTable({
+            columns:
+                [
+                    {
+                        render: function (data, type, full, meta) {
+                            return '<button class="btn btn-danger" style="float:right;" onclick="DeleteLineItem(' + full.lineIndex.toString() + ')">Delete</button>';
+                        }
+                    },
+                    { data: "itemName", autoWidth: true },
+                    {
+                        render: function (data, type, full, meta) {
+                            var input = '<input onchange="OnRevenueChange(' + full.lineIndex + ')" type="number" id="txtPriceRevenue-' + full.lineIndex + '" class="form-control" value="' + full.priceSelling + '"/>';
+                            return input;
+                        }
+                    },
+                    {
+                        render: function (data, type, full, meta) {
+                            var selection = '<select class="form-select" onchange="OnRevenueChange(' + full.lineIndex + ')" id="cboCurrencyRevenue-' + full.lineIndex + '">';
+                            for (var i = 0; i < full.ListCurrency.length; i++) {
+                                if (full.ListCurrency[i].currencyCode === "THB" && full.CurrencySelling === "") {
+                                    selection += '<option value="' + full.ListCurrency[i].currencyCode + '" selected>' + full.ListCurrency[i].currencyName + '</option>';
+                                } else if (full.ListCurrency[i].currencyCode === full.CurrencySelling) {
+                                    selection += '<option value="' + full.ListCurrency[i].currencyCode + '" selected>' + full.ListCurrency[i].currencyName + '</option>';
+                                } else if (full.ListCurrency[i].currencyCode !== "##") {
+                                    selection += '<option value="' + full.ListCurrency[i].currencyCode + '">' + full.ListCurrency[i].currencyName + '</option>';
+                                }
+                            }
+                            selection += '</select>';
+                            return selection;
+                        }
+                    },
+                    {
+                        render: function (data, type, full, meta) {
+                            var input = '<input type="number" onchange="OnRevenueChange(' + full.lineIndex + ')" id="txtQtyRevenue-' + full.lineIndex + '" class="form-control" value="' + full.qtySelling + '"/>';
+                            return input;
+                        }
+                    },
+                    {
+                        render: function (data, type, full, meta) {
+                            var selection = '<select class="form-select" onchange="OnRevenueChange(' + full.lineIndex + ')" id="cboUOMRevenue-' + full.lineIndex + '">';
+                            //console.log(full.UomCode);
+                            if (full.UomCode === '') {
+                                selection += '<option value="-99" selected>Select Unit</option>';
+                            }
+                            for (var i = 0; i < full.UomGroupList.length; i++) {
+                                if (full.UomCode === full.UomGroupList[i].code.toString()) {
+                                    selection += '<option selected value="' + full.UomGroupList[i].code + '">' + full.UomGroupList[i].name + '</option>';
+                                } else {
+                                    selection += '<option value="' + full.UomGroupList[i].code + '">' + full.UomGroupList[i].name + '</option>';
+                                }
+                            }
+                            selection += '</select>';
+                            return selection;
+                        }
+                    },
+                    {
+                        render: function (data, type, full, meta) {
+                            var input = '<input type="number" onchange="OnRevenueChange(' + full.lineIndex + ')" id="txtExchageRateAmountRevenue-' + full.lineIndex + '" class="form-control" value="' + full.ExchangeRateAmountSelling + '"/>';
+                            return input;
+                        }
+                    },
+                    {
+                        render: function (data, type, full, meta) {
+                            var itemName = $("#txtCustomer").val();
+                            var input = '<input type="text" disabled id="txtReciveFrom-' + full.lineIndex + '" class="form-control" value="' + itemName + '"/>';
+                            return input;
+                        }
+                    },
+                    {
+                        render: function (data, type, full, meta) {
+                            var totalCosting = 0;
+                            var ExchangeRateAmountSelling = 1;
+                            if (full.ExchangeRateAmountSelling !== undefined){
+                                ExchangeRateAmountSelling = full.ExchangeRateAmountSelling;
+                            }
+                            if (full.CurrencySelling == "THB") {
+                                totalCosting = parseFloat(full.qtySelling * full.priceSelling);
+                            } else {
+                                totalCosting = parseFloat(full.qtySelling * (full.priceSelling * ExchangeRateAmountSelling)).toFixed(2);
+                            }
+                            var input = '<input type="number" disabled id="txtRevenueBAHT-' + full.lineIndex + '" class="form-control" value="' + totalCosting + '"/>';
+                            return input;
+                        }
+                    },
+                ],
+        });
+        $('#TbListItemCosting').DataTable({
+            columns:
+                [
+                    {
+                        render: function (data, type, full, meta) {
+                            return (confirmcosting === true) ? '' : '<button class="btn btn-danger" style="float:right;" onclick="DeleteLineItem(' + full.lineIndex.toString() + ')">Delete</button>';
+                        }
+                    },
+                    { data: "itemName", autoWidth: false },
+                    {
+                        render: function (data, type, full, meta) {
+                            var input = '<input onchange="OnCostingChange(' + full.lineIndex + ')" ' + ((confirmcosting === false) ? '' : 'disabled') + ' type="number" id="txtPriceCosting-' + full.lineIndex + '" class="form-control" value="' + full.priceCosting + '"/>';
+                            return input;
+                        }
+                    },
+                    {
+                        render: function (data, type, full, meta) {
+                            var selection = '<select class="form-select" ' + ((confirmcosting === false) ? '' : 'disabled') + ' onchange="OnCostingChange(' + full.lineIndex + ')" id="cboCurrencyCosting-' + full.lineIndex + '">';
+                            for (var i = 0; i < full.ListCurrency.length; i++) {
+                                if (full.ListCurrency[i].currencyCode === "THB" && full.CurrencyCosting === "") {
+                                    selection += '<option value="' + full.ListCurrency[i].currencyCode + '" selected>' + full.ListCurrency[i].currencyName + '</option>';
+                                } else if (full.ListCurrency[i].currencyCode === full.CurrencyCosting) {
+                                    selection += '<option value="' + full.ListCurrency[i].currencyCode + '" selected>' + full.ListCurrency[i].currencyName + '</option>';
+                                } else if (full.ListCurrency[i].currencyCode !== "##") {
+                                    selection += '<option value="' + full.ListCurrency[i].currencyCode + '">' + full.ListCurrency[i].currencyName + '</option>';
+                                }
+                            }
+                            selection += '</select>';
+                            return selection;
+                        }
+                    },
+                    {
+                        render: function (data, type, full, meta) {
+                            var input = '<input type="number" ' + ((confirmcosting === false) ? '' : 'disabled') + ' onchange="OnCostingChange(' + full.lineIndex + ')" id="txtQtyCosting-' + full.lineIndex + '" class="form-control" value="' + full.qtyCosting + '"/>';
+                            return input;
+                        }
+                    },
+                    {
+                        render: function (data, type, full, meta) {
+                            var selection = '<select class="form-select" ' + ((confirmcosting === false) ? '' : 'disabled') + ' onchange="OnCostingChange(' + full.lineIndex + ')" id="cboUOMCosting-' + full.lineIndex + '">';
+                            if (full.UomCodeCosting === '') {
+                                selection += '<option value="-99" selected>Select Unit</option>';
+                            }
+                            for (var i = 0; i < full.UomGroupList.length; i++) {
+                                if (full.UomCodeCosting === full.UomGroupList[i].code.toString()) {
+                                    selection += '<option selected value="' + full.UomGroupList[i].code + '">' + full.UomGroupList[i].name + '</option>';
+                                } else {
+                                    selection += '<option value="' + full.UomGroupList[i].code + '">' + full.UomGroupList[i].name + '</option>';
+                                }
+                            }
+                            selection += '</select>';
+                            return selection;
+                        }
+                    },
+                    {
+                        render: function (data, type, full, meta) {
+                            var input = '<input type="number" ' + ((confirmcosting === false) ? '' : 'disabled') + ' onchange="OnCostingChange(' + full.lineIndex + ')" id="txtExchageRateAmountCosting-' + full.lineIndex + '" class="form-control" value="' + full.ExchangeRateAmountCosting + '"/>';
+                            return input;
+                        }
+                    },
+                    {
+                        render: function (data, type, full, meta) {
+                            // var itemName = $("#txtCustomer").val();
+                            // var input = '<input type="text" disabled id="txtReciveFrom-' + full.lineIndex + '" class="form-control" value="' + itemName + '"/>';
+                            // return input;
+                            var selection = '<select class="form-select" ' + ((confirmcosting === false) ? '' : 'disabled') + ' id="cboPayTo-' + full.lineIndex + '" onchange="OnCostingChange(' + full.lineIndex + ')">';
+                            for (var i = 0; i < listVendor.length; i++) {
+                                if (full.vendorCode === listVendor[i].cardCode.toString()) {
+                                    selection += '<option selected value="' + listVendor[i].cardCode + '">' + listVendor[i].cardName + '</option>';
+                                } else {
+                                    selection += '<option value="' + listVendor[i].cardCode + '">' + listVendor[i].cardCode + '</option>';
+                                }
+                            }
+                            selection += '</select>';
+                            return selection;
+                        }
+                    },
+                    {
+                        render: function (data, type, full, meta) {
+                            var totalCosting = 0;
+                            var exchangeRateAmount = 1;
+                            if ($("#txtExchageRateAmountCosting-" + full.lineIndex).val() !== undefined) {
+                                exchangeRateAmount = $("#txtExchageRateAmountCosting-" + full.lineIndex).val();
+                            }
+                            if ($("#cboCurrencyCosting-" + full.lineIndex).val() == "THB") {
+                                totalCosting = parseFloat(full.qtyCosting * full.priceCosting);
+                            } else {
+                                totalCosting = parseFloat(full.qtyCosting * (full.priceCosting * exchangeRateAmount));
+                            }
+                            var input = '<input type="number" disabled id="txtCostingBAHT-' + full.lineIndex + '" class="form-control" value="' + totalCosting + '"/>';
+                            return input;
+                        }
+                    },
+                ],
+        });
+        function reRenderDataTableLine() {
+            var tbListItemRevenue = $('#TbListItemRevenue').DataTable();
+            tbListItemRevenue.clear();
+            tbListItemRevenue.rows.add(listItemLineAdd);
+            tbListItemRevenue.search("").columns().search("").draw();
+            var tbListItemCosting = $('#TbListItemCosting').DataTable();
+            tbListItemCosting.clear();
+            tbListItemCosting.rows.add(listItemLineAdd);
+            tbListItemCosting.search("").columns().search("").draw();
+            onCalculateTotalPrice();
+        }
+        function DeleteLineItem(id) {
+            listItemLineAdd = listItemLineAdd.filter(e => e.lineIndex !== id);
+            reRenderDataTableLine();
+        }
+        function OnCostingChange(id) {
+            var qtyCosting = listItemLineAdd.filter(e => e.lineIndex === id);
+            listItemLineAdd.filter(e => {
+                if (e.lineIndex === id) {
+                    e.qtyCosting = ($("#txtQtyCosting-" + id).val() == "") ? 0 : parseFloat($("#txtQtyCosting-" + id).val());
+                    e.priceCosting = ($("#txtPriceCosting-" + id).val() == "") ? 0 : parseFloat($("#txtPriceCosting-" + id).val());
+                    e.CurrencyCosting = ($("#cboCurrencyCosting-" + id).val() == "") ? 0 : $("#cboCurrencyCosting-" + id).val();
+                    e.UomCodeCosting = ($("#cboUOMCosting-" + id).val().toString() === "" || $("#cboUOMCosting-" + id).val().toString() === "-99") ? "" : $("#cboUOMCosting-" + id).val();
+                    e.ExchangeRateAmountCosting = ($("#txtExchageRateAmountCosting-" + id).val() == "") ? "" : parseFloat($("#txtExchageRateAmountCosting-" + id).val());
+                    e.vendorCode = $("#cboPayTo-" + id).val();
+                }
+            });
+            reRenderDataTableLine();
+        }
+        function OnRevenueChange(id) {
+            var qtyCosting = listItemLineAdd.filter(e => e.lineIndex === id);
+            listItemLineAdd.filter(e => {
+                if (e.lineIndex === id) {
+                    e.qtySelling = ($("#txtQtyRevenue-" + id).val() == "") ? 0 : parseFloat($("#txtQtyRevenue-" + id).val());
+                    e.priceSelling = ($("#txtPriceRevenue-" + id).val() == "") ? 0 : parseFloat($("#txtPriceRevenue-" + id).val());
+                    e.CurrencySelling = ($("#cboCurrencyRevenue-" + id).val() == "") ? 0 : $("#cboCurrencyRevenue-" + id).val();
+                    e.UomCode = ($("#cboUOMRevenue-" + id).val().toString() === "" || $("#cboUOMRevenue-" + id).val().toString() === "-99") ? "" : $("#cboUOMRevenue-" + id).val();
+                    e.ExchangeRateAmountSelling = ($("#txtExchageRateAmountRevenue-" + id).val() == "") ? "" : parseFloat($("#txtExchageRateAmountRevenue-" + id).val());
+                }
+            });
+            reRenderDataTableLine();
+        }
+        function onCalculateTotalPrice() {
+            var totalCost = 0;
+            var totalSelling = 0;
+            var rebate = ($("#txtRebate").val() === "") ? 0 : parseFloat($("#txtRebate").val());
+            for (var i = 0; i < listItemLineAdd.length; i++) {
+                if (listItemLineAdd[i].CurrencySelling === "THB") {
+                    totalSelling += parseFloat(listItemLineAdd[i].qtySelling * listItemLineAdd[i].priceSelling);
+                } else {
+                    totalSelling += parseFloat(listItemLineAdd[i].qtySelling * (listItemLineAdd[i].priceSelling * listItemLineAdd[i].ExchangeRateAmountSelling));
+                }
+                if (listItemLineAdd[i].CurrencyCosting === "THB") {
+                    totalCost += parseFloat(listItemLineAdd[i].qtyCosting * listItemLineAdd[i].priceCosting);
+                } else {
+                    totalCost += parseFloat(listItemLineAdd[i].qtyCosting * (listItemLineAdd[i].priceCosting * listItemLineAdd[i].ExchangeRateAmountCosting));
+                }
+            }
+            $("#txtTotalCosting").val(totalCost);
+            $("#txtTotalSelling").val(totalSelling.toFixed(2));
+            $("#txtGrandTotalCosting").val(totalCost + rebate);
+            $("#txtGrandTotalSelling").val(totalSelling.toFixed(2));
+            $("#txtProfit").val((totalSelling - (totalCost + rebate)).toFixed(2));
+        }
+        function onConfirmTransactionSelection() {
+            if ($("#cboConfrimTransaction").val() == "1") {
+                onUpdateDraftTransaction('@Url.Action("OnUpdateDraftJobSheetTrucking", "JobSheetTruckingSeaAndAir")', '@Url.Action("ViewDetailJobSheetTrucking", "JobSheetTruckingSeaAndAir")', '@Url.Action("OnPostMyUploader", "JobSheetTruckingSeaAndAir")', '1', '@ViewBag.DocEntry');
+            } else if ($("#cboConfrimTransaction").val() == "2") {
+                onUpdateDraftTransaction('@Url.Action("OnUpdateDraftJobSheetTrucking", "JobSheetTruckingSeaAndAir")', '@Url.Action("ViewDetailJobSheetTrucking", "JobSheetTruckingSeaAndAir")', '@Url.Action("OnPostMyUploader", "JobSheetTruckingSeaAndAir")', '-1', '@ViewBag.DocEntry');
+            }
+        }
+        onLoadingDataEditDraft();
+        function onLoadingDataEditDraft(){
+            var objLoading=@Json.Serialize(Model.GetJobSheetTruckings);
+            //Header Assign Values
+            $("#txtRebate").val(objLoading.objectHeader.rebate);
+            $("#txtDutyTaxAmountCosting").val(objLoading.objectHeader.dutyTaxAmountCosting);
+            $("#txtDutyTaxAmountSelling").val(objLoading.objectHeader.dutyTaxAmountSelling);
+            $("#remarkForCosting").val(objLoading.objectHeader.remarkscosting);
+            $("#remarkForSelling").val(objLoading.objectHeader.remakrsselling);
+            //End Header Assign Values
+            //Attachment
+            var myFile = objLoading.attachment;
+            for (var i = 0; i < myFile.length; i++) {
+                dataFile.append('MyUploader', myFile[i]);
+            }
+            reRenderAttachment();
+            //End Attachment
+            //Revenue
+            for (var i = 0; i < objLoading.itemLineRevenue.length; i++) {
+                $.ajax({
+                    url: '@Url.Action("GetUomCode", "JobSheetTruckingSeaAndAir")',
+                    type: "GET",
+                    data: { UomCode: objLoading.itemLineRevenue[i].containerType },
+                    dataType: "JSON",
+                    async: false,
+                    success: function (dataAjax) {
+                        listItemLineAdd.push({
+                            "itemCode": objLoading.itemLineRevenue[i].itemcode.toString().split("_*_")[0],
+                            "itemName": objLoading.itemLineRevenue[i].itemcode.split("_*_")[1],
+                            "itemType": '',
+                            "priceCosting": objLoading.itemLineCosting[i].totalprice.toFixed(2),
+                            "priceSelling": objLoading.itemLineRevenue[i].totalprice.toFixed(2),
+                            "qtyCosting": objLoading.itemLineCosting[i].qty,
+                            "qtySelling": objLoading.itemLineRevenue[i].qty,
+                            "lineIndex": lineIndex,
+                            "lineNum": objLoading.itemLineRevenue[i].lineId,
+                            "UomCodeList": '',
+                            "UomCode": objLoading.itemLineRevenue[i].containerType,
+                            "UomCodeCosting": objLoading.itemLineCosting[i].containerType,
+                            "CurrencySelling": objLoading.itemLineRevenue[i].currency,
+                            "CurrencyCosting": objLoading.itemLineCosting[i].currency,
+                            "ExchangeRateAmountCosting": objLoading.itemLineCosting[i].exchangeRate.toFixed(2),
+                            "ExchangeRateAmountSelling": objLoading.itemLineRevenue[i].exchangeRate.toFixed(2),
+                            "UomGroupList": dataAjax.data,
+                            "ListCurrency": listCurrency,
+                            "vendorCode": objLoading.itemLineCosting[i].vendorCode,
+                        });
+                        lineIndex = lineIndex + 1;
+                        reRenderDataTableLine();
+                    },
+                    error: function (erro) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html(erro.responseText);
+                    }
+                });
+            }
+            //End Revenue
+        }
+    </script>
+}

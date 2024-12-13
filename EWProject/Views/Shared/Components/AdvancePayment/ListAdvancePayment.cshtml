@@ -1,0 +1,130 @@
+﻿@using Newtonsoft.Json;
+@model List<Client.Models.Request.ListPurchaseRequestConfirm>
+<div class="row mt-2">
+    <div class="col-1 pr-0">
+        <hr />
+    </div>
+    <div class="col-3 p-0" style="text-align:center">
+        <h5>List Of AdvancePayment</h5>
+    </div>
+    <div class="col-8 pl-0">
+        <hr />
+    </div>
+</div>
+@if (Model != null)
+{
+    @foreach (var a in Model)
+    {
+        <div class="row mb-2">
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-6">
+                        AdvancePayment ID-@a.ID
+                    </div>
+                    <div class="col-6">
+                        @a.Remarks
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <button class="btn btn-danger" style="float:right;margin-left:5px;" id="btnDelete-@a.ID"
+                onclick="@Html.Raw($"DeleteAD{@a.ID}()")">
+                    Delete
+                </button>
+                <button class="btn" id="btnEdit-@a.ID" onclick="EditAD('btnEdit-@a.ID','@a.ID')"
+                        style="float:right;background-color:#01295C;color:white;margin-left:5px;border-color:#01295C;"
+                        data-obj="@JsonConvert.SerializeObject(a)">
+                    Edit
+                </button>
+                <button class="btn btn-success" style="float:right" id="btnView-@a.ID" onclick="ViewAD('btnView-@a.ID','@a.ID')" data-obj="@JsonConvert.SerializeObject(a)">View</button>
+            </div>
+        </div>
+        <div id="ViewID-@a.ID"></div>
+        <div id="EditID-@a.ID"></div>
+        <script defer>
+            @Html.Raw(("function DeleteAD"+a.ID+"(){"+
+            @a.ListPRParam.ListAD + "="+@a.ListPRParam.ListAD+".filter(e => e.ID !== "+a.ID+");"+
+            ""+
+            "$.ajax({"+
+            "url: '"+@Url.Action("ListAdvancePayment","PettyCash")+"',"+
+            "data: { data: JSON.stringify("+@a.ListPRParam.ListAD+") },"+
+            "beforeSend: function () {"+
+            "    $('#Modalloder').modal('show');"+
+            "},"+
+            "success: function (data) {"+
+            "    $('#Modalloder').modal('hide');"+
+            "    $('"+@Html.Raw($"#{a.ListPRParam.ListAdvanceID}")+"').empty();"+
+            "    $('"+@Html.Raw($"#ViewID-{a.ID}")+"').empty();"+
+            "    $('"+@Html.Raw($"#EditID-{a.ID}")+"').empty();"+
+            "    $('"+@Html.Raw($"#{a.ListPRParam.ListAdvanceID}")+"').html(data);"+
+            "    $('"+@Html.Raw($"#{a.ListPRParam.ListADTemplate}".Trim())+"').empty();"+
+            "},"+
+            "error: function (erro) {"+
+            "    $('#Modalloder').modal('hide');"+
+            "    $('#ModalSuccess').modal('show');"+
+            "    $('#ErrMsg').html(erro.responseText);"+
+            "}"+
+            "});"+
+            "}").Trim());
+        </script>
+    }
+}
+<script defer>
+    function ViewAD(btnid, id) {
+        $.ajax({
+            url: '@Url.Action("ViewAdvancePayment","PettyCash")',
+            data: { data: $("#" + btnid).attr("data-obj") },
+            beforeSend: function () {
+                $('#Modalloder').modal('show');
+            },
+            success: function (data) {
+                $('#Modalloder').modal('hide');
+                $("#ViewID-" + id).empty();
+                $("#EditID-" + id).empty();
+                $("#ViewID-" + id).append(data);
+                //$("#").val();
+            },
+            error: function (erro) {
+                $('#Modalloder').modal('hide');
+                $('#ModalSuccess').modal('show');
+                $('#ErrMsg').html(erro.responseText);
+            }
+        });
+    }
+
+    function EditAD(btnid, id) {
+        $.ajax({
+            url: '@Url.Action("AdvancePayment","PettyCash")',
+            data: { 
+                    //data: param, 
+                    //listPRID: lsPRID, 
+                    //listAdvanceID: lsADID, 
+                    //listIDName: listIDName, 
+                    //listPRTemplate: listPRTemplate, 
+                    //listADtemplate: listADtemplate,
+                    prAction: 'Update',
+                    listObjectAdvance: $("#" + btnid).attr("data-obj")
+                  },
+            beforeSend: function () {
+                $('#Modalloder').modal('show');
+            },
+            success: function (data) {
+                $('#Modalloder').modal('hide');
+                $("#ViewID-"+id).empty();
+                $("#EditID-"+id).empty();
+                $("#EditID-"+id).html(data);
+                //if ($("#" + id + " option:selected").val() === "ADVANCE") {
+                //    $("#" + listADtemplate).html(data);
+                //} else {
+                //    $("#" + listPRTemplate).html(data);
+                //}
+            },
+            error: function (erro) {
+                $('#Modalloder').modal('hide');
+                $('#ModalSuccess').modal('show');
+                $('#ErrMsg').html(erro.responseText);
+            }
+        });
+    }
+
+</script>

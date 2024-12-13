@@ -1,0 +1,647 @@
+﻿<title>@ViewData["Title"] - EWSystem</title>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Client.Models.Response.ListMasterJobSheetTrucking
+@inject IHttpContextAccessor _httpContext;
+@{
+    var path = $"{_httpContext.HttpContext.Request.Scheme}:"; //{_httpContext.HttpContext.Request.Host}{_httpContext.HttpContext.Request.PathBase}
+}
+@if (Model.GetJobSheetTruckings == null || Model.GetDetailJobSheetTruckings == null || Model.GetSaleQuotationJobSheets == null)
+{
+    <h2 style="color:red">
+        Somthing Woring Contact Administration!
+    </h2>
+}
+else
+{
+    <div class="row">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4">
+                    <ul class="navbar-nav flex-grow-1 btn" style="float:right;background-color:#01295C;color:white;width:100%">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown" href="#">@localizer["Print"]</a>
+                            @{
+                                var k = 1;
+                            }
+                            <ul class="dropdown-menu" style="border: 1px solid #01295C">
+                                @foreach (var j in Model.ListLayoutPrint)
+                                {
+                                    @if (k == 1)
+                                    {
+                                        <li>
+                                            <a class="dropdown-item btn btn-info" target="_blank" asp-route-layoutCode="@j.Code" asp-route-docEntry="@Model.GetJobSheetTruckings[0].DocEntry" asp-controller="CallLayout" asp-action="PrintLayout">
+                                                @j.Name
+                                            </a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item btn btn-info" target="_blank" asp-route-layoutCode="@j.Code" asp-route-docEntry="@Model.GetJobSheetTruckings[0].DocEntry" asp-controller="CallLayout" asp-action="PrintLayout">
+                                                @j.Name
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-8"></div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div style="float:right">
+                <h2>@localizer["JOB SHEET TRUCKING"]</h2>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6"></div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["BOOKING ID"]</div>
+                <div class="col-8">
+                    <input type="hidden" value="@Model.GetDetailJobSheetTruckings[0].CONFIRMBOOKINGID.ToString()" id="txtConfirmBookingID" readonly />
+                    <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].BOOKINGID.ToString()" id="txtBookingID" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row mt-2">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SALE QUOTATION"]</div>
+                <div class="col-8">
+                    <select class="form-select" id="txtSaleQuotation" disabled>
+                        <option value="-1">@Model.GetJobSheetTruckings[0].SQREF</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["JOB NO."]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="txtJobNo" value="@Model.GetDetailJobSheetTruckings[0].JOBNO" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ROUTE"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].ROUTE" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["BOOKING DATE"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" value="@((@Model.GetDetailJobSheetTruckings[0].BOOKINGDATE=="")?"":Convert.ToDateTime(Model.GetDetailJobSheetTruckings[0].BOOKINGDATE).ToString("dd/MM/yyyy"))" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["IMPORT TYPE"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].IMPORTTYPE" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SALE PERSON"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].SALEEMPLOYEE" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SHIPPER"]</div>
+                <div class="col-8">
+                    <select class="form-control" multiple="multiple" size="@Model.GetDetailJobSheetTruckings[0].SHIPPERNAME.Count()" disabled>
+                        @foreach (var a in Model.GetDetailJobSheetTruckings[0].SHIPPERNAME)
+                        {
+                            <option>@a</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TOTAL PACKAGE"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].TOTALPACKAGE" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["C/O"]</div>
+                <div class="col-8">
+                    <textarea readonly class="form-control" id="txtCO">@Model.GetJobSheetTruckings[0].CardName</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">
+                            N.W(KGS)
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].NETWEIGHT" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">
+                            G.W(KGS)
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].GROSSWEIGHT" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CONSIGNEE"]</div>
+                <div class="col-8">
+                    <select class="form-control" multiple="multiple" size="@Model.GetDetailJobSheetTruckings[0].CONSIGNEE.Count()" id="txtShipper" disabled>
+                        @foreach (var a in Model.GetDetailJobSheetTruckings[0].CONSIGNEE)
+                        {
+                            <option>@a</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["LOADING DATE"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" value="@((@Model.GetDetailJobSheetTruckings[0].LOADINGDATE=="")?"":Convert.ToDateTime(Model.GetDetailJobSheetTruckings[0].LOADINGDATE).ToString("dd/MM/yyyy"))" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CROSS BORDER DATE"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" value="@((@Model.GetDetailJobSheetTruckings[0].CORSSBORDERDATE=="")?"":Convert.ToDateTime(Model.GetDetailJobSheetTruckings[0].CORSSBORDERDATE).ToString("dd/MM/yyyy"))" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ETA REQUIREMENT"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" value="@((@Model.GetDetailJobSheetTruckings[0].ETAREQUIREMENT=="")?"":Convert.ToDateTime(Model.GetDetailJobSheetTruckings[0].ETAREQUIREMENT).ToString("dd/MM/yyyy"))" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["PLACE OF LOADING"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].PLACEOFLOADING" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["PLACE OF DELIVERY"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].PLACEOFDELIVERY" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["District OF LOADING"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].DistrictOfLoading" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["District OF DELIVERY"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].DistrictOfDelivery" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["GOODS DESCRIPTION"]</div>
+                <div class="col-8">
+                    <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].GOODSDESCRIPTION" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["VOLUME"]</div>
+                <div class="col-8">
+                    <textarea readonly class="form-control">@Model.GetDetailJobSheetTruckings[0].VOLUME</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Create By"]</div>
+            <div class="col-8">
+                    <input type="text" class="form-control" value="@Model.GetJobSheetTruckings[0].UserCreate" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Update By"]</div>
+            <div class="col-8">
+                    <input type="text" class="form-control" value="@Model.GetJobSheetTruckings[0].UpdateBy" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="row mt-2">
+        <div class="col-6">
+            @*<div class="row mt-2">
+        <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SALE QUOTATION"]<span style="color:red">*</span></div>
+        <div class="col-8">
+        <input type="text" class="form-control" placeholder="Search Quotation" data-DocEntry="" id="txtSaleQuotation" value="" readonly>
+        </div>
+        </div>*@
+        </div>
+        <div class="col-6">
+        </div>
+    </div>
+    <hr />
+    <div class="row mt-2">
+        <div class="col-12" style="margin:auto;text-align:left;font-weight:bold;">
+            <h5><u>@localizer["List Of Invoice"]</u></h5>
+        </div>
+    </div>
+    <div class="row" style="margin:auto;text-align:left;font-weight:bold;">
+        <div class="row mt-2">
+            @{
+                int i = 1;
+            }
+            @foreach (var a in Model.GetDetailJobSheetTruckings[0].Invoices)
+            {
+                if (i % 2 != 0)
+                {
+                    <div class="col-6">
+                        <div class="row mt-2">
+                            <div class="col-5">INVOICE NO @i:</div>
+                            <div class="col-7">@a</div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-6">
+                        <div class="row mt-2">
+                            <div class="col-5">INVOICE NO @i:</div>
+                            <div class="col-7">@a</div>
+                        </div>
+                    </div>
+                }
+                i++;
+            }
+
+
+        </div>
+    </div>
+    <hr />
+    <div class="row mt-2" style="margin:auto;text-align:left;font-weight:bold;">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-3">TRUCK NO</div>
+                <div class="col-2">TRUCK WEIGHT(KGS)</div>
+                <div class="col-3">CONTAINER NO.</div>
+                <div class="col-2">CONTAINER WEIGHT(KGS)</div>
+                <div class="col-2">TRANSPORTER</div>
+            </div>
+        </div>
+    </div>
+    <!--Transport Information-->
+    <div class="row mt-2" style="margin:auto;text-align:left;font-weight:bold;">
+        @{
+            int z = 1;
+        }
+        @foreach (var a in Model.GetDetailJobSheetTruckings[0].TRUCKINFORMATIONS)
+        {
+            <div class="col-12">
+                <div class="row mt-2">
+                    <div class="col-3">@z.@a.TRUCKNO</div>
+                    <div class="col-2">@a.TruckWeight</div>
+                    <div class="col-3">@a.CONTAINERTRUCK</div>
+                    <div class="col-2">@a.ContainerWeight</div>
+                    <div class="col-2">@a.TRANSPORTER</div>
+                </div>
+            </div>
+            z++;
+        }
+    </div>
+    <!--End Transport Information-->
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["THAI FORWARDER"]</div>
+                <div class="col-8">
+                    <select class="form-control" multiple="multiple" size="@Model.GetDetailJobSheetTruckings[0].THAIFORWARDER.Count()" id="txtShipper" disabled>
+                        @foreach (var a in Model.GetDetailJobSheetTruckings[0].THAIFORWARDER)
+                        {
+                            <option>@a</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["OVERSEA FORWARDER"]</div>
+                <div class="col-8">
+                    <select class="form-control" multiple="multiple" size="@Model.GetDetailJobSheetTruckings[0].OVERSEAFORWARDER.Count()" id="txtShipper" disabled>
+                        @foreach (var a in Model.GetDetailJobSheetTruckings[0].OVERSEAFORWARDER)
+                        {
+                            <option>@a</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["THAI BORDER"]</div>
+                <div class="col-8">
+                    <select class="form-control" multiple="multiple" size="@Model.GetDetailJobSheetTruckings[0].THAIBORDER.Count()" id="txtShipper" disabled>
+                        @foreach (var a in Model.GetDetailJobSheetTruckings[0].THAIBORDER)
+                    {
+                    <option>@a</option>
+                    }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["OVERSEA TRANSPORT"]</div>
+                <div class="col-8">
+                    <select class="form-control" multiple="multiple" size="@Model.GetDetailJobSheetTruckings[0].OVERSEATRANSPORT.Count()" id="txtShipper" disabled>
+                        @foreach (var a in Model.GetDetailJobSheetTruckings[0].OVERSEATRANSPORT)
+                        {
+                            <option>@a</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["COSTING"]</div>
+                <div class="col-8">
+                    <select class="form-select" id="cboCurrencyItemCosting" disabled>
+
+                        <option selected>@Model.GetJobSheetTruckings[0].CurrencyCosting</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SELLING"]</div>
+                <div class="col-8">
+                    <select class="form-select" id="cboCurrencyItemSelling" disabled>
+                        <option selected>@Model.GetJobSheetTruckings[0].CurrencySelling</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Information Item Binding Data-->
+    <div id="tbListItemCostingAndSelling">
+        <div class="row mt-2">
+            <div class="col-6">
+                <!--ITEM COSTING-->
+                @foreach (var a in Model.GetJobSheetTruckings[0].ItemLine.Where(x => x.itemType == "Costing"))
+                {
+                    <div class="row mt-2">
+                        <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;font-size:14px;">@a.itemCode</div>
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col-4">
+                                    <input type="number" class="form-control" value="@a.qtyCosting" disabled>
+                                </div>
+                                <div class="col-4">
+                                    <input type="number" class="form-control" value="@a.priceCosting" disabled>
+                                </div>
+                                <div class="col-4">
+                                    <div class="row">
+                                        <div class="col-2">
+                                            =
+                                        </div>
+                                        <div class="col-10">
+                                            <input type="number" class="form-control" value="@(a.qtyCosting*a.priceCosting)" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="col-6">
+                <!--ITEM SELLING-->
+                @foreach (var a in Model.GetJobSheetTruckings[0].ItemLine.Where(x => x.itemType == "Selling"))
+                {
+                    <div class="row mt-2">
+                        <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;font-size:14px;">@a.itemCode</div>
+                        <div class="col-7">
+                            <div class="row">
+                                <div class="col-2">
+                                    <input type="number" class="form-control" value="@a.qtySelling" disabled>
+                                </div>
+                                <div class="col-4">
+                                    <input type="number" class="form-control" value="@a.priceSelling" disabled>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="col-2">=</div>
+                                        <div class="col-10">
+                                            <input type="number" class="form-control" value="@(a.qtySelling*a.priceSelling)" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;font-size:14px;">@a.UomName</div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <!--End Binding Data Information Item-->
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TOTAL COSTING"]</div>
+                <div class="col-8">
+                    <input type="number" class="form-control" value="@Model.GetJobSheetTruckings[0].TotalCosting" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TOTAL SELLING"]</div>
+                <div class="col-8">
+                    <input type="number" class="form-control" value="@Model.GetJobSheetTruckings[0].TotalSelling" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["REBATE"]</div>
+                <div class="col-8">
+                    <input type="number" class="form-control" disabled value="@Model.GetJobSheetTruckings[0].Rebate">
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["GRAND TOTAL COSTING"]</div>
+                <div class="col-8">
+                    <input type="number" class="form-control" value="@Model.GetJobSheetTruckings[0].GrandTotalCosting" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["GRAND TOTAL SELLING"]</div>
+                <div class="col-8">
+                    <input type="number" class="form-control" value="@Model.GetJobSheetTruckings[0].GrandTotalSelling" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["GRAND TOTAL COSTING"] &nbsp;<span id="lblCurrencyCost">THB</span></div>
+                <div class="col-8">
+                    <input type="number" class="form-control" value="@Model.GetJobSheetTruckings[0].GrandTotalCostingUSD" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["GRAND TOTAL SELLING"]&nbsp;<span id="lblCurrencySell">THB</span></div>
+                <div class="col-8">
+                    <input type="number" class="form-control" value="@Model.GetJobSheetTruckings[0].GrandTotalSellingUSD" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6"></div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["PROFIT"]</div>
+                <div class="col-8">
+                    <input type="number" class="form-control" value="@Model.GetJobSheetTruckings[0].TotalProfit" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["DUTY TAX AMOUNT"]</div>
+                <div class="col-8">
+                    <input type="number" class="form-control" disabled value="@Model.GetJobSheetTruckings[0].DutyTaxAmountCosting">
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["DUTY TAX AMOUNT"]</div>
+                <div class="col-8">
+                    <input type="number" class="form-control" disabled value="@Model.GetJobSheetTruckings[0].DutyTaxAmountSelling">
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <div class="row mt-2">
+        <div class="col-6">
+            <u style="font-weight:bold">REMARK FOR COSTING</u>
+        </div>
+        <div class="col-6">
+            <u style="font-weight:bold">REMARK FOR SELLING</u>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6">
+            <textarea id="remarkForCosting" rows="4" class="form-control" readonly>@Model.GetJobSheetTruckings[0].RemarksCosting</textarea>
+        </div>
+        <div class="col-6">
+            <textarea id="remarkForSelling" rows="4" class="form-control" readonly>@Model.GetJobSheetTruckings[0].RemarksSelling</textarea>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6" id="txtAttachmentFile">
+            @foreach (var a in Model.GetJobSheetTruckings[0].Attachment)
+            {
+                <div class="row mt-2"><div class="col-8"><input type="text" disabled class="form-control" value="@a.ATTACHMENTNAME"></div><div class="col-4"><a href="@path/mediaUpload/@a.ATTACHMENTNAME" class="btn btn-success">Download</a></div></div>
+            }
+        </div>
+        <div class="col-6">
+        </div>
+    </div>
+}
+
+

@@ -1,0 +1,691 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Client.Models.Response.GetDetailBookingSheetByDocEntryResponse
+<title>@ViewData["Title"] - EWSystem</title>
+@if (Model.ErrorCode == 0)
+{
+    <div class="main">
+        <div class="row">
+            <div class="col-2">
+                <ul class="navbar-nav flex-grow-1 btn" style="float:right;background-color:#01295C;color:white;width:100%">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown" href="#">@localizer["Print"]</a>
+                        @{
+                            var k = 1;
+                        }
+                        <ul class="dropdown-menu" style="border: 1px solid #01295C">
+                            @foreach (var z in Model.ListLayoutPrint)
+                            {
+                                @if (k == 1)
+                                {
+                                    <li>
+                                        <a class="dropdown-item btn btn-info" target="_blank" asp-route-layoutCode="@z.Code" asp-route-docEntry="@Model.Data.DocEntry" asp-controller="CallLayout" asp-action="PrintLayout">
+                                            @z.Name
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item btn btn-info" target="_blank" asp-route-layoutCode="@z.Code" asp-route-docEntry="@Model.Data.DocEntry" asp-controller="CallLayout" asp-action="PrintLayout">
+                                            @z.Name
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-10">
+                <div style="float:right">
+                    <h2>@localizer["BOOKING SHEET"]</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["BOOKING ID"]</div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" value="@Model.Data.BookingID" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="row mt-2">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SALE PERSON"]</div>
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col-12">
+                                <select class="form-select" id="cboSalePerson" disabled>
+                                    <option selected>@Model.Data.SaleEmployee</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row mt-2">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["JOB NO."]</div>
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="text" class="form-control" value="@Model.Data.JobNo" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="row mt-2">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["JOB TYPE"]</div>
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col-12">
+                                <select class="form-select" id="cboImportType" disabled>
+                                    <option selected>@Model.Data.JobType</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row mt-2">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["BOOKING DATE"]</div>
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col-12">
+                                <input readonly type="text" id="txtBookingDate" value="@Model.Data.BookingDate" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="row mt-2">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SERVICE TYPE"]</div>
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col-12">
+                                <select class="form-select" id="cboServiceType" disabled>
+                                    <option selected>@Model.Data.ServiceType</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row mt-2">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ROUTE"]</div>
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="text" class="form-control" id="txtShowOrigin" value="@Model.Data.Route" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <hr style="color:black;font-weight:bold" />
+        <div class="row">
+            <div class="col-12">
+                <h5>
+                    <u>CUSTOMER DATA</u>
+                </h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3" style="margin:auto;">
+                @localizer["SHIPPER"]
+            </div>
+            <div class="col-9">
+                <select class="form-control" multiple="multiple" size="@Model.Data.Shipper.Count()" id="txtShipper" disabled>
+                    @foreach (var a in Model.Data.Shipper)
+                    {
+                        <option>@a</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-3" style="margin:auto;">
+                @localizer["CONSIGNEE"]
+            </div>
+            <div class="col-9">
+                <select class="form-control" multiple="multiple" size="@Model.Data.Consignee.Count()" id="txtConsignee" disabled>
+                    @foreach (var a in Model.Data.Consignee)
+                    {
+                        <option>@a</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <h5>
+                    <u>SALES QUOTATION</u>
+                </h5>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-3" style="margin:auto;">
+                @localizer["LIST OF SALESQUOTATION"]
+            </div>
+            <div class="col-9">
+                <select class="form-control" multiple="multiple" size="@Model.Data.SalesQuotation.Count()" id="txtSaleQuotations" disabled>
+                    @foreach (var a in Model.Data.SalesQuotation)
+                    {
+                        <option>@a</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <h5>
+                    <u>@localizer["COMMODITY"]</u>
+                </h5>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-3" style="margin:auto;">
+                @localizer["INVOICE NO#"]:
+            </div>
+            <div class="col-9">
+                <select class="form-control" multiple="multiple" size="@Model.Data.Commodity.Count()" id="txtSaleQuotations" disabled>
+                    @foreach (var a in Model.Data.Commodity)
+                    {
+                        <option>@a</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6" id="odd">
+            </div>
+            <div class="col-6" id="event">
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-3" style="margin:auto;">
+                @localizer["GOODS DESCRIPTION"]:
+            </div>
+            <div class="col-9">
+                <div class="input-group">
+                    <input type="text" class="form-control" value="@Model.Data.GoodsDescription" placeholder="@localizer["GOODS DESCRIPTION"]" id="txtGoodsDescription" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-3" style="margin:auto;">
+                @localizer["TOTAL PACKAGE"]:
+            </div>
+            <div class="col-9">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="@localizer["TOTAL PACKAGE"]" value="@Model.Data.TotalPackage" id="txtTotalPackage" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["NET WEIGHT(KGS)"]:
+                    </div>
+                    <div class="col-7">
+                        <div class="input-group">
+                            <input type="number" class="form-control" placeholder="@localizer["NET WEIGHT(KGS)"]" id="txtNetWeight" value="@Model.Data.NetWeight" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["GROSS WEIGHT(KGS)"]:
+                    </div>
+                    <div class="col-7">
+                        <div class="input-group">
+                            <input type="number" class="form-control" placeholder="@localizer["GROSS WEIGHT(KGS)"]" id="txtGrossWeight" value="@Model.Data.GrossWeight" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <u style="font-weight:bold">@localizer["SHIPMENT DETAILS"]</u>
+            </div>
+            <div class="col-6">
+                <u style="font-weight:bold">@localizer["TRANSPORTER AND FORWARDER"]</u>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["LOADING DATE"]:
+                    </div>
+                    <div class="col-7">
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="@((Model.Data.LoadingDate!="")?@Convert.ToDateTime(@Model.Data.LoadingDate).ToString("dd/MM/yyyy"):"")" id="txtLoadingDate" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["CROSS BORDER DATE"]:
+                    </div>
+                    <div class="col-7">
+                        <div class="input-group">
+                            <input type="text" value="@((Model.Data.CrossBorderDate!="")?@Convert.ToDateTime(@Model.Data.CrossBorderDate).ToString("dd/MM/yyyy"):"")" class="form-control" id="txtCrossBorderDate" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["ETA REQUIREMENT"]:
+                    </div>
+                    <div class="col-7">
+                        <div class="input-group">
+                            <input type="text" value="@((Model.Data.ETARequirement!="")?@Convert.ToDateTime(@Model.Data.ETARequirement).ToString("dd/MM/yyyy"):"")" class="form-control" id="txtEtaRequirement" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["OVERSEA TRUCKER"]:
+                    </div>
+                    <div class="col-7">
+                        <select class="form-control" size="@Model.Data.OverseaTrucker.Count" multiple="multiple" id="cboMultiOverseaTrucker" disabled>
+                            @foreach (var a in Model.Data.OverseaTrucker)
+                            {
+                                <option value="@a">@a</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["PLACE OF LOADING"]:
+                    </div>
+                    <div class="col-7">
+                        <!--selectpicker-->
+                        <select class="form-control" size="@Model.Data.PlaceOfLoading.Count" multiple="multiple" id="cboMultiPlaceOfLoading" disabled>
+                            @foreach (var a in Model.Data.PlaceOfLoading)
+                            {
+                                <option>@a.PLACELOADING</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row" style="margin-top:10px;">
+                    @{
+                        string loloYard = "";
+                        string unLoading = "";
+                    }
+                    @if (Model.Data.LoloYard == "1")
+                    {
+                        loloYard = "checked";
+                    }
+                    else
+                    {
+                        unLoading = "checked";
+                    }
+                    <div class="col-4">
+                        <input disabled class="form-control" value="@Model.Data.LoloYardRemark" type="text" id="rdoLCLOrFCL">
+                    </div>
+                    <div class="col-4" style="margin:auto;">
+                        <div class="form-check">
+                            <input disabled @loloYard class="form-check-input" value="LOLO YARD" type="radio" name="LOLOYARD/UNLOADING" id="rdoLCLOrFCL">
+                            <label class="form-check-label" for="loloyard">
+                                LOLO YARD<span style="color:red">*</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-4" style="margin:auto;">
+                        <div class="form-check">
+                            <input disabled @unLoading class="form-check-input" value="UNLOADING" type="radio" name="LOLOYARD/UNLOADING" id="rdoLCLOrFCL">
+                            <label class="form-check-label" for="loloyard">
+                                UNLOADING<span style="color:red">*</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3" @*style="display:@(Model.Data.EWSeries=="EWST"?"":"none")"*@>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["District Of Loading"]:
+                    </div>
+                    <div class="col-7">
+                        <!--selectpicker-->
+                        <select class="form-control" size="@((Model.Data.PlaceOfDelivery.Count!=0)?Model.Data.PlaceOfLoading[0].District.Split(",").Length:"")" multiple="multiple" id="cboMultiPlaceOfLoading" disabled>
+                            @if (Model.Data.PlaceOfDelivery.Count != 0)
+                            {
+                                @foreach (var a in @Model.Data.PlaceOfLoading[0].District.Split(","))
+                                {
+                                    <option>@a</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["Other Remark"]:
+                    </div>
+                    <div class="col-7">
+                        <textarea id="otherRemark" rows="4" disabled class="form-control">
+                            @Model.Data.OtherRemark
+                                                    </textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["PLACE OF DELIVERY"]:
+                    </div>
+                    <div class="col-7">
+                        <!--selectpicker-->
+                        <select class="form-control" id="cboMultiPlaceOfDelivery" size="@Model.Data.PlaceOfDelivery.Count" multiple="multiple" disabled>
+                            @foreach (var a in Model.Data.PlaceOfDelivery)
+                            {
+                                <option>@a.PLACEDELIVERY</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["THAI FORWARDER"]:
+                    </div>
+                    <div class="col-7">
+                        <select class="form-control" size="@Model.Data.ThaiForwarder.Count" multiple="multiple" id="cboThaiForwarder" disabled>
+                            @foreach (var a in Model.Data.ThaiForwarder)
+                            {
+                                <option value="@a">@a</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row" @*style="display:@(Model.Data.EWSeries=="EWST"?"":"none")"*@>
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["District Of Delivery"]:
+                    </div>
+                    <div class="col-7">
+                        <!--selectpicker-->
+                        <select class="form-control" size="@((Model.Data.PlaceOfDelivery.Count!=0)?Model.Data.PlaceOfDelivery[0].District.Split(",").Length:0)" multiple="multiple" id="cboMultiPlaceOfLoading" disabled>
+                            @if (Model.Data.PlaceOfDelivery.Count != 0)
+                            {
+                                @foreach (var a in @Model.Data.PlaceOfDelivery[0].District.Split(","))
+                                {
+                                    <option>@a</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["OVERSEA FORWARDER"]:
+                    </div>
+                    <div class="col-7">
+                        <select class="form-control" multiple="multiple" id="cboOverseaForwarder" disabled size="@Model.Data.OverseaForwarder.Count">
+                            @foreach (var a in Model.Data.OverseaForwarder)
+                            {
+                                <option>@a</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+            <div class="col-2" style="margin:auto;">
+                @localizer["TRUCK TYPE"]:
+            </div>
+            <div class="col-10">
+                @foreach (var a in Model.Data.TruckType)
+                {
+                    <div class="row">
+                        <div class="col-2">
+                            @a.QTY
+                        </div>
+                        <div class="col-3">
+                            @a.TRUCKTYPE
+                        </div>
+                        <div class="col-2">
+                            @a.GROSSWEIGHT
+                        </div>
+                        <div class="col-5" style="overflow: overlay;">
+                            @a.InvoiceList
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2">
+                @localizer["CONTAINER TYPE"]:
+            </div>
+            <div class="col-10">
+                @foreach (var a in Model.Data.Volume)
+                {
+                    <div class="row">
+                        <div class="col-2">
+                            @a.QTY
+                        </div>
+                        <div class="col-3">
+                            @a.VOLUMECODE
+                        </div>
+                        <div class="col-2">
+                            @a.GROSSWEIGHT
+                        </div>
+                        <div class="col-5" style="overflow: overlay;">
+                            @a.InvoiceList
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+                <div class="row" style="margin-top:10px">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["THAI BORDER"]:
+                    </div>
+                    <div class="col-7">
+                        <select class="form-control" multiple="multiple" disabled size="@Model.Data.ThaiBorder.Count" id="cboThaiBorder">
+                            @foreach (var a in Model.Data.ThaiBorder)
+                            {
+                                <option>@a</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                @{
+                    string LCL = "";
+                    string FCL = "";
+                }
+                @if (Model.Data.FCLLCL == "1")
+                {
+                    LCL = "checked";
+                }
+                else
+                {
+                    FCL = "checked";
+                }
+                <div class="row">
+                    <div class="col-6" style="margin:auto;">
+                        <div class="form-check">
+                            <input @LCL disabled class="form-check-input" value="LOLO YARD" type="radio" name="lcl/fcl" id="rdoLCLOrFCL">
+                            <label class="form-check-label" for="loloyard">
+                                LCL<span style="color:red">*</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-6" style="margin:auto;">
+                        <div class="form-check">
+                            <input @FCL disabled class="form-check-input" value="UNLOADING" type="radio" name="lcl/fcl" id="rdoLCLOrFCL">
+                            <label class="form-check-label" for="loloyard">
+                                FCL<span style="color:red">*</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row" style="margin-top:10px">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["Dangerous Goods"]:
+                    </div>
+                    <div class="col-7">
+                        <select class="form-control" id="cboDamageGood" disabled>
+                            <option selected>@Model.Data.DG</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            @{
+                string CY = "";
+                string CFS = "";
+            }
+            @if (Model.Data.CYCFS == "1")
+            {
+                CY = "checked";
+            }
+            else
+            {
+                CFS = "checked";
+            }
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6" style="margin:auto;">
+                        <div class="form-check">
+                            <input @CY disabled class="form-check-input" value="LOLO YARD" type="radio" name="CY/CFS" id="rdoLCLOrFCL">
+                            <label class="form-check-label" for="loloyard">
+                                CY<span style="color:red">*</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-6" style="margin:auto;">
+                        <div class="form-check">
+                            <input @CFS disabled class="form-check-input" value="UNLOADING" type="radio" name="CY/CFS" id="rdoLCLOrFCL">
+                            <label class="form-check-label" for="loloyard">
+                                CFS<span style="color:red">*</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <u style="font-weight:bold">DOCUMENT REQUIREMENT</u>
+            </div>
+            <div class="col-6">
+                <u style="font-weight:bold">SPECIAL REQUEST</u>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <textarea id="documentRequirement" rows="4" disabled class="form-control">
+                    @Model.Data.Remark
+                                                </textarea>
+            </div>
+            <div class="col-6">
+                <textarea id="specialRequest" rows="4" disabled class="form-control">
+                    @Model.Data.SpecialRequest
+                                                </textarea>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div style="color:red">@Model.ErrorCode:@Model.ErrorMessage</div>
+}
+<!--Import Modal OnSubmitBookingSheet-->
+@*@await Html.PartialAsync("Modal/ModalCO", Model.GetCOs)*@
+@*@await Html.PartialAsync("Modal/ModalConsignee", Model.GetConsignees)*@
+@*@await Html.PartialAsync("Modal/ModalShipper", Model.GetShippers)*@
+@section scripts{
+
+
+}

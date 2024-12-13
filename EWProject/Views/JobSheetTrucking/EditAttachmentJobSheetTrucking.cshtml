@@ -1,0 +1,931 @@
+﻿@using Newtonsoft.Json;
+<title>@ViewData["Title"] - EWSystem</title>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject IHttpContextAccessor _httpContext;
+@model Client.Models.Response.ListMasterJobSheetTrucking
+@{
+    var path = $"{_httpContext.HttpContext.Request.Scheme}://{_httpContext.HttpContext.Request.Host}{_httpContext.HttpContext.Request.PathBase}";
+}
+<div class="row">
+    <div class="col-12">
+        <div style="float:right">
+            <h2>@localizer["JOB SHEET TRUCKING"]</h2>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6"></div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["BOOKING ID"]</div>
+            <div class="col-8">
+                <input type="hidden" value="@Model.GetDetailJobSheetTruckings[0].CONFIRMBOOKINGID.ToString()" id="txtConfirmBookingID" readonly />
+                <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].BOOKINGID.ToString()" id="txtBookingID" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SALE QUOTATION"]<span style="color:red">*</span></div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetJobSheetTruckingEditResponses.Data.DocNum" id="txtSaleQuotation" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["JOB NO."]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" id="txtJobNo" value="@Model.GetDetailJobSheetTruckings[0].JOBNO" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ROUTE"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].ROUTE" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["BOOKING DATE"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@((Model.GetDetailJobSheetTruckings[0].BOOKINGDATE=="")?"":Convert.ToDateTime(Model.GetDetailJobSheetTruckings[0].BOOKINGDATE).ToString("dd/MM/yyyy"))" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["IMPORT TYPE"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].IMPORTTYPE" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SALE PERSON"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetJobSheetTruckingEditResponses.Data.SalesPerson" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SHIPPER"]</div>
+            <div class="col-8">
+                <select class="form-control" multiple="multiple" size="@Model.GetDetailJobSheetTruckings[0].SHIPPERNAME.Count()" id="txtShipper" disabled>
+                    @foreach (var a in Model.GetDetailJobSheetTruckings[0].SHIPPERNAME)
+                    {
+                        <option>@a</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TOTAL PACKAGE"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].TOTALPACKAGE" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["C/O"]</div>
+            <div class="col-8">
+                <textarea readonly class="form-control" id="txtCO" data-COCode="@Model.GetDetailJobSheetTruckings[0].COCODE">@Model.GetDetailJobSheetTruckings[0].CO</textarea>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">
+                        N.W(KGS)
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].NETWEIGHT" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">
+                        G.W(KGS)
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].GROSSWEIGHT" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CONSIGNEE"]</div>
+            <div class="col-8">
+                <select class="form-control" multiple="multiple" size="@Model.GetDetailJobSheetTruckings[0].CONSIGNEE.Count()" id="txtShipper" disabled>
+                    @foreach (var a in Model.GetDetailJobSheetTruckings[0].CONSIGNEE)
+                    {
+                        <option>@a</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["LOADING DATE"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@((@Model.GetDetailJobSheetTruckings[0].LOADINGDATE=="")?"":Convert.ToDateTime(Model.GetDetailJobSheetTruckings[0].LOADINGDATE).ToString("dd/MM/yyyy"))" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CROSS BORDER DATE"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@((@Model.GetDetailJobSheetTruckings[0].CORSSBORDERDATE=="")?"":Convert.ToDateTime(Model.GetDetailJobSheetTruckings[0].CORSSBORDERDATE).ToString("dd/MM/yyyy"))" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ETA REQUIREMENT"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@((@Model.GetDetailJobSheetTruckings[0].ETAREQUIREMENT=="")?"":Convert.ToDateTime(Model.GetDetailJobSheetTruckings[0].ETAREQUIREMENT).ToString("dd/MM/yyyy"))" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["PLACE OF LOADING"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].PLACEOFLOADING" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["PLACE OF DELIVERY"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].PLACEOFDELIVERY" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["GOODS DESCRIPTION"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].GOODSDESCRIPTION" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["VOLUME"]</div>
+            <div class="col-8">
+                <textarea readonly class="form-control">@Model.GetDetailJobSheetTruckings[0].VOLUME</textarea>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Create By"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetJobSheetTruckingEditResponses.Data.CreateBy" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Update By"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetJobSheetTruckingEditResponses.Data.UpdateBy" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        @*<div class="row mt-2">
+        <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SALE QUOTATION"]<span style="color:red">*</span></div>
+        <div class="col-8">
+        <input type="text" class="form-control" placeholder="Search Quotation" data-DocEntry="" id="txtSaleQuotation" value="" readonly>
+        </div>
+        </div>*@
+    </div>
+    <div class="col-6">
+    </div>
+</div>
+<hr />
+<div class="row mt-2">
+    <div class="col-12" style="margin:auto;text-align:left;font-weight:bold;">
+        <h5><u>@localizer["List Of Invoice"]</u></h5>
+    </div>
+</div>
+<div class="row" style="margin:auto;text-align:left;font-weight:bold;">
+    <div class="row mt-2">
+        @{
+            int i = 1;
+        }
+        @foreach (var a in Model.GetDetailJobSheetTruckings[0].Invoices)
+        {
+            if (i % 2 != 0)
+            {
+                <div class="col-6">
+                    <div class="row mt-2">
+                        <div class="col-5">INVOICE NO @i:</div>
+                        <div class="col-7">@a</div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-6">
+                    <div class="row mt-2">
+                        <div class="col-5">INVOICE NO @i:</div>
+                        <div class="col-7">@a</div>
+                    </div>
+                </div>
+            }
+            i++;
+        }
+
+
+    </div>
+</div>
+<hr />
+<div class="row mt-2" style="margin:auto;text-align:left;font-weight:bold;">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-3">TRUCK NO</div>
+            <div class="col-2">TRUCK WEIGHT(KGS)</div>
+            <div class="col-3">CONTAINER NO.</div>
+            <div class="col-2">CONTAINER WEIGHT(KGS)</div>
+            <div class="col-2">TRANSPORTER</div>
+        </div>
+    </div>
+</div>
+<!--Transport Information-->
+<div class="row mt-2" style="margin:auto;text-align:left;font-weight:bold;">
+    @{
+        int z = 1;
+    }
+    @foreach (var a in Model.GetDetailJobSheetTruckings[0].TRUCKINFORMATIONS)
+    {
+        <div class="col-12">
+            <div class="row mt-2">
+                <div class="col-3">@z.@a.TRUCKNO</div>
+                <div class="col-2">@a.TruckWeight</div>
+                <div class="col-3">@a.CONTAINERTRUCK</div>
+                <div class="col-2">@a.ContainerWeight</div>
+                <div class="col-2">@a.TRANSPORTER</div>
+            </div>
+        </div>
+        z++;
+    }
+
+
+</div>
+<!--End Transport Information-->
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["THAI FORWARDER"]</div>
+            <div class="col-8">
+                <select class="form-control" multiple="multiple" size="@Model.GetDetailJobSheetTruckings[0].THAIFORWARDER.Count()" id="txtShipper" disabled>
+                    @foreach (var a in Model.GetDetailJobSheetTruckings[0].THAIFORWARDER)
+                    {
+                        <option>@a</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["OVERSEA FORWARDER"]</div>
+            <div class="col-8">
+                <select class="form-control" multiple="multiple" size="@Model.GetDetailJobSheetTruckings[0].OVERSEAFORWARDER.Count()" id="txtShipper" disabled>
+                    @foreach (var a in Model.GetDetailJobSheetTruckings[0].OVERSEAFORWARDER)
+                    {
+                        <option>@a</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["THAI BORDER"]</div>
+            <div class="col-8">
+                <select class="form-control" multiple="multiple" size="@Model.GetDetailJobSheetTruckings[0].THAIBORDER.Count()" id="txtShipper" disabled>
+                    @foreach (var a in Model.GetDetailJobSheetTruckings[0].THAIBORDER)
+                    {
+                        <option>@a</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        @* <div class="row">
+        <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["OVERSEA TRANSPORT"]</div>
+        <div class="col-8">
+        <input type="text" class="form-control" value="@Model.GetDetailJobSheetTruckings[0].OVERSEATRANSPORT" readonly>
+        </div>
+        </div>*@
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TRUCK WAYBILL BY"]</div>
+            <div class="col-8">
+                <ul class="navbar-nav flex-grow-1 btn" style="float:right;background-color:#01295C;color:white;width:100%">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown" href="#">@localizer["Print Truck WayBill"]</a>
+                        @{
+                            var k = 1;
+                        }
+                        <ul class="dropdown-menu" style="border: 1px solid #01295C">
+                            @foreach (var z1 in Model.GetDetailJobSheetTruckings[0].Layout.Data)
+                            {
+                                @if (k == 1)
+                                {
+                                    <li>
+                                        <a class="dropdown-item btn btn-info" target="_blank" asp-route-layoutCode="@z1.Code" asp-route-docEntry="@Model.GetDetailJobSheetTruckings[0].CONFIRMBOOKINGID" asp-controller="CallLayout" asp-action="PrintLayout">
+                                            @z1.Name
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item btn btn-info" target="_blank" asp-route-layoutCode="@z1.Code" asp-route-docEntry="@Model.GetDetailJobSheetTruckings[0].CONFIRMBOOKINGID" asp-controller="CallLayout" asp-action="PrintLayout">
+                                            @z1.Name
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;"></div>
+        </div>
+    </div>
+    <div class="col-2"></div>
+    <div class="col-4">
+        @*<div class="row">
+        <div class="col-12">
+        <div class="input-group">
+        <select class="form-select" id="cboSelectItemType">
+        <option selected value="1">Select From Item</option>
+        </select>
+        <button type="button" id="btnSelectItemFrom" class="btn" style="background-color:#01295C;color:white">
+        <i class="fa fa-search"></i>
+        </button>
+        </div>
+        </div>
+        </div>*@
+    </div>
+</div>
+<hr />
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["COSTING"]</div>
+            <div class="col-8">
+                <input type="text" id="cboCurrencyItemCosting" value="@Model.GetJobSheetTruckingEditResponses.Data.CurrencyCosting" class="form-control" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SELLING"]</div>
+            <div class="col-8">
+                <input type="text" id="cboCurrencyItemSelling" value="@Model.GetJobSheetTruckingEditResponses.Data.CurrencySelling" class="form-control" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Information Item Binding Data-->
+<div style="height:400px;border:1px;overflow-y:scroll;overflow-x:hidden;padding-left:15px;padding-right:0px;margin-top:10px;margin-bottom:10px;">
+    <div class="row mt-2">
+        <div class="col-6">
+            <!--ITEM COSTING-->
+            <div id="tbListItemCostingAndSelling">
+                @foreach (var a in Model.GetJobSheetTruckingEditResponses.Data.LinesCosting)
+                {
+                    @*<div class="row mt-2">
+                <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;font-size:14px;" data-ItemCode="@a.ITEMCODE" id="lbl-txt-c-@a.ITEMCODE">@a.ITEMNAME</div>
+                <div class="col-2">
+                <input type="number" onchange="costingLineEdit()" class="form-control" value="@a.Qty" placeholder="Qty" id="txt-q-@a.ITEMCODE-@a.LineNumber">
+                </div>
+                <div class="col-4">
+                <input type="number" class="form-control" onchange="costingLineEdit()" placeholder="Amount" id="txt-c-@a.ITEMCODE-@a.LineNumber" value="@a.TOTALPRICE">
+                </div>
+                <div class="col-3" style="margin:auto;">@(a.Qty * a.TOTALPRICE)</div>
+                </div>*@
+                    <div class="row mt-2">
+                        <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;font-size:14px;" data-ItemCode="@a.ITEMCODE" id="lbl-txt-c-@a.ITEMCODE">@a.ITEMNAME</div>
+                        <div class="col-2">
+                            <input type="number" disabled class="form-control" value="@a.Qty" placeholder="Qty">
+                        </div>
+                        <div class="col-2">
+                            <input type="number" class="form-control" disabled placeholder="Amount" id="txt-c-@a.ITEMCODE" value="@a.TOTALPRICE">
+                        </div>
+                        <div class="col-2" style="margin:auto;">@(a.Qty * a.TOTALPRICE)</div>
+                        <div class="col-3" style="margin:auto;">@a.UomName</div>
+                    </div>
+                }
+            </div>
+            <div id="tbListItemCostingAndSellingNew">
+            </div>
+        </div>
+        <div class="col-6">
+            <!--ITEM SELLING-->
+            @foreach (var a in Model.GetJobSheetTruckingEditResponses.Data.LinesSelling)
+            {
+                <div class="row mt-2">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;font-size:14px;" data-ItemCode="@a.ITEMCODE" id="lbl-txt-c-@a.ITEMCODE">@a.ITEMNAME</div>
+                    <div class="col-2">
+                        <input type="number" disabled class="form-control" value="@a.Qty" placeholder="Qty">
+                    </div>
+                    <div class="col-2">
+                        <input type="number" class="form-control" disabled placeholder="Amount" id="txt-c-@a.ITEMCODE" value="@a.TOTALPRICE">
+                    </div>
+                    <div class="col-2" style="margin:auto;">@(a.Qty * a.TOTALPRICE)</div>
+                    <div class="col-3" style="margin:auto;">@a.UomName</div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<!--End Binding Data Information Item-->
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TOTAL COSTING"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetJobSheetTruckingEditResponses.Data.TotalCosting" id="txtTotalCosting" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TOTAL SELLING"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetJobSheetTruckingEditResponses.Data.TotalSelling" id="txtTotalSelling" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["REBATE"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" disabled onchange="reCalculate()" value="@Model.GetJobSheetTruckingEditResponses.Data.Rebate" id="txtRebate">
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["GRAND TOTAL COSTING"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetJobSheetTruckingEditResponses.Data.GrandTotalCosting" disabled id="txtGrandTotalCosting" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["GRAND TOTAL SELLING"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetJobSheetTruckingEditResponses.Data.GrandTotalSelling" id="txtGrandTotalSelling" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["GRAND TOTAL COSTING"] &nbsp;<span id="lblCurrencyCost">THB</span></div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetJobSheetTruckingEditResponses.Data.GrandTotalCostingUSD" id="txtGrandTotalCostingUSD" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["GRAND TOTAL SELLING"]&nbsp;<span id="lblCurrencySell">THB</span></div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetJobSheetTruckingEditResponses.Data.GrandTotalSellingUSD" id="txtGrandTotalSellingUSD" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6"></div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["PROFIT"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="@Model.GetJobSheetTruckingEditResponses.Data.Profit" id="txtProfit" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        @*<button class="btn" id="btnConfirmCosting" style="float:right;background-color:#01295C;color:white">Confirm Costing</button>*@
+    </div>
+    <div class="col-6">
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <u style="font-weight:bold">REMARK FOR COSTING</u>
+    </div>
+    <div class="col-6">
+        <u style="font-weight:bold">REMARK FOR SELLING</u>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <textarea id="remarkForCosting" rows="4" class="form-control">@Model.GetJobSheetTruckingEditResponses.Data.RemarkForCosting</textarea>
+    </div>
+    <div class="col-6">
+        <textarea id="remarkForSelling" rows="4" class="form-control">@Model.GetJobSheetTruckingEditResponses.Data.RemarkForSelling</textarea>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <input type="file" class="form-control" multiple name="AddAttachmentfile" id="btnAddAttachmentFile" style="float:left;background-color:#0dcaf0;color:white">
+    </div>
+    <div class="col-6">
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6" id="txtAttachmentFile">
+    </div>
+    <div class="col-6" id="txtAttachmentUpdate">
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-6">
+    </div>
+    <div class="col-6">
+        <button class="btn" id="btnConfirmTransaction" onclick="onConfirmTransaction('@Url.Action("OnUpdateAttachmentJobSheetTrucking","JobSheetTrucking")','@Url.Action("ViewDetailJobSheetTrucking","JobSheetTrucking")','@Url.Action("OnPostMyUploader","JobSheetTrucking")')" style="float:right;background-color:#01295C;color:white">Update Transaction</button>
+    </div>
+</div>
+@await Html.PartialAsync("Modal/ModalListItemSalesQuotationJobSheet"/*,Model.GetSaleQuotationJobSheets[0].Lines*/)
+@section scripts{
+    @* <script src="~/js/jobsheettrucking/index.js"></script>*@
+    <script src="~/js/jobsheettrucking/modal/ModalListItemSalesQuotationJobSheet.js"></script>
+    <script>
+        var listObjectUpdate = @Json.Serialize(Model.GetItemDetailByItemTypes);
+        var listItemLineAdd = @Json.Serialize(Model.GetJobSheetTruckingEditResponses.Data.LinesCosting);
+        var dataFile = new FormData();
+        var dataFileShow = new FormData();
+        var exchangeRate = @Model.GetJobSheetTruckingEditResponses.Data.ExchangeRate;
+        var attachment = @Json.Serialize(Model.GetJobSheetTruckingEditResponses.Data.Attachments);
+        formartNumber('txtTotalCosting');
+        formartNumber('txtTotalSelling');
+        formartNumber('txtTotalCostingTHBBase');
+        formartNumber('txtTotalSellingTHBBase');
+        formartNumber('txtRebate');
+        formartNumber('txtGrandTotalCosting');
+        formartNumber('txtGrandTotalSelling');
+        formartNumber('txtGrandTotalCostingUSD');
+        formartNumber('txtProfit');
+        onLoadingAttachment();
+        function onLoadingAttachment() {
+            for (var i = 0; i < attachment.length; i++) {
+                $("#txtAttachmentFile").append('<div class="row mt-2"><div class="col-8"><input type="text" disabled class="form-control" value="' + attachment[i].attachmentname + '"></div><div class="col-4"><a href="@path/mediaUpload/' + attachment[i].attachmentname + '" class="btn btn-success">Download</a><button onclick="DeleteAttachmentfileUpdate(' + attachment[i].lineId + ')" class="btn btn-danger">Delete</button></div></div>');
+            }
+        }
+        $("#btnAddAttachmentFile").change(function () {
+            var myFile = $('#btnAddAttachmentFile').prop('files');
+            for (var i = 0; i < myFile.length; i++) {
+                dataFile.append('MyUploader', myFile[i]);
+            }
+            reRenderAttachment();
+            $('#btnAddAttachmentFile').val('');
+        });
+        function DeleteAttachmentfileUpdate(fileName) {
+            attachment = attachment.filter(e => e.lineId !== fileName);
+            reRenderAttachment();
+        }
+        function DeleteAttachmentfile(index) {
+            var tmpAttachment = dataFile.getAll("MyUploader");
+            dataFile = new FormData();
+            for (var i = 0; i < tmpAttachment.length; i++) {
+                if (i !== index) {
+                    dataFile.append('MyUploader', tmpAttachment[i]);
+                }
+            }
+            reRenderAttachment();
+        }
+        function reRenderAttachment() {
+            $("#txtAttachmentFile").empty();
+            onLoadingAttachment();
+            for (var i = 0; i < dataFile.getAll("MyUploader").length; i++) {
+                $("#txtAttachmentFile").append('<div class="row mt-2"><div class="col-10"><input type="text" disabled class="form-control" value="' + dataFile.getAll("MyUploader")[i].name + '"></div><div class="col-2"><button onclick="DeleteAttachmentfile(' + i + ')" class="btn btn-outline-danger">Delete</button></div></div>');
+            }
+        }
+        function costingLineEdit() {
+            //Costing
+            var totalCost = 0;
+            for (var i = 0; i < listItemAddNew.length; i++) {
+                totalCost = totalCost + parseFloat(listItemAddNew[i].priceCosting * listItemAddNew[i].qtyCosting);
+            }
+            for (var i = 0; i < listItemLineAdd.length; i++) {
+                //console.log($("#txt-c-" + listItemLineAdd[i].itemcode + "-" + listItemLineAdd[i].lineNumber).val());
+                //console.log($("#txt-q-" + listItemLineAdd[i].itemcode + "-" + listItemLineAdd[i].lineNumber).val());
+                if ($("#txt-c-" + listItemLineAdd[i].itemcode + listItemLineAdd[i].lineNumber).val() !== "") {
+                    listItemLineAdd[i].totalprice = $("#txt-c-" + listItemLineAdd[i].itemcode + "-" + listItemLineAdd[i].lineNumber).val().replace(",", "");
+                    listItemLineAdd[i].qty = parseInt($("#txt-q-" + listItemLineAdd[i].itemcode + "-" + listItemLineAdd[i].lineNumber).val());
+                    totalCost = totalCost + parseFloat(listItemLineAdd[i].totalprice * listItemLineAdd[i].qty);
+                }
+            }
+            //console.log(listItemLineAdd);
+            var totalAfterDiscountCost = totalCost + parseFloat($("#txtRebate").val());
+            $("#txtTotalCosting").val(totalCost);
+            $("#txtGrandTotalCosting").val(totalAfterDiscountCost);
+            if ($("#cboCurrencyItemCosting").val().substring(0, 2) == "TH") {
+                $("#lblCurrencyCost").empty();
+                $("#lblCurrencyCost").text("THB");
+                $("#txtGrandTotalCostingUSD").val((totalAfterDiscountCost / exchangeRate).toFixed(2));
+                //console.log((parseFloat($("#txtGrandTotalSelling").val()) - totalAfterDiscountCost).toFixed(2));
+                $("#txtProfit").val((parseFloat($("#txtGrandTotalSelling").val()) - totalAfterDiscountCost).toFixed(2));
+            } else {
+                $("#lblCurrencyCost").empty();
+                $("#lblCurrencyCost").text("THB");
+                $("#txtGrandTotalCostingUSD").val((totalAfterDiscountCost / exchangeRate).toFixed(2));
+                $("#txtProfit").val((parseFloat($("#txtGrandTotalSelling").val()) - totalAfterDiscountCost).toFixed(2));
+            }
+            formartNumber('txtTotalCosting');
+            formartNumber('txtTotalSelling');
+            formartNumber('txtTotalCostingTHBBase');
+            formartNumber('txtTotalSellingTHBBase');
+            formartNumber('txtRebate');
+            formartNumber('txtGrandTotalCosting');
+            formartNumber('txtGrandTotalSelling');
+            formartNumber('txtGrandTotalCostingUSD');
+            formartNumber('txtGrandTotalSelling');
+            formartNumber('txtProfit');
+            renderItemList();
+        }
+        $("#btnConfirmCosting").click(function () {
+            if ($("#btnConfirmCosting").text() == "Confirm Costing") {
+                $("#btnConfirmCosting").text("UnConfirm Costing");
+                renderItemList("1");
+                renderItemListNew("1");
+            } else {
+                $("#btnConfirmCosting").text("Confirm Costing");
+                renderItemList();
+                renderItemListNew();
+            }
+        });
+        function renderItemList(condition) {
+            $("#tbListItemCostingAndSelling").empty();
+            for (var k = 0; k < listItemLineAdd.length; k++) {
+                if (condition === "1") {
+                    //$("#tbListItemCostingAndSelling").append('<div class="row mt-2"><div class="col-12"><!--ITEM COSTING--><div class="row mt-2"><div class="col-3" style="margin:auto;text-align:left;font-weight:bold;font-size:14px;padding:0px;"data-ItemCode="' + listItemLineAdd[k].itemcode + '" id="lbl-txt-c-' + listItemLineAdd[k].itemcode + '">' + listItemLineAdd[k].itemname + '</div><div class="col-2" style="margin:auto;"><input type="number" disabled onchange="costingLineEdit()"class="form-control" value="' + listItemLineAdd[k].qty + '" placeholder="Qty"id="txt-q-' + listItemLineAdd[k].itemcode + '" value=""></div><div class="col-4" style="margin:auto;"><input type="number" disabled class="form-control" onchange="costingLineEdit()" placeholder="Amount"id="txt-c-' + listItemLineAdd[k].itemcode + '" value="' + listItemLineAdd[k].totalprice + '"></div><div class="col-3" style="margin:auto;">=' + (listItemLineAdd[k].qty * listItemLineAdd[k].totalprice) + '</div></div></div>');
+                    $("#tbListItemCostingAndSelling").append('<div class="row mt-2"><div class="col-12"><!--ITEM COSTING--><div class="row mt-2"><div class="col-3" style="margin:auto;text-align:left;font-weight:bold;font-size:14px;padding:0px;" data-ItemCode="' + listItemLineAdd[k].itemcode + '" id="lbl-txt-c-' + listItemLineAdd[k].itemcode + '-' + listItemLineAdd[k].lineNumber + '">' + listItemLineAdd[k].itemname + '</div><div class="col-2" style="margin:auto;"><input type="number" disabled onchange="costingLineEdit()" class="form-control" value="' + listItemLineAdd[k].qty + '" placeholder="Qty" id="txt-q-' + listItemLineAdd[k].itemcode + '-' + listItemLineAdd[k].lineNumber + '" value=""></div><div class="col-4" style="margin:auto;"><input type="text" disabled class="form-control" onchange="costingLineEdit()" placeholder="Amount" id="txt-c-' + listItemLineAdd[k].itemcode + '-' + listItemLineAdd[k].lineNumber + '" value="' + listItemLineAdd[k].totalprice + '"></div><div class="col-3" style="margin:auto;">=' + (listItemLineAdd[k].qty * listItemLineAdd[k].totalprice) + '</div></div></div>');
+                } else {
+                    $("#tbListItemCostingAndSelling").append('<div class="row mt-2"><div class="col-12"><!--ITEM COSTING--><div class="row mt-2"><div class="col-3" style="margin:auto;text-align:left;font-weight:bold;font-size:14px;padding:0px;" data-ItemCode="' + listItemLineAdd[k].itemcode + '" id="lbl-txt-c-' + listItemLineAdd[k].itemcode + '-' + listItemLineAdd[k].lineNumber + '">' + listItemLineAdd[k].itemname + '</div><div class="col-2" style="margin:auto;"><input type="number" onchange="costingLineEdit()" class="form-control" value="' + listItemLineAdd[k].qty + '" placeholder="Qty" id="txt-q-' + listItemLineAdd[k].itemcode + '-' + listItemLineAdd[k].lineNumber + '" value=""></div><div class="col-4" style="margin:auto;"><input type="text" class="form-control" onchange="costingLineEdit()" placeholder="Amount" id="txt-c-' + listItemLineAdd[k].itemcode + '-' + listItemLineAdd[k].lineNumber + '" value="' + listItemLineAdd[k].totalprice + '"></div><div class="col-3" style="margin:auto;">=' + (listItemLineAdd[k].qty * listItemLineAdd[k].totalprice) + '</div></div></div>');
+                }
+                formartNumber('txt-c-' + listItemLineAdd[k].itemcode + '-' + listItemLineAdd[k].lineNumber);
+            }
+        }
+        function onConfirmTransaction(url, urlPDF, urlUploadFile) {
+            if (confirm("Please Confirm Transaction Before Add Make sure it correct !")) {
+                for (var z = 0; z < listItemAddNew.length; z++) {
+                    listItemLineAdd.push({
+                        "itemcode": listItemAddNew[z].itemCode,
+                        "itemname": listItemAddNew[z].itemName,
+                        "lineNumber": listItemAddNew[z].lineNum,
+                        "totalprice": listItemAddNew[z].priceCosting,
+                        "qty": listItemAddNew[z].qtyCosting,
+                    });
+                }
+                var updateJobSheetTruckingEdit = {};
+                updateJobSheetTruckingEdit.TotalCosting = $("#txtTotalCosting").val();
+                updateJobSheetTruckingEdit.GrandTotalCosting = $("#txtGrandTotalCosting").val();
+                updateJobSheetTruckingEdit.GrandTotalCostingUSD = $("#txtGrandTotalCostingUSD").val();
+                updateJobSheetTruckingEdit.Profit = $("#txtProfit").val();
+                updateJobSheetTruckingEdit.RemarkForCosting = $("#remarkForCosting").val();
+                updateJobSheetTruckingEdit.RemarkForSelling = $("#remarkForSelling").val();
+                updateJobSheetTruckingEdit.UpdateBy = $("#UserID").attr("data-id");
+                updateJobSheetTruckingEdit.DocEntry = @Model.GetJobSheetTruckingEditResponses.Data.DocEntry;
+                updateJobSheetTruckingEdit.LinesCostingEdit = listItemLineAdd;
+                //updateJobSheetTruckingEdit.ItemLineNew = listItemAddNew;
+                updateJobSheetTruckingEdit.Attachments = attachment;
+                if ($("#btnConfirmCosting").text() == "Confirm Costing") {
+                    updateJobSheetTruckingEdit.CostingConfirm = "N";
+                } else {
+                    updateJobSheetTruckingEdit.CostingConfirm = "Y";
+                }
+                if (dataFile.getAll("MyUploader").length != 0) {
+                    $.ajax({
+                        url: urlUploadFile,
+                        type: "POST",
+                        data: dataFile,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        beforeSend: function () {
+                            $('#Modalloder').modal('show');
+                        },
+                        success: function (data) {
+                            $('#Modalloder').modal('hide');
+                            for (var i = 0; i < data.length; i++) {
+                                updateJobSheetTruckingEdit.Attachments.push({ "attachmentname": data[i], "lineId": 0 })
+                            }
+                            $.ajax({
+                                url: url,
+                                type: "PUT",
+                                data: { updateJobSheetTruckingEdit: updateJobSheetTruckingEdit },
+                                dataType: "JSON",
+                                beforeSend: function () {
+                                    $('#Modalloder').modal('show');
+                                },
+                                success: function (data) {
+                                    $('#Modalloder').modal('hide');
+                                    $('#ModalSuccess').modal('show');
+                                    $('#ErrMsg').html("Success");
+                                    window.location.href = urlPDF + "?docEntry=" + data.docEntry;
+                                },
+                                error: function (erro) {
+                                    $('#Modalloder').modal('hide');
+                                    $('#ModalSuccess').modal('show');
+                                    $('#ErrMsg').html(erro.responseText);
+                                    return;
+                                }
+                            });
+                        },
+                        error: function (erro) {
+                            $('#Modalloder').modal('hide');
+                            $('#ModalSuccess').modal('show');
+                            $('#ErrMsg').html(erro.responseText);
+                            return;
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        url: url,
+                        type: "PUT",
+                        data: { updateJobSheetTruckingEdit: updateJobSheetTruckingEdit },
+                        dataType: "JSON",
+                        beforeSend: function () {
+                            $('#Modalloder').modal('show');
+                        },
+                        success: function (data) {
+                            $('#Modalloder').modal('hide');
+                            $('#ModalSuccess').modal('show');
+                            $('#ErrMsg').html("Success");
+                            window.location.href = urlPDF + "?docEntry=" + data.docEntry;
+                        },
+                        error: function (erro) {
+                            $('#Modalloder').modal('hide');
+                            $('#ModalSuccess').modal('show');
+                            $('#ErrMsg').html(erro.responseText);
+                            return;
+                        }
+                    });
+                }
+            }
+        }
+        var tbListSalesQuotationJobSheet = $('#TbListItemSalesQuotationJobSheet').DataTable();
+        var listItemAddNew = [];
+        var indexItemNew = 1;
+        $("#btnSelectItemFrom").click(function () {
+            if ($("#cboSelectItemType").val() === "1") { //Select Type Item
+                var tbListItemLine = $('#TbListItemSalesQuotationJobSheet').DataTable();
+                tbListItemLine.clear();
+                tbListItemLine.rows.add(listObjectUpdate);
+                tbListItemLine.search("").columns().search("").draw();
+                $("#ModalItemSalesQuotationJobSheet").modal("show");
+            }
+        });
+        $("#btnChooseItemQuotation").click(function () {
+            var index = tbListSalesQuotationJobSheet.row('.selected').index();
+            if (index !== undefined) {
+                var data = tbListSalesQuotationJobSheet.row(index).data();
+                var objectItem = {};
+                objectItem.itemType = "";
+                objectItem.lineNum = indexItemNew;
+                objectItem.itemCode = data.itemCode;
+                objectItem.itemName = data.itemName;
+                objectItem.priceCosting = 0;
+                objectItem.qtyCosting = data.qtyCosting;
+                indexItemNew++;
+                listItemAddNew.push(objectItem);
+                renderItemListNew("");
+            }
+            tbListSalesQuotationJobSheet.$('tr.selected').removeClass('selected');
+            $("#ModalItemSalesQuotationJobSheet").modal("hide");
+        });
+        function renderItemListNew(condition) {
+            $("#tbListItemCostingAndSellingNew").empty();
+            //console.log(listItemAddNew);
+            for (var k = 0; k < listItemAddNew.length; k++) {
+                if (condition === "1") {
+                    $("#tbListItemCostingAndSellingNew").append('<div class="row mt-2"><div class="col-3" style="margin:auto;text-align:left;font-weight:bold;font-size:14px;" data-ItemCode="' + listItemAddNew[k].itemCode + '" id="lbl-txt-c-' + listItemAddNew[k].itemCode + '">' + listItemAddNew[k].itemName + '</div><div class="col-2"><input type="number" disabled onchange="costingLineEditNew()" class="form-control" value="' + listItemAddNew[k].qtyCosting + '" placeholder="Qty" id="txt-q-' + listItemAddNew[k].itemCode + '-' + listItemAddNew[k].lineNum + '"></div><div class="col-4"><input type="text" disabled class="form-control" onchange="costingLineEditNew()" placeholder="Amount" id="txt-c-' + listItemAddNew[k].itemCode + '-' + listItemAddNew[k].lineNum + '" value="' + listItemAddNew[k].priceCosting + '"></div><div class="col-3" style="margin:auto;">=' + (listItemAddNew[k].qtyCosting * listItemAddNew[k].priceCosting) + '</div></div>');
+                } else {
+                    $("#tbListItemCostingAndSellingNew").append('<div class="row mt-2"><div class="col-3" style="margin:auto;text-align:left;font-weight:bold;font-size:14px;" data-ItemCode="' + listItemAddNew[k].itemCode + '" id="lbl-txt-c-' + listItemAddNew[k].itemCode + '">' + listItemAddNew[k].itemName + '</div><div class="col-2"><input type="number" onchange="costingLineEditNew()" class="form-control" value="' + listItemAddNew[k].qtyCosting + '" placeholder="Qty" id="txt-q-' + listItemAddNew[k].itemCode + '-' + listItemAddNew[k].lineNum + '"></div><div class="col-4"><input type="text" class="form-control" onchange="costingLineEditNew()" placeholder="Amount" id="txt-c-' + listItemAddNew[k].itemCode + '-' + listItemAddNew[k].lineNum + '" value="' + listItemAddNew[k].priceCosting + '"></div><div class="col-3" style="margin:auto;">=' + (listItemAddNew[k].qtyCosting * listItemAddNew[k].priceCosting) + '<button style="margin-left: 10px" class="btn btn-danger" onclick="deleteItemListLine(\'' + listItemAddNew[k].itemCode + '\',' + listItemAddNew[k].lineNum + ')">Delete</button></div></div>');
+                }
+                formartNumber('txt-c-' + listItemAddNew[k].itemCode + '-' + listItemAddNew[k].lineNum);
+            }
+        }
+        function costingLineEditNew() {
+            //Costing Old
+            var totalCost = 0;
+            for (var i = 0; i < listItemLineAdd.length; i++) {
+                totalCost = totalCost + parseFloat(listItemLineAdd[i].totalprice * listItemLineAdd[i].qty);
+            }
+            //Costing New
+            for (var i = 0; i < listItemAddNew.length; i++) {
+                //console.log($("#txt-c-" + listItemAddNew[i].itemCode + "-" + listItemAddNew[i].lineNum).val());
+                //console.log($("#txt-q-" + listItemAddNew[i].itemCode + "-" + listItemAddNew[i].lineNum).val());
+                //console.log("#txt-c-" + listItemAddNew[i].itemCode + "-" + listItemAddNew[i].lineNum);
+                if ($("#txt-c-" + listItemAddNew[i].itemCode + listItemAddNew[i].lineNum).val() !== "") {
+                    listItemAddNew[i].priceCosting = $("#txt-c-" + listItemAddNew[i].itemCode + "-" + listItemAddNew[i].lineNum).val().replace(",", "");//parseFloat();
+                    listItemAddNew[i].qtyCosting = parseInt($("#txt-q-" + listItemAddNew[i].itemCode + "-" + listItemAddNew[i].lineNum).val());
+                    totalCost = totalCost + parseFloat(listItemAddNew[i].priceCosting * listItemAddNew[i].qtyCosting);
+                }
+                //formartNumber("txt-c-" + listItemAddNew[i].itemCode + "-" + listItemAddNew[i].lineNum);
+            }
+            //console.log(listItemAddNew);
+
+            var totalAfterDiscountCost = totalCost + parseFloat($("#txtRebate").val());
+            $("#txtTotalCosting").val(totalCost);
+            $("#txtGrandTotalCosting").val(totalAfterDiscountCost);
+            if ($("#cboCurrencyItemCosting").val().substring(0, 2) == "TH") {
+                $("#lblCurrencyCost").empty();
+                $("#lblCurrencyCost").text("THB");
+                $("#txtGrandTotalCostingUSD").val((totalAfterDiscountCost / exchangeRate).toFixed(2));
+                //console.log((parseFloat($("#txtGrandTotalSelling").val()) - totalAfterDiscountCost).toFixed(2));
+                $("#txtProfit").val((parseFloat($("#txtGrandTotalSelling").val()) - totalAfterDiscountCost).toFixed(2));
+            } else {
+                $("#lblCurrencyCost").empty();
+                $("#lblCurrencyCost").text("THB");
+                $("#txtGrandTotalCostingUSD").val((totalAfterDiscountCost / exchangeRate).toFixed(2));
+                $("#txtProfit").val((parseFloat($("#txtGrandTotalSelling").val()) - totalAfterDiscountCost).toFixed(2));
+            }
+            formartNumber('txtTotalCosting');
+            formartNumber('txtTotalSelling');
+            formartNumber('txtTotalCostingTHBBase');
+            formartNumber('txtTotalSellingTHBBase');
+            formartNumber('txtRebate');
+            formartNumber('txtGrandTotalCosting');
+            formartNumber('txtGrandTotalSelling');
+            formartNumber('txtGrandTotalCostingUSD');
+            formartNumber('txtGrandTotalSelling');
+            formartNumber('txtProfit');
+            renderItemListNew();
+        }
+        function deleteItemListLine(itemCode, lineID) {
+            listItemAddNew = listItemAddNew.filter(e => e.lineNum !== lineID);//e.itemCode !== itemCode &&
+            renderItemListNew();
+            costingLineEditNew();
+        }
+    </script>
+}

@@ -1,0 +1,256 @@
+List Of Table have in AddOn Program EW
+
+Table Name					Description					ObjectType
+BOOKINGSHEET					BOOKINGSHEET					DOCUMENT
+	SALEEMPLOYEE				Sale Employee					Link To Entities (System Object SaleEmployee)
+	IMPORTTYPE				IMPORT TYPE					Valid Values (1-IMPORT,2-EXPORT,3-DOMESTIC,4-TRANSIT)
+	BOOKINGDATE				BOOKINGDATE					Date(Validate)
+	ORIGIN					ORIGIN						Alphanumeric(11)
+	DESTINATION				DESTINATION					Alphanumeric(11)
+	SHIPPER					SHIPPER						Alphanumeric(15)
+	CO					C/O						Link To Entities (System Object Business Partners)
+	CONSIGNEE				CONSIGNEE					Alphanumeric(15)
+	GOODSDESCRIPTION			GOODS DESCRIPTION				Alphanumeric(30)
+	TOTALPACKAGE				TOTAL PACKAGE					Alphanumeric(15)
+	NETWEIGHT				NET WEIGHT(KGS)					Units and Totals(Measure)
+	GROSSWEIGHT				GROSS WEIGHT(KGS)				Units and Totals(Measure)
+	LOADINGDATE				LOADING DATE					Date/Time(Date)
+	CROSSBORDERDATE				CROSS BORDER DATE				Date/Time(Date)
+	ETAREQUIREMENT				ETA REQUIREMENT					Date/Time(Date)
+	THAITRUCKER				THAI TRUCKER					Link To Entities (UDO TBTHAITRUCKER)
+	OVERSEATRUCKER				OVERSEA TRUCKER					Link To Entities (UDO TBOVERSEATRUCKER)
+	LOLOYARDORUNLOADING			LOLOYARD/UNLOADING				Valid Values (1-LOLO YARD,2-UNLOADING)
+	THAIFORWARDER				THAI FORWARDER					Link To Entities (UDO TBTHAIFORWARDER)
+	OVERSEAFORWARDER			OVERSEA FORWARDER				Link To Entities (UDO TBOVERSEAFORWARDER)
+	LCLORFCL				LCL/FCL						Valid Values (1-LCL,2-FCL)
+	CYORCFS					CY/CFS						Valid Values (1-CY,2-CFS)
+	CONTAINERTYPE				CONTAINERTYPE					Valid Values (1-FOB,2-CIF)
+	SPECIALREQUEST				SPECIAL REQUEST					Alphanumeric(30)
+	JOBNO					JOB NO#						Alphanumeric(10)
+	EWSeries				EWSeries					Link To Entities (UDO TBSERIESTYPE)
+	UserCreate				UserCreate					Link To Entities (System Object Users)
+	CONFIRMBOOKINGSHEETID			CONFIRM BOOKING SHEET ID			Link To Entities (UDO CONFIRMBOOKINGSHEET)
+	SERVICETYPE				SERVICE TYPE					Link To Entities (UDO TBSERVICETYPE)
+COMMODITY					COMMODITY					DOCUMENT ROWS
+	INVOICE					INVOICE						Alphanumeric(50)
+CONFIRMBOOKINGSHEET				CONFIRMBOOKINGSHEET				DOCUMENT
+	BOOKINGID				BOOKING ID					Link To Entities (UDO BOOKINGSHEET)
+	CreateUser				CreateUser					Link To Entities (System Object Users)
+	PROJECTMANAGEMENTID			PROJECT MANAGEMENT ID				Link To Entities (System Object Project Management)
+PLACEOFDELIVERY					PLACE OF DELIVERY				DOCUMENT ROWS
+	PLACEDELIVERY				PLACE OF DELIVERY				Link To Entities (UDO TBPLACEOFDELIVERY)
+PLACEOFLOADING					PLACE OF LOADING				DOCUMENT ROWS
+	PLACELOADING				PLACE OF LOADING				Link To Entities (UDO TBPLACEOFLOADING)
+THAIBORDER					THAI BORDER					DOCUMENT ROWS
+	ThaiBorder				ThaiBorder					Link To Entities (UDO TBTHAIBORDER)
+TBOVERSEAFORWARDER				OVERSEA FORWARDER SETUP				MASTER DATA (Default)
+TBOVERSEATRUCKER				OVERSEA TRUCKER	SETUP				MASTER DATA (Defualt)
+TBPLACEOFDELIVERY				PLACE OF DELIVERY SETUP				MASTER DATA (Defualt)
+	COUNTRY					COUNTRY						Alphanumeric(25)
+TBPLACEOFLOADING				PLACE OF LOADING SETUP				MASTER DATA (Defualt)
+	COUNTRY					COUNTRY						Alphanumeric(25)
+TBTHAIBORDER					THAI BORDER SETUP				MASTER DATA (Defualt)
+TBTHAIFORWARDER					THAI FORWARDER SETUP				MASTER DATA (Defualt)
+TBTHAITRUCKER					THAI TRUCKER SETUP				MASTER DATA (Defualt)
+TBVOLUME					VOLUME SETUP					MASTER DATA
+	CONTAINERNUMBER(1)			CONTAINER NUMBER				Numeric(10)
+TRUCKINFORMATION				TUCKER INFORMATION				DOCUMENT ROWS
+	INOVICENO				INVOICE NO#					Alphanumeric(11)
+	TRUCKNO					TRUCK NO#					Link To Entities (System Object Items)
+	TRUCKVENDOR				TRUCKVENDOR					Link To Entities (System Object Business Partners)
+	TRUCKCOST				TRUCKCOST					Units and Totals(Amount)
+	DRIVERID				DRIVER ID# 1					Link To Entities (System Object Employees)
+	CONTAINERNO				CONTAINER NO#					Alphanumeric(50)
+	CONTAINERVENDOR				CONTAINER VENDOR				Link To Entities (System Object Business Partners)
+	CONTAINERCOST				CONTAINER COST					Units and Totals(Amount)
+	DRIVERID1				DRIVER ID# 2					Link To Entities (System Object Employees)
+VOLUME						VOLUME						DOCUMENT ROWS
+	QTY					QTY						Numeric(10)
+	VOLUMECODE				VOLUMECODE					Link To Entities (UDO TBVOLUME)
+TBJOBTYPE					JOB TYPE					MASTER DATA(Defualt)			
+TBSERVICETYPE					SERVICE TYPE					MASTER DATA
+	JOBTYPE					JOB TYPE					Link To Entities (UDO TBJOBTYPE)
+JOBSHEETTRUKCING				JOBSHEETTRUKCING				Document
+	CONFIRMBOOKINGID			Confirm BookingID				Link To Entities (UDO CONFIRMBOOKINGSHEET)
+	SALEQUOTATIONDOCNUM			SaleQuotationDocNum				Link To Entities (System Object SalesQuotation)
+	TRUCKWAYBILLBY				TruckWay BillBy					Alphanumeric(50)
+	CURRENCYCOSTING				Currency Costing				Alphanumeric(20)
+	CURRENCYSELLING				Currency Selling				Alphanumeric(20)
+	REMARKSCOSTING				Remarks Costing					Alphanumeric(50)
+	REMAKRSSELLING				Remarks Selling					Alphanumeric(50)
+	TOTALCOSTING				Total Costing					Units and Totals(Amount)
+	REBATE					Rebate						Units and Totals(Amount)
+	GRANDTOTALCOSTING			Grand Total Costing				Units and Totals(Amount)
+	GRANDTOTALCOSTINGUSD			Grand Total CostingUSD				Units and Totals(Amount)
+	TOTALSELLING				Total Selling					Units and Totals(Amount)
+	GRANDTOTALSELLING			Grand Total Selling				Units and Totals(Amount)
+	GRANDTOTALSELLINGUSD			GrandTotalSellingUSD				Units and Totals(Amount)
+	TOTALPROFIT				TOTALPROFIT					Units and Totals(Amount)
+	USERCREATE				USER CREATE					Link To Entities (System Object Users)
+JOBTRUCKCOSTING					JOBTRUCKCOSTING					DOCUMENT ROWS
+	ITEMCODE				ITEM CODE					Link To Entities (System Object Item)
+	TOTALPRICE				TOTAL PRICE					Units and Totals(Amount)
+JOBTRUCKINGSELLING				JOBTRUCKINGSELLING				DOCUMENT ROWS
+	ITEMCODE				ITEM CODE					Link To Entities (System Object Item)
+	TOTALPRICE				TOTAL PRICE					Units and Totals(Amount)
+
+
+List Object Register
+Unique ID					Type				Table						Defualt Form				Menu Item
+TBOVERSEATRUCKER				MasterData			TBOVERSEATRUCKER				Matrix Style				None
+	Field Display
+		Code
+		Name
+TBOVERSEAFORWARDER				Master Data			TBOVERSEAFORWARDER				Matrix Style				None
+	Field Display
+		Code
+		Name
+TBPLACEOFDELIVERY				Master Data			TBPLACEOFDELIVERY				Matrix Style				None
+	Field Display
+		Code
+		Name
+TBPLACEOFLOADING				Master Data			TBPLACEOFLOADING				Matrix Style				None
+	Field Display
+		Code
+		Name
+TBTHAIBORDER					Master Data			TBTHAIBORDER					Matrix Style				None
+	Field Display
+		Code
+		Name
+TBTHAIFORWARDER					Master Data			TBTHAIFORWARDER					Matrix Style				None
+	Field Display
+		Code
+		Name
+TBTHAITRUCKER					Master Data			TBTHAITRUCKER					Matrix Style				None
+	Field Display
+		Code
+		Name
+TBVOLUME					Master Data			TBVOLUME					Matrix Style				None
+	Field Display
+		Code
+		Name
+		U_CONTAINERNUMBER
+BOOKINGSHEET					Document			BOOKINGSHEET					Header Line Style			Sale A/R (Position 22)
+	Field Display
+		DocEntry			Edit=fales
+		Period				Edit=fales
+		Series				Edit=fales
+		U_EWSeries			Edit=true
+		U_JOBNO				Edit=true
+		U_SHIPPER			Edit=true
+		U_CO				Edit=true
+		U_CONSIGNEE			Edit=true
+		U_SALEEMPLOYEE			Edit=true
+		U_IMPORTTYPE			Edit=true
+		U_BOOKINGDATE			Edit=true
+		U_ORIGIN			Edit=True
+		U_DESTINATION			Edit=True
+		U_GOODSDESCRIPTION		Edit=True
+		U_TOTALPACKAGE			Edit=True
+		U_NETWEIGHT			Edit=True
+		U_GROSSWEIGHT			Edit=True
+		U_LOADINGDATE			Edit=True
+		U_CROSSBORDERDATE		Edit=True
+		U_ETAREQUIREMENT		Edit=True
+		U_THAITRUCKER			Edit=True
+		U_OVERSEATRUCKER		Edit=True
+		U_LOLOYARDORUNLOADING		Edit=True
+		U_THAIFORWARDER			Edit=True
+		U_OVERSEAFORWARDER		Edit=True
+		U_LCLORFCL			Edit=True
+		U_CYORCFS			Edit=True
+		U_CONTAINERTYPE			Edit=True
+		U_SPECIALREQUEST		Edit=True
+		Remark				Edit=True
+		Status				Edit=Fales
+		U_UserCreate			Edit=True
+		U_CONFIRMBOOKINGSHEETID		Edit=Fales
+	Row Document Link
+		Table
+			COMMODITY
+				Field Display
+					LineId				Edit=Fales
+					U_INOVICE			Edit=True
+			PLACEOFLOADING
+				Field Display
+					LineId				Edit=Fales
+					U_PLACELOADING			Edit=True
+			PLACEOFDELIVERY
+				Field Display
+					LineId				Edit=Fales
+					U_PLACEDELIVERY			Edit=True
+			VOLUME
+				Field Display
+					LineId				Edit=Fales
+					U_QTY				Edit=True
+					U_VOLUMECODE			Edit=True
+			THAIBORDER
+				Field Display
+					LineId				Edit=Fales
+					U_ThaiBorder			Edit=True
+CONFIRMBOOKINGSHEET				Document			CONFIRMBOOKINGSHEET				Header Line Style			Sale A/R (Position 23)
+	Field Display
+		DocEntry			Edit=fales
+		DocNum				Edit=fales
+		Period				Edit=fales
+		Series				Edit=fales
+		Remark				Edit=True
+		U_BOOKINGID			Edit=True
+		U_CreateUser			Edit=Fales
+		U_PROJECTMANAGEMENTID		Edit=Fales
+	Row Document Link
+		Table
+			COMMODITY
+				Field Display
+					LineId				Edit=Fales
+					U_INOVICENO			Eidt=True
+					U_TRUCKNO			Edit=True
+					U_TRUCKVENDOR			Edit=True
+					U_TRUCKCOST			Edit=True
+					U_DRIVERID			Edit=True
+					U_CONTAINERNO			Edit=True
+					U_CONTAINERVENDOR		Edit=True
+					U_CONTAINERCOST			Edit=True
+					U_DRIVERID1			Edit=True
+TBSERIESTYPE					Master Data			TBSERIESTYPE					Matrix Style				None
+	Field Display
+		Code
+		Name
+TBJOBTYPE					Master Data			TBJOBTYPE					Matrix Style				None
+	Field Display
+		Code
+		Name
+		U_SERIESTYPE
+
+
+
+User Define Field Add In Data SAP
+	Type				Title					Description					Type
+	Project Management		CONFIRMBOOKINGSHEETID			CONFIRM BOOKING SHEET ID			Link To(UDO CONFIRMBOOKINGSHEET)
+	Employees			DriverID				Drive ID					Alphanumeric (10)
+	Employees			LicenseExp				License Expire Date				Date/Time(Date)
+	Items				DISPLAYCOSTING(NO)			DISPLAY IN COSTING JOBSHEET			Valid Value (YES-YES,NO-NO)
+	Items				DISPLAYSELLING(NO)			DISPLAY IN SELLING JOBSHEET			Valid Value (YES-YES,NO-NO)
+	Items				TRUCKPROVINCE				TRUCKPROVINCE					Alphanumeric (25)
+	Items				TRUCKNO					TRUCKNO						Alphanumeric (25)
+	Items				TRUCKNAME				TRUCKNAME					Alphanumeric (25)
+	Items				TRAILERPROVINCE				TRAILERPROVINCE					Alphanumeric (25)
+	Items				TRAILERNO				TRAILERNO					Alphanumeric (25)
+	Items				BRAND					BRAND						Alphanumeric (25)
+	Items				COLOR					COLOR						Alphanumeric (25)
+	Items				TRUCKENGINEPOWER			TRUCKENGINEPOWER				Alphanumeric (25)
+	Items				TRUCKAXLE				TRUCKAXLE					Alphanumeric (25)
+	Items				TRACTORWEIGHT				TRACTORWEIGHT					Alphanumeric (25)
+	Items				TRAILERTYPE				TRAILERTYPE					Alphanumeric (25)
+	Items				AXLETYPE				AXLETYPE					Alphanumeric (25)
+	Items				SUSPENSION				SUSPENSION					Alphanumeric (25)
+	Items				TRAILERWEIGHT				TRAILERWEIGHT					Alphanumeric (25)
+	Items				MAXIMUNLOAD				MAXIMUNLOAD					Alphanumeric (25)
+	Items				DRIVER1					DRIVER1						Link With(System Object Employee)
+	Items				DRIVER2					DRIVER2						Link With(System Object Employee)
+	Items				TSTICKER				TSTICKER					Alphanumeric (Enum Yes or No)
+	Items				ExpiryDate				ExpiryDate					Date/Time(Date)
+	Items				GPSSTATUS				GPSSTATUS					Alphanumeric (Enum Yes or No)
+	Items				GPSLink					GPSLink						Link
+	
+	

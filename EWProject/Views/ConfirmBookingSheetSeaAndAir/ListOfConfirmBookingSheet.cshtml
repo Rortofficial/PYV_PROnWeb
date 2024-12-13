@@ -1,0 +1,307 @@
+﻿@model List<Client.Models.Gets.GetListConfirmBookingSheet>
+@using Client.Connection;
+<title>@ViewData["Title"] - EWSystem</title>
+<div class="row mt-1">
+    <div class="col-4"><h5><u>List Of Confirm Booking Sheet</u></h5></div>
+    <div class="col-8">
+        @if (Configure.ListOfPermissionsByUser.Where(x =>
+        x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "SeaConfirmBooking_S_A").First().Properties.IsPermission
+        && x.IsAllowAdd == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "SeaConfirmBooking_S_A").First().Properties.IsAllowReadOnly).Count() == 1)
+        {
+            <a asp-controller="ConfirmBookingSheetSeaAndAir" asp-action="Index" class="btn float-end" style="background-color:#01295C;color:white">
+                Add NewData
+            </a>
+        }
+    </div>
+</div>
+@if (Configure.ListOfPermissionsByUser.Where(x =>
+              x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "BookingSheet_CBT").First().Properties.IsPermission
+           && x.IsAllowReadOnly == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "BookingSheet_CBT").First().Properties.IsAllowReadOnly).Count() == 1)
+{
+    <div class="row mt-2">
+        <div class="col-9">
+            <div class="row">
+                <div class="col-6">Date From</div>
+                <div class="col-6">Date To</div>
+            </div>
+        </div>
+        <div class="col-3">
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-9">
+            <div class="row">
+                <div class="col-6"><input type="date" value="@(DateTime.Now.ToString("yyyy-MM-01"))" class="form-control" id="txtDateFrom"></div>
+                <div class="col-6"><input type="date" value="@(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddDays(-1).ToString("yyyy-MM-dd"))" class="form-control" id="txtDateTo"></div>
+            </div>
+        </div>
+        <div class="col-3">
+            <button class="btn" id="btnExecuteDate" style="float:left;background-color:#01295C;color:white">Execute Data</button>
+            <button class="btn" id="btnExportData" style="float:left;background-color:#01295C;color:white;margin-left:5px">Export Excel</button>
+        </div>
+    </div>
+    <div class="table-responsive mt-3">
+        <div class="row">
+            <div class="col-12">
+                <table id="TbListBookingSheet" class="table table-striped table-bordered dt-responsive table-condensed display" width="100%" cellspacing="0" style="background: #f0eff1; color: #696969;">
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                           @*  <th>Update</th>
+                            <th>Cancel</th> *@
+                            <th>JOB NO.</th>
+                            <th>BOOKING DATE</th>
+                            <th>LOADING DATE</th>
+                            <th>CROSS BORDER DATE</th>
+                            <th>ETA REQUIREMENT DATE</th>
+                            <th>Shipment Type</th>
+                            <th>Shipper</th>
+                            <th>Consignee</th>
+                            <th>C/O</th>
+                            <th>ROUTE</th>
+                            <th>Create By</th>
+                            <th>Update By</th>
+                            <th>UPDATE DATE</th>
+                            <th>CREATE TIME</th>
+                            <th>UPDATE TIME</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    @section scripts{
+    <script>
+        $('#TbListBookingSheet thead tr')
+            .clone(true)
+            .addClass('filters')
+            .appendTo('#TbListBookingSheet thead');
+        $('#TbListBookingSheet').DataTable({
+            columnDefs: [
+               { targets: 2, render: DataTable.render.date() },
+               { targets: 3, render: DataTable.render.date() },
+               { targets: 4, render: DataTable.render.date() },
+               { targets: 5, render: DataTable.render.date() },
+            ],
+            columns:
+                [
+                    {
+                        render: function (data, type, full, meta) {
+                            var template = "<div css='text-start' style='width:150px'>";
+                            template += '<button class="btn" data-bs-toggle="tooltip" data-bs-placement="top" title="View Detail" style="background-color:#01295C;color:white;margin-right:5px;" onclick="ViewLayout(\'View\',' + full.docEntry.toString() + ')"><i class="fas fa-print"></i></button>';
+                            let isAllow="0";
+                            @if (Configure.ListOfPermissionsByUser.Where(x =>
+                                x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "SeaConfirmBooking_S_A").First().Properties.IsPermission
+                                && x.IsAllowUpdate == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "SeaConfirmBooking_S_A").First().Properties.IsAllowReadOnly).Count() == 1)
+                            {
+                                @Html.Raw("isAllow='1';")
+                            }
+                            if (isAllow === "1") {
+                                if (full.docStatusUpdate != "C") {
+                                        template += '<button class="btn btn-success" style="margin-right:5px;" data-bs-toggle="tooltip" data-bs-placement="top" title="Update" onclick="ViewLayout(\'Update\',' + full.docEntry.toString() + ')"><i class="fas fa-edit"></i></button>';
+                                }
+                            }
+                            isAllow = "0";
+                            @if (Configure.ListOfPermissionsByUser.Where(x =>
+                                x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "SeaConfirmBooking_S_A").First().Properties.IsPermission
+                                && x.IsAllowCancel == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "SeaConfirmBooking_S_A").First().Properties.IsAllowReadOnly).Count() == 1)
+                            {
+                                @Html.Raw("isAllow='1';")
+                            }
+                            if (isAllow === "1") {
+                                if (full.docStatus != "C") {
+                                    template += '<button class="btn btn-danger" style="margin-right:5px;" data-bs-toggle="tooltip" data-bs-placement="top" title="Cancel" onclick="DeleteBookingSheet(' + full.docEntry.toString() + ',' + full.bookingDocEntry.toString() + ',' + full.projectDocEntry.toString() + ',\'' + full.jobNo.toString() + '\')"><i class="fas fa-trash"></i></button>';
+                                }
+                            }   
+                            template += "</div>";
+                            return template;
+                            
+                        }
+                    },
+                    { data: "jobNo", autoWidth: true },
+                    { data: "bookingDate", autoWidth: true },
+                    { data: "loadingDate", autoWidth: true },
+                    { data: "crossBorderDate", autoWidth: true },
+                    { data: "etaRequirementDate", autoWidth: true },
+                    { data: "importType", autoWidth: true },
+                    { data: "shipper", autoWidth: true },
+                    { data: "consignee", autoWidth: true },
+                    { data: "co", autoWidth: true },
+                    { data: "route", autoWidth: true },
+                    { data: "createBy", autoWidth: true },
+                    { data: "updateBy", autoWidth: true },
+                    { data: "updatedate", autoWidth: true },
+                    { data: "createtime", autoWidth: true },
+                    { data: "updatetime", autoWidth: true },
+                ],
+            orderCellsTop: true,
+            fixedHeader: true,
+            initComplete: function () {
+                var api = this.api();
+                // For each column
+                api
+                    .columns()
+                    .eq(0)
+                    .each(function (colIdx) {
+                        // Set the header cell to contain the input element
+                        var cell = $('.filters th').eq(
+                            $(api.column(colIdx).header()).index()
+                        );
+                        var title = $(cell).text();
+                        $(cell).html('<input type="text" placeholder="' + title + '" />');
+
+                        // On every keypress in this input
+                        $(
+                            'input',
+                            $('.filters th').eq($(api.column(colIdx).header()).index())
+                        )
+                            .off('keyup change')
+                            .on('change', function (e) {
+                                // Get the search value
+                                $(this).attr('title', $(this).val());
+                                var regexr = '({search})'; //$(this).parents('th').find('select').val();
+
+                                var cursorPosition = this.selectionStart;
+                                // Search the column for that value
+                                api
+                                    .column(colIdx)
+                                    .search(
+                                        this.value != ''
+                                            ? regexr.replace('{search}', '(((' + this.value + ')))')
+                                            : '',
+                                        this.value != '',
+                                        this.value == ''
+                                    )
+                                    .draw();
+                            })
+                            .on('keyup', function (e) {
+                                e.stopPropagation();
+
+                                $(this).trigger('change');
+                                $(this)
+                                    .focus()[0]
+                                    .setSelectionRange(cursorPosition, cursorPosition);
+                            });
+                    });
+            },
+            scrollCollapse: true,
+            scrollX: true,
+            scrollY: 500
+        });
+        onLoadingDataTable(@Json.Serialize(Model));
+        function ViewLayout(type, docEntry) {
+            if (type == "View") {
+                window.open("@Url.Action("ViewDetailConfirmBookingSheet","ConfirmBookingSheetSeaAndAir")?docEntry=" + docEntry, "_blank");
+            } else if (type == "Update") {
+                window.open("@Url.Action("EditConfirmBookingSheet","ConfirmBookingSheetSeaAndAir")?docEntry=" + docEntry, "_blank");
+            }
+        }
+        function DeleteBookingSheet(docNum, bookingDocEntry, projectDocEntry, projectSeries) {
+            if (confirm("Are you sure to Delete?")) {
+                $.ajax({
+                    url: '@Url.Action("OnCancelBookingSheet","ConfirmBookingSheetSeaAndAir")',
+                    type: "DELETE",
+                    data: {
+                        docNum: docNum,
+                        bookingDocEntry: bookingDocEntry,
+                        projectManagementEntry: projectDocEntry,
+                        projectSeries: projectSeries,
+                    },
+                    dataType: "JSON",
+                    beforeSend: function () {
+                        $('#Modalloder').modal('show');
+                    },
+                    success: function (data) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html("Success");
+                        window.location.href = '@Url.Action("ListOfConfirmBookingSheet","ConfirmBookingSheetSeaAndAir")';
+                    },
+                    error: function (erro) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html(erro.responseText);
+                    }
+                });
+            }
+        }
+        function onLoadingDataTable(data) {
+            listData = [];
+            listData = data;
+            //console.log(data);
+            var tbListItemLine = $('#TbListBookingSheet').DataTable();
+            tbListItemLine.clear();
+            tbListItemLine.rows.add(data);
+            tbListItemLine.search("").columns().search("").draw();
+        }
+        $("#btnExecuteDate").click(function () {
+            $.ajax({
+                url: '@Url.Action("GetListConfirmBookingSheet","ConfirmBookingSheetSeaAndAir")',
+                type: "GET",
+                data: {
+                    dateFrom: $("#txtDateFrom").val(),
+                    dateTo: $("#txtDateTo").val(),
+                    type: 'ALL',
+                },
+                dataType: "JSON",
+                beforeSend: function () {
+                    $('#Modalloder').modal('show');
+                },
+                success: function (data) {
+                    $('#Modalloder').modal('hide');
+                    onLoadingDataTable(data.data);
+                },
+                error: function (erro) {
+                    $('#Modalloder').modal('hide');
+                    $('#ModalSuccess').modal('show');
+                    $('#ErrMsg').html(erro.responseText);
+                }
+            });
+        });
+        $("#btnExportData").click(function () {
+            $.ajax({
+                url: '@Url.Action("OnExportDataOfConfirmBookingSheet","ConfirmBookingSheetSeaAndAir")',
+                type: "POST",
+                data: {
+                    getBookingSheetExports: JSON.stringify(listData)
+                },
+                dataType: "JSON",
+                beforeSend: function () {
+                    $('#Modalloder').modal('show');
+                },
+                success: function (data) {
+                    $('#Modalloder').modal('hide');
+                    var sampleArr = base64ToArrayBuffer(data.data);
+                    saveByteArray(data.fileName, sampleArr, data.applicationType);
+                },
+                error: function (erro) {
+                    $('#Modalloder').modal('hide');
+                    $('#ModalSuccess').modal('show');
+                    $('#ErrMsg').html(erro.responseText);
+                }
+            });
+        });
+        function base64ToArrayBuffer(base64) {
+            //var binaryString = window.atob(base64);
+            var binaryString = atob(base64);
+            var binaryLen = binaryString.length;
+            var bytes = new Uint8Array(binaryLen);
+            for (var i = 0; i < binaryLen; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;;
+        }
+        function saveByteArray(reportName, byte, type) {
+            var blob = new Blob([byte], { type: type });
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            var fileName = reportName;
+            link.download = fileName;
+            link.click();
+            link.remove();
+        };
+    </script>
+}
+}

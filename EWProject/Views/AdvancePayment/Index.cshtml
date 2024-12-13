@@ -1,0 +1,279 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Client.Models.Response.ListMasterPettyCash
+@{
+    var dt = DateTime.Today.ToString("yyyy-MM-dd");
+}
+<div class="card" style="border:none;">
+    <div class="card-header" style="background-color: rgb(1 41 92);color: white;">
+        @localizer["ADVANCE PAYMENT"]
+    </div>
+    <div class="card-body">
+        <!--Header-->
+        <h5><u>Header</u></h5>
+        <!--Series Row-->
+        <div class="row">
+            <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Voucher No."]
+            </div>
+            <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Series"]
+            </div>
+            <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Posting Date"]
+            </div>
+            <div class="col-6" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Remarks"]
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2" style="text-align:left;font-weight:bold;">
+                <input type="text" class="form-control" value="@Model.GetSeriesJournalVouchers[0].NextNumber" id="txtVoucher" disabled>
+            </div>
+            <div class="col-2" style="text-align:left;font-weight:bold;">
+                <select class="form-select" onchange="" id="cboSeries">
+                    @{
+                        var i = 0;
+                    }
+                    @foreach (var a in Model.GetSeriesJournalVouchers)
+                    {
+                        if (i == 0)
+                        {
+                            <option selected value="@a.Code" data-NextNumber="@a.NextNumber">@a.Name</option>
+                            i++;
+                        }
+                        else
+                        {
+                            <option value="@a.Code" data-NextNumber="@a.NextNumber">@a.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-2" style="text-align:left;font-weight:bold;">
+                <input type="date" class="form-control" value="@dt" id="txtPostingDate" />
+            </div>
+            <div class="col-6" style="margin:auto;text-align:left;font-weight:bold;">
+                <textarea id="remarks" rows="1" class="form-control"></textarea>
+            </div>
+        </div>
+        <!--Reference Row-->
+        <div class="row">
+            <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Ref.1"]
+            </div>
+            <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Ref.2"]
+            </div>
+            <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Ref.3"]
+            </div>
+            <div class="col-6" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Project Management"]
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2" style="text-align:left;font-weight:bold;">
+                <input type="text" class="form-control" value="" id="txtRef1">
+            </div>
+            <div class="col-2" style="text-align:left;font-weight:bold;">
+                <input type="text" class="form-control" value="" id="txtRef2">
+            </div>
+            <div class="col-2" style="text-align:left;font-weight:bold;">
+                <input type="text" class="form-control" value="" id="txtRef3">
+            </div>
+            <div class="col-6" style="margin:auto;text-align:left;font-weight:bold;">
+                <select class="form-control" multiple="multiple" id="cboJobType">
+                    @foreach (var a in Model.getProjectManagmentList)
+                    {
+                        <option value="@a.ProjectCode" data-BpName="@a.ProjectName">@a.ProjectName</option>
+                    }
+                </select>
+            </div>
+
+        </div>
+        <!--End Header-->
+        <!--Satrt Detail-->
+        <h5 class="mt-3"><u>Detail</u></h5>
+        <div class="row mt-3">
+            <div class="col-12">
+                @localizer["Employee Name"]
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <select class="form-control" multiple="multiple" id="cboBpCode">
+                    @foreach (var a in Model.GetBPCodeJournalVouchers)
+                    {
+                        <option value="@a.CardCode" data-BpName="@a.CardName">@a.CardCode - @a.CardName</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                @localizer["Account Code"]
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <select class="form-control" multiple="multiple" id="cboAccountCode">
+                    @foreach (var a in Model.GetAccountCodeJournalVouchers)
+                    {
+                        <option value="@a.AccountNumber" data-AccountName="@a.AccountName">@a.AccountNumber - @a.AccountName</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                @localizer["Advance Amount"]
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <input type="number" placeholder="Enter Amount" class="form-control" id="txtAdvanceAmount" />
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+            </div>
+            <div class="col-3">
+            </div>
+            <div class="col-3">
+                <button id="btnAddCostType" class="float-end btn" style="background-color:#01295C;color:white">ADD LINE</button>
+            </div>
+        </div>
+        <!--Table-->
+        <div class="table-responsive mt-3">
+            <div class="row mt-5">
+                <div class="col-12">
+                    <table id="TbListPettyCashLine" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0" style="background: #f0eff1; color: #696969;">
+                        <thead>
+                            <tr>
+                                <th>No#</th>
+                                <th>Employee Code / Employee Name</th>
+                                <th>Account Code / Account Name</th>
+                                <th>Amount</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!--End Table-->
+        <!--End Detail-->
+    </div>
+    <div class="card-footer">
+        <div class="row mt-3">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+                <button class="btn" id="btnConfirmTransaction" style="float:right;background-color:#01295C;color:white;margin-left:10px;">Confirm Transaction</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script defer>
+        listAdvancePaymentLine = [];
+        countItemLine = 1;
+        //cboBpCode
+        $("#cboBpCode").select2({
+            placeholder: "Select a Employee Code",
+            maximumSelectionLength: 1
+        });
+
+        //cboAccountCode
+        $("#cboAccountCode").select2({
+            placeholder: "Select a Account Code",
+            maximumSelectionLength: 1
+        });
+        //cboAccountCode
+        $("#cboJobType").select2({
+            placeholder: "Select a Project Code",
+            maximumSelectionLength: 1
+        });
+        //Data Table
+        $('#TbListPettyCashLine').DataTable({
+            columns:
+                [
+                    { data: "id", autoWidth: true },
+                    { data: "bpCodeOrBpName", autoWidth: true },
+                    { data: "accountCodeOrAccountName", autoWidth: true },
+                    { data: "amount", autoWidth: true },
+                    {
+                        render: function (data, type, full, meta) {
+                            return '<button class="btn-sm btn-danger" style="margin-left: 40%;" onClick="DeleteLineItem(' + full.id + ')"><i class="fas fa-trash-alt"></i></button>';
+                        }
+                    }
+                ],
+        });
+        $("#btnAddCostType").click(function () {
+            if ($("#cboBpCode").val().length !== 0 && $("#cboAccountCode").val().length !== 0 && $("#txtAdvanceAmount").val() > 0) {
+                var objAccountLine = {};
+                objAccountLine.id = countItemLine;
+                objAccountLine.BpCode = $("#cboBpCode").val()[0];
+                objAccountLine.bpCodeOrBpName = $("#cboBpCode option:selected").text();
+                objAccountLine.AccountCode = $("#cboAccountCode").val()[0];
+                objAccountLine.accountCodeOrAccountName = $("#cboAccountCode option:selected").text();
+                objAccountLine.amount = $("#txtAdvanceAmount").val();
+                listAdvancePaymentLine.push(objAccountLine);
+                countItemLine++;
+                reRenderDataTableLine();
+                $("#cboBpCode").val([]).trigger("change");
+                $("#cboAccountCode").val([]).trigger("change");
+                $("#txtAdvanceAmount").val("");
+            }
+        });
+        function reRenderDataTableLine() {
+            var tbListAccountLine = $('#TbListPettyCashLine').DataTable();
+            tbListAccountLine.clear();
+            tbListAccountLine.rows.add(listAdvancePaymentLine);
+            tbListAccountLine.search("").columns().search("").draw();
+        }
+        function DeleteLineItem(id) {
+            listAdvancePaymentLine = listAdvancePaymentLine.filter(e => e.id !== id);
+            reRenderDataTableLine();
+        }
+        $("#btnConfirmTransaction").click(function () {
+            if ($("#cboSeries").val() == "") {
+                alert("Please Select Series!");
+                return;
+            } else if (listAdvancePaymentLine.length===0) {
+                alert("Please Enter Advance before confirm");
+                return;
+            }
+            if (confirm("Please confirm transaction make the data is correct !")) {
+                var objparam = {};
+                objparam.Series = $("#cboSeries").val();
+                objparam.DocDate = $("#txtPostingDate").val();
+                objparam.Remark = $("#remarks").val();
+                objparam.Ref1 = $("#txtRef1").val();
+                objparam.Ref2 = $("#txtRef2").val();
+                objparam.Ref3 = $("#txtRef3").val();
+                objparam.ProjectManagement = $("#cboJobType").val();
+                objparam.Lines = listAdvancePaymentLine;
+                $.ajax({
+                    url: '@Url.Action("OnSubmitAdvancePayment","AdvancePayment")',
+                    data: { postAdvancePaymentRequest: objparam },
+                    type: "POST",
+                    dataType: "JSON",
+                    beforeSend: function () {
+                        $('#Modalloder').modal('show');
+                    },
+                    success: function (data) {
+                        $('#Modalloder').modal('hide');
+                        window.location.href = '@Url.Action("ListAdvancePayment","AdvancePayment")';
+                    },
+                    error: function (erro) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html(erro.responseText);
+                    }
+                });
+            }
+        });
+    </script>
+}

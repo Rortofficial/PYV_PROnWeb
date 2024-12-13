@@ -1,0 +1,26 @@
+﻿<div class="modal fade" id="ModalPrintMultiple" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:#01295C;color:white">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">@localizer["Print Layout"]</h1>
+                <button type="button" class="btn-close" style="background-color: white;opacity: 1;" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-6">
+                        <select class="form-control" multiple="multiple" id="txtDocEntry">
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <select class="form-control" multiple="multiple" id="txtLayoutPrinter">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn" id="btnPrint" style="background-color:#01295C;color:white">Print</button>
+            </div>
+        </div>
+    </div>
+</div>

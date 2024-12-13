@@ -1,0 +1,138 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model Client.Models.Response.ListMasterReimbursementRequest
+<div class="row">
+    <div class="col-6">
+    </div>
+    <div class="col-6">
+        <div style="float:right">
+            <h2>@localizer["Request Reimbursement"]</h2>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Account Name"]
+            </div>
+            <div class="col-9">
+                <select class="form-control" multiple="multiple" id="txtEmployeeCode">
+                    @foreach (var a in Model.GetEmployeeBudgets)
+                    {
+                        <option value="@a.AccountCode" data-budgetLimit="@a.BudgetLimit" data-budgetOnHand="@a.BudgetOnHand">@a.AccountName</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Budget Limit"]
+            </div>
+            <div class="col-9">
+                <input type="number" disabled class="form-control" id="txtBudgetLimit">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Budget OnHand"]
+            </div>
+            <div class="col-9">
+                <input type="number" disabled class="form-control" id="txtBudgetOnHand">
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Budget Expense"]
+            </div>
+            <div class="col-9">
+                <input type="number" disabled class="form-control" id="txtBudgetExpense">
+            </div>
+        </div>
+    </div>
+    <div class="col-6 mt-2">
+        <div class="row">
+            <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Request Budget"]
+            </div>
+            <div class="col-9">
+                <input type="number" class="form-control" placeholder="Enter your Amount" id="txtAmountRequest">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">@localizer["Remarks"]</div>
+    <div class="col-6"></div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <textarea id="txtRemark" rows="4" class="form-control"></textarea>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-6">
+    </div>
+    <div class="col-6">
+        <button class="btn" id="btnConfirmTransaction" onclick="onConfirmTransaction('@Url.Action("PostReimbursementReques","Reimbursement")','@Url.Action("ViewDetailReimbursementByDocEntry","Reimbursement")')" style="float:right;background-color:#01295C;color:white"> Confirm Transaction</button>
+    </div>
+</div>
+@section scripts{
+    <script>
+        //Sales Quotation
+        $("#txtEmployeeCode").select2({
+            placeholder: "Select list Employee",
+            maximumSelectionLength: 1
+        });
+        $("#txtEmployeeCode").change(function(){
+            $("#txtBudgetLimit").val($("#txtEmployeeCode option:selected").attr("data-budgetLimit"));
+            $("#txtBudgetOnHand").val($("#txtEmployeeCode option:selected").attr("data-budgetOnHand"));
+            $("#txtBudgetExpense").val($("#txtEmployeeCode option:selected").attr("data-budgetLimit")-$("#txtEmployeeCode option:selected").attr("data-budgetOnHand"));
+        });
+        function onConfirmTransaction(url, urlPDF) {
+            if ($("#txtEmployeeCode").val()[0] === undefined) {
+                alert("Please Select Employee Code!")
+                return;
+            } else if ($("#txtAmountRequest").val() === "" || $("#txtAmountRequest").val() <= 0){
+                alert("Please Enter Amount!")
+                return;
+            } else if ($("#txtAmountRequest").val() > (parseFloat($("#txtBudgetLimit").val()) - parseFloat($("#txtBudgetOnHand").val()))) {
+                alert("Amount Request should equal or smaller!");
+                return;
+            }else if (confirm("Are you sure to confrim this transaction?")) {
+                var reimbursementrequest = {};
+                reimbursementrequest.CardCode = $("#txtEmployeeCode").val()[0];
+                reimbursementrequest.Amount = $("#txtAmountRequest").val();
+                reimbursementrequest.Remark = $("#txtRemark").val();
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: { reimbursementrequest: reimbursementrequest },
+                    dataType: "JSON",
+                    beforeSend: function () {
+                        $('#Modalloder').modal('show');
+                    },
+                    success: function (data) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html("Success");
+                        window.location.href = urlPDF + "?docEntry=" + data.docEntry;
+                    },
+                    error: function (erro) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html(erro.responseText);
+                    }
+                });
+            }
+        }
+    </script>
+}

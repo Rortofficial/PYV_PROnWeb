@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "yyJcgjOHRwo=",
+  "success": true,
+  "projectFilePath": "C:\\Mr_Rort\\PYV_PROnWeb\\GateWay\\GateWay.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.bcl.timeprovider\\8.0.0\\microsoft.bcl.timeprovider.8.0.0.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\system.collections.immutable\\8.0.0\\system.collections.immutable.8.0.0.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\system.io.hashing\\7.0.0\\system.io.hashing.7.0.0.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\yarp.reverseproxy\\2.1.0\\yarp.reverseproxy.2.1.0.nupkg.sha512"
+  ],
+  "logs": []
+}

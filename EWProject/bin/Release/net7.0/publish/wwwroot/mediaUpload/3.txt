@@ -1,0 +1,86 @@
+BookingSheetInformation
+	JobType
+	Route
+	SaleName
+	Border
+		Code
+		Name
+	JobNo
+	PlaceOfLoading
+		Code
+		Name
+	Shipper
+		Code
+		Name
+	PlaceOfDelivery
+		Code
+		Name
+	Consignee
+		Code
+		Name
+	Origin-Destination (PriceList)
+	Remarks
+ListOfContainerInformation
+	Type
+	ContainerType
+	ContainerNo
+	Owner
+	GW
+	Yard
+	FCL
+	LOLO
+	TruckProvince
+	TruckPlateNo
+	TruckType
+	Brand
+	Colors
+	TrailerProvince
+	TrailerPlateNo
+	TrailerType
+	DriverName1
+	T/PNO
+	IDCard
+	DriverLicense
+	DriverName2
+	T/PNO2
+	IDCard2
+	DriverLicense2
+	VendorNo
+	TruckCostTHB	
+ListOfAdvancePayment
+	AdvancePaymentID
+	Series
+	PostingDate
+	Remarks
+	Ref1
+	Ref2
+	Ref3
+	ProjectManagement
+	ListLinePayment
+		EmployeeCodeAndEmployeeName
+		AccountCodeAndAccountName
+		Amount
+ListOfPurchaseRequest
+	RefNo
+	JobNo
+	IssueBy
+	IssueDate
+	VendorName
+	DueDate
+	AmountCurrency
+	THB
+	GrandTotal
+	BankAccount
+	Branch
+	Country
+	BankName
+	SwiftCode
+	Remark
+	ListItemLine
+		Description
+		ServiceType
+		Origin
+		Destination
+		Amount
+
+	

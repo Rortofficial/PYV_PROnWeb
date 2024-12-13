@@ -1,0 +1,1788 @@
+ALTER PROCEDURE "EW_PRD_TEST"._USP_CALLLAYOUT_EWLAYOUTS(
+	in DTYPE NVARCHAR(250)
+	,in par1 NVARCHAR(250)
+	,in par2 NVARCHAR(250)
+	,in par3 NVARCHAR(250)
+	,in par4 NVARCHAR(250)
+	,in par5 NVARCHAR(250)
+)
+AS
+BEGIN
+USING SQLSCRIPT_STRING AS LIBRARY;
+	IF :par1 = 'SALESQUOTATIONLAYOUT' THEN 
+		SELECT DISTINCT
+			 A."CardCode" AS CARDCODE
+			,A."DocNum" AS DOCNUM 
+			,A."CardName" AS CARDNAME
+			,A."NumAtCard" AS REFNO
+			,A."U_ATTN" AS ATTN
+			,TO_VARCHAR(A."DocDate",'DD/MM/YYYY') AS DOCDATE
+			,A."U_EMAIL" AS EMAIL
+			,TO_VARCHAR(A."DocDueDate",'DD/MM/YYYY') AS VALIDITY
+			,A."U_TEL" AS TEL
+			,B."PymntGroup" AS CREDITTERM
+			,C."Name" AS SERVICE
+			,AA."ItemCode" AS ITEMCODE
+			,AA."Dscription" AS ITEMNAME
+			/*,CASE WHEN AA."U_TYPE"='TRUCK' THEN
+				(SELECT "descript" FROM EW_PRD_TEST."OTER" WHERE "territryID"=A."U_ORIGIN")
+			ELSE
+				''
+			END AS ORIGIN */
+			,(SELECT "descript" FROM EW_PRD_TEST."OTER" WHERE "territryID"=A."U_ORIGIN") AS ORIGIN
+			/*,CASE WHEN AA."U_TYPE"='TRUCK' THEN
+				(SELECT "descript" FROM EW_PRD_TEST."OTER" WHERE "territryID"=A."U_DESTINATION")
+			ELSE
+				''
+			END AS DESTINATION */
+			,(SELECT "descript" FROM EW_PRD_TEST."OTER" WHERE "territryID"=A."U_DESTINATION") AS DESTINATION
+			,AA."LineTotal" AS TOTAL
+			,IFNULL(AA."U_Remark",'') AS REMARKSLINE
+			,IFNULL(A."Comments",'') AS REMARK
+		FROM EW_PRD_TEST."OQUT" AS A
+		LEFT JOIN EW_PRD_TEST."QUT1" AS AA ON A."DocEntry"=AA."DocEntry"
+		LEFT JOIN EW_PRD_TEST."OCTG" AS B ON A."GroupNum"=B."GroupNum"
+		LEFT JOIN EW_PRD_TEST."@TBSERVICE" AS C ON A."U_SERVICE"=C."Code"
+		WHERE A."DocEntry"=:par2 ORDER BY DESTINATION DESC;
+	ELSE IF :par1='BOOKINGSHEET_LAYOUT' THEN
+			SELECT 
+				 A."DocEntry" AS DOCENTRY
+				,A."DocEntry" AS BOOKINGID
+				,A."U_EWSeries"||A."U_JOBNO" AS JOBNO
+				,TO_VARCHAR(A."U_BOOKINGDATE",'DD/MM/YYYY') AS BOOKINGDATE
+				,B."descript"||'-'||BB."descript" AS ROUTE
+				,IFNULL(C."SlpName",'') AS SALEEMPLOYEE
+				,D."Name" AS JOBTYPE
+				,E."Name" AS SERVICETYPE
+				,A."U_GOODSDESCRIPTION" AS GOODSDESCRIPTION
+				,A."U_TOTALPACKAGE" AS TOTALPACKAGE				
+				,IFNULL(TO_DECIMAL(A."U_NETWEIGHT",16,2),0) AS NETWEIGHT
+				,IFNULL(TO_DECIMAL(A."U_GROSSWEIGHT",16,2),0) AS GROSSWEIGHT
+				,TO_VARCHAR(A."U_LOADINGDATE",'DD/MM/YYYY') AS LOADINGDATE
+				,TO_VARCHAR(A."U_CROSSBORDERDATE",'DD/MM/YYYY') AS CROSSBORDERDATE
+				,TO_VARCHAR(A."U_ETAREQUIREMENT",'DD/MM/YYYY') AS ETAREQUIREMENT
+				,/*F."Descr"*/A."U_LOLOYARDRemark" AS "LOLOYARDORUNLOADING"
+				,CASE WHEN A."U_LCLORFCL"='1' THEN 'LCL' ELSE 'FCL' END AS "LCLORFCL"
+				,CASE WHEN A."U_CYORCFS"='1' THEN 'CY' ELSE 'CFS' END AS "CYORCFS"
+				,B."descript" AS ORIGIN
+				,B."descript" AS DESTINATION				
+				,A."Remark" REMARK
+				,A."U_SPECIALREQUEST" AS SPECIALREQUEST
+				,I."Code" AS USERNAME
+				,I."Code" AS USERCODE
+			FROM EW_PRD_TEST."@BOOKINGSHEET" AS A 
+			LEFT JOIN EW_PRD_TEST."OTER" AS B ON A."U_ORIGIN"=B."territryID" --ORIGIN
+			LEFT JOIN EW_PRD_TEST."OTER" AS BB ON BB."territryID"=A."U_DESTINATION" --DESTINATION
+			LEFT JOIN EW_PRD_TEST."OSLP" AS C ON C."SlpCode"=A."U_SALEEMPLOYEE"
+			LEFT JOIN EW_PRD_TEST."@TBJOBTYPE" AS D ON D."Code"=A."U_IMPORTTYPE"
+			LEFT JOIN EW_PRD_TEST."@TBSERVICETYPE"AS E ON E."Code"=A."U_SERVICETYPE"
+			LEFT JOIN EW_PRD_TEST."@TBUSER" AS I ON I."Code"=A."U_UserCreate" -- Get User Name
+			WHERE A."DocEntry"=:par2; --:par2;--
+	ELSE IF :par1='BOOKINGSHEET_SHIPPER_LAYOUT' THEN
+			SELECT 
+				B."CardName" AS SHIPPER 
+			FROM EW_PRD_TEST."@TBSHIPPER" AS A 
+			LEFT JOIN EW_PRD_TEST."OCRD" AS B ON B."CardCode"=A."U_SHIPPER"
+			WHERE A."DocEntry"=:par2;
+			/*UNION ALL
+			SELECT 
+				B."CardName" AS SHIPPER 
+			FROM EW_PRD_TEST."@TBSHIPPER" AS A 
+			LEFT JOIN EW_PRD_TEST."OCRD" AS B ON B."CardCode"=A."U_SHIPPER"
+			WHERE A."DocEntry"=54;*/
+	ELSE IF :par1='BOOKINGSHEET_CONSIGNEE_LAYOUT' THEN
+			SELECT 
+				B."CardName" AS CONSIGNEE 
+			FROM EW_PRD_TEST."@TBCONSIGNEE" AS A 
+			LEFT JOIN EW_PRD_TEST."OCRD" AS B ON B."CardCode"=A."U_CONSIGNEE"
+			WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='BOOKINGSHEET_SALESQUOTATION_LAYOUT' THEN
+			SELECT 
+				 B."DocNum" AS DOCNUM
+				,B."CardName" AS CUSTOMERNAME 
+			FROM EW_PRD_TEST."@TBSALESQUOTATION" AS A 
+			LEFT JOIN EW_PRD_TEST."OQUT" AS B ON A."U_DOCENTRY"=B."DocEntry"
+			WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='BOOKINGSHEET_COMMODITY_LAYOUT' THEN
+			SELECT 
+				A."U_INVOICE" AS INVOICE 
+			FROM EW_PRD_TEST."@COMMODITY" AS A 
+			WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='BOOKINGSHEET_OVERSEATRUCKER_LAYOUT' THEN
+	 	SELECT
+			 B."CardName" AS OVERSEATRUCKERCODE 
+		FROM EW_PRD_TEST."@TBOVERSEATRUCKER" AS A 
+		LEFT JOIN EW_PRD_TEST."OCRD" AS B ON B."CardCode"=A."U_OVERSEATRUCKERCODE" 
+		WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='BOOKINGSHEET_PLACEOFLOADING_LAYOUT' THEN
+			SELECT 
+				B."Name"||', '||B."U_COUNTRY" AS PLACELOADING
+			FROM EW_PRD_TEST."@PLACEOFLOADING" AS A 
+			LEFT JOIN EW_PRD_TEST."@TBPLACEOFLOADING" AS B ON B."Code"=A."U_PLACELOADING"
+			WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='BOOKINGSHEET_PLACEOFDELIVERY_LAYOUT' THEN
+			SELECT 
+				B."Name"||', '||B."U_COUNTRY" AS PLACEOFDELIVERY 
+			FROM EW_PRD_TEST."@PLACEOFDELIVERY" AS A 
+			LEFT JOIN EW_PRD_TEST."@TBPLACEOFLOADING" AS B ON B."Code"=A."U_PLACEDELIVERY"
+			WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='BOOKINGSHEET_THAIFORWARDER__LAYOUT' THEN
+			SELECT 
+				B."CardName" AS THAIFORWARDER 
+			FROM EW_PRD_TEST."@THAIFORWARDER" AS A 
+			LEFT JOIN EW_PRD_TEST."OCRD" AS B ON B."CardCode"=A."U_THAIFORWARDER"
+			WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='BOOKINGSHEET_VOLUME_LAYOUT' THEN
+			SELECT 
+				 A."U_QTY" AS QTY
+				,A."U_VOLUMECODE" AS VOLUMECODE 
+				,IFNULL(TO_DECIMAL(A."U_GROSSWEIGHT",16,2),0) AS GROSSWEIGHT
+			FROM EW_PRD_TEST."@VOLUME" AS A 
+			WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='BOOKINGSHEET_TBOVERSEAFORWARDER_LAYOUT' THEN
+			SELECT 
+				B."CardName" AS OVERSEAFORWARDERCODE 
+			FROM EW_PRD_TEST."@TBOVERSEAFORWARDER" AS A 
+			LEFT JOIN EW_PRD_TEST."OCRD" AS B ON B."CardCode"=A."U_OVERSEAFORWARDERCODE"
+			WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='BOOKINGSHEET_TBTRUCKTYPEROW_LAYOUT' THEN
+			SELECT 
+				--
+				 TO_VARCHAR(TO_DECIMAL(A."U_QTY",3,0)) AS QTY 
+				,A."U_TRUCKTYPE" AS TRUCKTYPECODE
+				,IFNULL(TO_DECIMAL(A."U_GROSSWEIGHT",16,2),0) AS GROSSWEIGHT
+			FROM EW_PRD_TEST."@TBTRUCKTYPEROW" AS A 
+			WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='BOOKINGSHEET_THAIBORDER_LAYOUT' THEN
+			SELECT 
+				B."Name" AS THAIBORDER 
+			FROM EW_PRD_TEST."@THAIBORDER" AS A 
+			LEFT JOIN EW_PRD_TEST."@TBTHAIBORDER" AS B ON A."U_ThaiBorder"=B."Code"
+			WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='SALEQUOTATIONNEWLAYOUT_HEADER' THEN
+		IF :par2!='2005' THEN
+			SELECT 
+				 A."CardName" AS "CUSTOMERNAME"
+				,TO_VARCHAR(A."DocDate",'DD/MM/YYYY') AS "DATE" 
+				,A."NumAtCard" AS "NumAtCard"
+				,B."SlpName" AS "SALENAME"
+				,TO_VARCHAR(A."DocDueDate",'DD/MM/YYYY') AS "DocDueDate"
+				,A."U_ORIGIN" AS "ORIGIN"
+				,A."U_DESTINATION" AS "DESTINATION"
+				,C."descript"||' - '||CC."descript" AS "ROUTE"
+				,A."U_ATTN" AS ATTN
+				,A."U_TEL" AS PHONE
+				,A."U_EMAIL" AS EMAIL
+				,D."PymntGroup" AS "CreditTerm"
+				,A."DocCur" AS "Currency"
+				,A."U_Remarks" AS "Remark"
+			FROM EW_PRD_TEST."OQUT" AS A 
+			LEFT JOIN EW_PRD_TEST."OSLP" AS B ON A."SlpCode"=B."SlpCode"
+			LEFT JOIN EW_PRD_TEST."OTER" AS C ON C."territryID"=A."U_ORIGIN" --ORIGIN
+			LEFT JOIN EW_PRD_TEST."OTER" AS CC ON CC."territryID"=A."U_DESTINATION" --DESTINATION
+			LEFT JOIN EW_PRD_TEST."OCTG" AS D ON D."GroupNum"=A."GroupNum"
+			WHERE "DocEntry"=:par2;
+		ELSE IF :par2='2005' THEN
+			SELECT 
+				 A."CardName" AS "CUSTOMERNAME"
+				,TO_VARCHAR(A."DocDate",'DD/MM/YYYY') AS "DATE" 
+				,A."NumAtCard" AS "NumAtCard"
+				,B."SlpName" AS "SALENAME"
+				,TO_VARCHAR(A."DocDueDate",'DD/MM/YYYY') AS "DocDueDate"
+				,A."U_ORIGIN" AS "ORIGIN"
+				,A."U_DESTINATION" AS "DESTINATION"
+				,C."descript"||' - '||CC."descript" AS "ROUTE"
+				,A."U_ATTN" AS ATTN
+				,A."U_TEL" AS PHONE
+				,A."U_EMAIL" AS EMAIL
+				,D."PymntGroup" AS "CreditTerm"
+				,A."DocCur" AS "Currency"
+				,TO_VARCHAR(A."U_Remarks") AS "Remark"
+			FROM EW_PRD_TEST."OQUT" AS A 
+			LEFT JOIN EW_PRD_TEST."OSLP" AS B ON A."SlpCode"=B."SlpCode"
+			LEFT JOIN EW_PRD_TEST."OTER" AS C ON C."territryID"=A."U_ORIGIN" --ORIGIN
+			LEFT JOIN EW_PRD_TEST."OTER" AS CC ON CC."territryID"=A."U_DESTINATION" --DESTINATION
+			LEFT JOIN EW_PRD_TEST."OCTG" AS D ON D."GroupNum"=A."GroupNum"
+			WHERE A."DocEntry"=:par2
+			UNION ALL
+			SELECT 
+				 A."CardName" AS "CUSTOMERNAME"
+				,TO_VARCHAR(A."DocDate",'DD/MM/YYYY') AS "DATE" 
+				,A."NumAtCard" AS "NumAtCard"
+				,B."SlpName" AS "SALENAME"
+				,TO_VARCHAR(A."DocDueDate",'DD/MM/YYYY') AS "DocDueDate"
+				,A."U_ORIGIN" AS "ORIGIN"
+				,A."U_DESTINATION" AS "DESTINATION"
+				,C."descript"||' - '||CC."descript" AS "ROUTE"
+				,A."U_ATTN" AS ATTN
+				,A."U_TEL" AS PHONE
+				,A."U_EMAIL" AS EMAIL
+				,D."PymntGroup" AS "CreditTerm"
+				,A."DocCur" AS "Currency"
+				,TO_VARCHAR(A."U_Remarks") AS "Remark"
+			FROM EW_PRD_TEST."OQUT" AS A 
+			LEFT JOIN EW_PRD_TEST."OSLP" AS B ON A."SlpCode"=B."SlpCode"
+			LEFT JOIN EW_PRD_TEST."OTER" AS C ON C."territryID"=A."U_ORIGIN" --ORIGIN
+			LEFT JOIN EW_PRD_TEST."OTER" AS CC ON CC."territryID"=A."U_DESTINATION" --DESTINATION
+			LEFT JOIN EW_PRD_TEST."OCTG" AS D ON D."GroupNum"=A."GroupNum"
+			WHERE A."DocEntry"=:par2;
+		END IF;
+		END IF;
+	ELSE IF :par1='SALEQUOTATIONNEWLAYOUT_DETAIL' THEN
+			SELECT 
+				A."LineNum"+1 AS "LINENUMBER",
+				A."Dscription" AS "ITEMNAME",
+				TO_VARCHAR(A."LineTotal", '9,999.00') AS "TOTAL",
+				A."U_Remark" AS "REMARK"
+			FROM EW_PRD_TEST."QUT1" AS A 
+			WHERE "DocEntry"=:par2;
+	ELSE IF :par1='TruckWayBill' THEN
+		SELECT 
+			(SELECT   
+				STRING_AGG(C."CardName"||IFNULL(' - '||(SELECT 
+						STRING_AGG(IFNULL(T0."Address",'')
+						||IFNULL(T0."Address2",'')
+						||IFNULL(T0."Address3",'')
+						||','||T1."Name") AS ADDRESS1
+				  		FROM EW_PRD_TEST."CRD1" AS T0 
+				  		LEFT JOIN EW_PRD_TEST."OCRY" AS T1 ON T1."Code"=T0."Country" 
+				  		WHERE T0."CardCode"=B."U_SHIPPER"),'')||', ')
+			FROM EW_PRD_TEST."@BOOKINGSHEET" AS A
+			LEFT JOIN EW_PRD_TEST."@TBSHIPPER" AS B ON A."DocEntry"=B."DocEntry"
+			LEFT JOIN EW_PRD_TEST."OCRD" AS C ON C."CardCode"=B."U_SHIPPER"
+			WHERE A."U_CONFIRMBOOKINGSHEETID"=T0."DocEntry") AS Shipper
+			,(SELECT   
+				STRING_AGG(C."CardName"||IFNULL(' - '||(SELECT 
+						STRING_AGG(IFNULL(T0."Address",'')
+						||IFNULL(T0."Address2",'')
+						||IFNULL(T0."Address3",'')
+						||','||T1."Name") AS ADDRESS1
+				  		FROM EW_PRD_TEST."CRD1" AS T0 
+				  		LEFT JOIN EW_PRD_TEST."OCRY" AS T1 ON T1."Code"=T0."Country" 
+				  		WHERE T0."CardCode"=B."U_CONSIGNEE"),'')||', ')
+			FROM EW_PRD_TEST."@BOOKINGSHEET" AS A
+			LEFT JOIN EW_PRD_TEST."@TBCONSIGNEE" AS B ON A."DocEntry"=B."DocEntry"
+			LEFT JOIN EW_PRD_TEST."OCRD" AS C ON C."CardCode"=B."U_CONSIGNEE"
+			WHERE A."U_CONFIRMBOOKINGSHEETID"=T0."DocEntry") AS Consignee
+			,(SELECT   
+				STRING_AGG(C."Name"||','||C."U_COUNTRY"||' ')
+			FROM EW_PRD_TEST."@BOOKINGSHEET" AS A
+			LEFT JOIN EW_PRD_TEST."@PLACEOFDELIVERY" AS B ON A."DocEntry"=B."DocEntry"
+			LEFT JOIN EW_PRD_TEST."@TBPLACEOFDELIVERY" AS C ON C."Code"=B."U_PLACEDELIVERY"
+			WHERE A."U_CONFIRMBOOKINGSHEETID"=T0."DocEntry") AS PortOfDestination
+			,(SELECT   
+				STRING_AGG(IFNULL(C."Name",'')||','||IFNULL(C."U_COUNTRY",'')||' ')
+			FROM EW_PRD_TEST."@BOOKINGSHEET" AS A
+			LEFT JOIN EW_PRD_TEST."@PLACEOFLOADING" AS B ON A."DocEntry"=B."DocEntry"
+			LEFT JOIN EW_PRD_TEST."@TBPLACEOFDELIVERY" AS C ON C."Code"=B."U_PLACELOADING"
+			WHERE A."U_CONFIRMBOOKINGSHEETID"=T0."DocEntry") AS PortOfLoading
+			,(SELECT   
+				STRING_AGG('Thai Truck No. '||D."Location"||'-'|| C."InventryNo" ||' Container No. '|| B."U_CONTAINERNO" || ', ')
+			FROM EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS A
+			LEFT JOIN EW_PRD_TEST."@TRUCKINFORMATION" AS B ON A."DocEntry"=B."DocEntry"
+			LEFT JOIN EW_PRD_TEST."OITM" AS C ON C."ItemCode"=B."U_TRUCKCODE"
+			LEFT JOIN EW_PRD_TEST."OLCT" AS D ON D."Code"=C."Location"
+			WHERE A."DocEntry"=T0."DocEntry") AS ListContainer
+			,T1."U_EWSeries"||T1."U_JOBNO" AS TruckWayBillNo
+			,TO_VARCHAR(T1."U_BOOKINGDATE",'DD-MONTH-YYYY') AS BookingDate
+			,T0."DocEntry"
+			,T0."U_JOBSHEETID"
+			,T1."U_GOODSDESCRIPTION" AS "GoodsDescription"
+			,TO_DECIMAL(T1."U_NETWEIGHT",3,2) AS "NetWeight"
+			,TO_DECIMAL(T1."U_GROSSWEIGHT",3,2) AS "GROSSWEIGHT"
+			,(SELECT STRING_AGG("U_INVOICE",',') AS INVOICE FROM EW_PRD_TEST."@COMMODITY" AS Z WHERE Z."DocEntry"=T0."U_BOOKINGID") AS "INVOICE"
+			,(SELECT 
+					IFNULL(STRING_AGG(B."Name",','),'')
+				FROM EW_PRD_TEST."@THAIBORDER" AS A
+				LEFT JOIN EW_PRD_TEST."@TBTHAIBORDER" AS B ON A."U_ThaiBorder"=B."Code"
+				WHERE A."DocEntry"=T1."DocEntry") AS "PortOfDischarge"
+			,TO_VARCHAR(T1."U_LOADINGDATE",'DD/MM/YYYY') AS "DateOnBoard"
+			,T1."U_TOTALPACKAGE" AS "TotalPackage"
+		FROM EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS T0
+		LEFT JOIN EW_PRD_TEST."@BOOKINGSHEET" AS T1 ON T0."U_BOOKINGID"=T1."DocEntry"
+		WHERE T0."U_JOBSHEETID"=:par2;
+	ELSE IF :par1='TruckWayBill-Confirm' THEN
+		SELECT 
+			(SELECT   
+				STRING_AGG(C."CardName"||IFNULL(' - '||(SELECT 
+						STRING_AGG(IFNULL(T0."Address",'')
+						||IFNULL(T0."Address2",'')
+						||IFNULL(T0."Address3",'')
+						||','||T1."Name") AS ADDRESS1
+				  		FROM EW_PRD_TEST."CRD1" AS T0 
+				  		LEFT JOIN EW_PRD_TEST."OCRY" AS T1 ON T1."Code"=T0."Country" 
+				  		WHERE T0."CardCode"=B."U_SHIPPER"),'')||', ')
+			FROM EW_PRD_TEST."@BOOKINGSHEET" AS A
+			LEFT JOIN EW_PRD_TEST."@TBSHIPPER" AS B ON A."DocEntry"=B."DocEntry"
+			LEFT JOIN EW_PRD_TEST."OCRD" AS C ON C."CardCode"=B."U_SHIPPER"
+			WHERE A."U_CONFIRMBOOKINGSHEETID"=T0."DocEntry") AS Shipper
+			,(SELECT   
+				STRING_AGG(C."CardName"||IFNULL(' - '||(SELECT 
+						STRING_AGG(IFNULL(T0."Address",'')
+						||IFNULL(T0."Address2",'')
+						||IFNULL(T0."Address3",'')
+						||','||T1."Name") AS ADDRESS1
+				  		FROM EW_PRD_TEST."CRD1" AS T0 
+				  		LEFT JOIN EW_PRD_TEST."OCRY" AS T1 ON T1."Code"=T0."Country" 
+				  		WHERE T0."CardCode"=B."U_CONSIGNEE"),'')||', ')
+			FROM EW_PRD_TEST."@BOOKINGSHEET" AS A
+			LEFT JOIN EW_PRD_TEST."@TBCONSIGNEE" AS B ON A."DocEntry"=B."DocEntry"
+			LEFT JOIN EW_PRD_TEST."OCRD" AS C ON C."CardCode"=B."U_CONSIGNEE"
+			WHERE A."U_CONFIRMBOOKINGSHEETID"=T0."DocEntry") AS Consignee
+			,(SELECT   
+				STRING_AGG(C."Name"||','||C."U_COUNTRY"||' ')
+			FROM EW_PRD_TEST."@BOOKINGSHEET" AS A
+			LEFT JOIN EW_PRD_TEST."@PLACEOFDELIVERY" AS B ON A."DocEntry"=B."DocEntry"
+			LEFT JOIN EW_PRD_TEST."@TBPLACEOFDELIVERY" AS C ON C."Code"=B."U_PLACEDELIVERY"
+			WHERE A."U_CONFIRMBOOKINGSHEETID"=T0."DocEntry") AS PortOfDestination
+			,(SELECT   
+				STRING_AGG(IFNULL(C."Name",'')||','||IFNULL(C."U_COUNTRY",'')||' ')
+			FROM EW_PRD_TEST."@BOOKINGSHEET" AS A
+			LEFT JOIN EW_PRD_TEST."@PLACEOFLOADING" AS B ON A."DocEntry"=B."DocEntry"
+			LEFT JOIN EW_PRD_TEST."@TBPLACEOFDELIVERY" AS C ON C."Code"=B."U_PLACELOADING"
+			WHERE A."U_CONFIRMBOOKINGSHEETID"=T0."DocEntry") AS PortOfLoading
+			,(SELECT   
+				STRING_AGG('Thai Truck No. '||D."Location"||'-'|| C."InventryNo" ||' Container No. '|| B."U_CONTAINERNO" || ', ')
+			FROM EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS A
+			LEFT JOIN EW_PRD_TEST."@TRUCKINFORMATION" AS B ON A."DocEntry"=B."DocEntry"
+			LEFT JOIN EW_PRD_TEST."OITM" AS C ON C."ItemCode"=B."U_TRUCKCODE"
+			LEFT JOIN EW_PRD_TEST."OLCT" AS D ON D."Code"=C."Location"
+			WHERE A."DocEntry"=T0."DocEntry") AS ListContainer
+			,T1."U_EWSeries"||T1."U_JOBNO" AS TruckWayBillNo
+			,TO_VARCHAR(T1."U_BOOKINGDATE",'DD-MONTH-YYYY') AS BookingDate
+			,T0."DocEntry"
+			,T0."U_JOBSHEETID"
+			,T1."U_GOODSDESCRIPTION" AS "GoodsDescription"
+			,TO_DECIMAL(T1."U_NETWEIGHT",3,2) AS "NetWeight"
+			,TO_DECIMAL(T1."U_GROSSWEIGHT",3,2) AS "GROSSWEIGHT"
+			,(SELECT STRING_AGG("U_INVOICE",',') AS INVOICE FROM EW_PRD_TEST."@COMMODITY" AS Z WHERE Z."DocEntry"=T0."U_BOOKINGID") AS "INVOICE"
+			,(SELECT 
+					IFNULL(STRING_AGG(B."Name",''),',')
+				FROM EW_PRD_TEST."@THAIBORDER" AS A
+				LEFT JOIN EW_PRD_TEST."@TBTHAIBORDER" AS B ON A."U_ThaiBorder"=B."Code"
+				WHERE A."DocEntry"=T1."DocEntry") AS "PortOfDischarge"
+			,TO_VARCHAR(T1."U_LOADINGDATE",'DD/MM/YYYY') AS "DateOnBoard"
+			,T1."U_TOTALPACKAGE" AS "TotalPackage"
+		FROM EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS T0
+		LEFT JOIN EW_PRD_TEST."@BOOKINGSHEET" AS T1 ON T0."U_BOOKINGID"=T1."DocEntry"
+		WHERE T0."DocEntry"=:par2;
+	ELSE IF :par1='TruckWayBill-BookingSheet' THEN
+		SELECT 
+			(SELECT   
+				STRING_AGG(C."CardName"||IFNULL(' - '||(SELECT 
+						STRING_AGG(IFNULL(T0."Address",'')
+						||IFNULL(T0."Address2",'')
+						||IFNULL(T0."Address3",'')
+						||','||T1."Name") AS ADDRESS1
+				  		FROM EW_PRD_TEST."CRD1" AS T0 
+				  		LEFT JOIN EW_PRD_TEST."OCRY" AS T1 ON T1."Code"=T0."Country" 
+				  		WHERE T0."CardCode"=B."U_SHIPPER"),'')||', ')
+			FROM EW_PRD_TEST."@BOOKINGSHEET" AS A
+			LEFT JOIN EW_PRD_TEST."@TBSHIPPER" AS B ON A."DocEntry"=B."DocEntry"
+			LEFT JOIN EW_PRD_TEST."OCRD" AS C ON C."CardCode"=B."U_SHIPPER"
+			WHERE A."DocEntry"=T1."DocEntry") AS Shipper
+			,(SELECT   
+				STRING_AGG(C."CardName"||IFNULL(' - '||(SELECT 
+						STRING_AGG(IFNULL(T0."Address",'')
+						||IFNULL(T0."Address2",'')
+						||IFNULL(T0."Address3",'')
+						||','||T1."Name") AS ADDRESS1
+				  		FROM EW_PRD_TEST."CRD1" AS T0 
+				  		LEFT JOIN EW_PRD_TEST."OCRY" AS T1 ON T1."Code"=T0."Country" 
+				  		WHERE T0."CardCode"=B."U_CONSIGNEE"),'')||', ')
+			FROM EW_PRD_TEST."@TBCONSIGNEE" AS B
+			LEFT JOIN EW_PRD_TEST."OCRD" AS C ON C."CardCode"=B."U_CONSIGNEE"
+			WHERE B."DocEntry"=T1."DocEntry") AS Consignee
+			,(SELECT   
+				STRING_AGG(C."Name"||','||C."U_COUNTRY"||' ')
+			FROM EW_PRD_TEST."@PLACEOFDELIVERY" AS B
+			LEFT JOIN EW_PRD_TEST."@TBPLACEOFDELIVERY" AS C ON C."Code"=B."U_PLACEDELIVERY"
+			WHERE B."DocEntry"=T1."DocEntry") AS PortOfDestination
+			,(SELECT   
+				STRING_AGG(IFNULL(C."Name",'')||','||IFNULL(C."U_COUNTRY",'')||' ')
+			FROM EW_PRD_TEST."@PLACEOFLOADING" AS B
+			LEFT JOIN EW_PRD_TEST."@TBPLACEOFDELIVERY" AS C ON C."Code"=B."U_PLACELOADING"
+			WHERE B."DocEntry"=T1."DocEntry") AS PortOfLoading
+			,CASE WHEN IFNULL(T1."U_CONFIRMBOOKINGSHEETID",0)<>0 THEN 
+				(SELECT   
+					STRING_AGG('Thai Truck No. '||D."Location"||'-'|| C."InventryNo" ||' Container No. '|| B."U_CONTAINERNO" || ', ')
+				FROM EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS A
+				LEFT JOIN EW_PRD_TEST."@TRUCKINFORMATION" AS B ON A."DocEntry"=B."DocEntry"
+				LEFT JOIN EW_PRD_TEST."OITM" AS C ON C."ItemCode"=B."U_TRUCKCODE"
+				LEFT JOIN EW_PRD_TEST."OLCT" AS D ON D."Code"=C."Location"
+				WHERE A."DocEntry"=T1."U_CONFIRMBOOKINGSHEETID") 
+			ELSE '' END 
+			AS ListContainer
+			,T1."U_EWSeries"||T1."U_JOBNO" AS TruckWayBillNo
+			,TO_VARCHAR(T1."U_BOOKINGDATE",'DD-MONTH-YYYY') AS BookingDate
+			,T1."DocEntry"
+			,T1."U_EWSeries"||T1."U_JOBNO" AS "U_JOBSHEETID"
+			,T1."U_GOODSDESCRIPTION" AS "GoodsDescription"
+			,TO_DECIMAL(T1."U_NETWEIGHT",3,2) AS "NetWeight"
+			,TO_DECIMAL(T1."U_GROSSWEIGHT",3,2) AS "GROSSWEIGHT"
+			,(SELECT 
+					IFNULL(STRING_AGG(B."Name",''),',')
+				FROM EW_PRD_TEST."@THAIBORDER" AS A
+				LEFT JOIN EW_PRD_TEST."@TBTHAIBORDER" AS B ON A."U_ThaiBorder"=B."Code"
+				WHERE A."DocEntry"=T1."DocEntry") AS "PortOfDischarge"
+			,TO_VARCHAR(T1."U_LOADINGDATE",'DD/MM/YYYY') AS "DateOnBoard"
+			,(SELECT STRING_AGG(IFNULL("U_INVOICE",''),',') AS INVOICE FROM EW_PRD_TEST."@COMMODITY" AS Z WHERE Z."DocEntry"=T1."DocEntry") AS "INVOICE"
+			,T1."U_TOTALPACKAGE" AS "TotalPackage"
+		FROM EW_PRD_TEST."@BOOKINGSHEET" AS T1
+		WHERE T1."DocEntry"=:par2;
+	--ConfirmBookingLayout
+	ELSE IF :par1='BookingSheetInformation' THEN
+		SELECT 
+			 B."Name" AS JOBTYPE
+			,C."descript"||' - '|| CC."descript" AS ROUTE
+			,D."SlpName" AS SALENAME
+			,A."U_EWSeries"||A."U_JOBNO" AS JOBNO
+			,E."ListName" AS PRICELIST
+			,A."Remark" AS REMARK
+			,AA."DocEntry" AS DOCENTRY
+			,G."firstName" || ' ' || G."lastName" AS USERNAME
+			,TO_VARCHAR(A."U_LOADINGDATE",'DD-MONTH-YYYY') AS LOADINGDATE
+			,A."U_SPECIALREQUEST" SPECIALREQUEST
+		FROM EW_PRD_TEST."@BOOKINGSHEET" AS A
+		LEFT JOIN EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS AA ON AA."DocEntry"=:par2
+		LEFT JOIN EW_PRD_TEST."@TBJOBTYPE" AS B ON A."U_IMPORTTYPE"=B."Code"
+		LEFT JOIN EW_PRD_TEST."OTER" AS C ON C."territryID"=A."U_ORIGIN" --ORIGIN
+		LEFT JOIN EW_PRD_TEST."OTER" AS CC ON CC."territryID"=A."U_DESTINATION" --DESTINATION
+		LEFT JOIN EW_PRD_TEST."OSLP" AS D ON D."SlpCode"=A."U_SALEEMPLOYEE"
+		LEFT JOIN EW_PRD_TEST."OPLN" AS E ON E."ListNum"=AA."U_PRICELIST"
+		LEFT JOIN EW_PRD_TEST."@TBUSER" AS F ON F."Code"=A."U_UserCreate"
+		LEFT JOIN EW_PRD_TEST."OHEM" AS G ON G."empID"=F."U_EMPLOYEEID"
+		WHERE A."U_CONFIRMBOOKINGSHEETID"=:par2;
+	ELSE IF :par1='GetBorderBookingSheet' THEN
+		SELECT 
+			 C."Code" AS CODE
+			,C."Name" AS NAME
+		FROM EW_PRD_TEST."@BOOKINGSHEET" AS A
+		LEFT JOIN EW_PRD_TEST."@THAIBORDER" AS B ON A."DocEntry"=B."DocEntry"
+		LEFT JOIN EW_PRD_TEST."@TBTHAIBORDER" AS C ON C."Code"=B."U_ThaiBorder"
+		WHERE A."U_CONFIRMBOOKINGSHEETID"=:par2;
+	ELSE IF :par1='PLACEOFLOADINGConfirmLayout' THEN
+		SELECT 
+			B."Name"||', '||B."U_COUNTRY" AS PLACELOADING
+		FROM EW_PRD_TEST."@PLACEOFLOADING" AS A 
+		LEFT JOIN EW_PRD_TEST."@TBPLACEOFLOADING" AS B ON B."Code"=A."U_PLACELOADING"
+		WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='PLACEOFDELIVERYConfirmLayout' THEN
+		SELECT 
+			B."Name"||', '||B."U_COUNTRY" AS PLACEOFDELIVERY 
+		FROM EW_PRD_TEST."@PLACEOFDELIVERY" AS A 
+		LEFT JOIN EW_PRD_TEST."@TBPLACEOFDELIVERY" AS B ON B."Code"=A."U_PLACEDELIVERY"
+		WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='SHIPPERConfirmLayout' THEN
+		SELECT 
+			B."CardName" AS SHIPPER 
+		FROM EW_PRD_TEST."@TBSHIPPER" AS A 
+		LEFT JOIN EW_PRD_TEST."OCRD" AS B ON B."CardCode"=A."U_SHIPPER"
+		WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='CONSIGNEEConfirmLayout' THEN
+		SELECT 
+			B."CardName" AS CONSIGNEE 
+		FROM EW_PRD_TEST."@TBCONSIGNEE" AS A 
+		LEFT JOIN EW_PRD_TEST."OCRD" AS B ON B."CardCode"=A."U_CONSIGNEE"
+		WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='GetListOfContainerInformation' THEN
+		SELECT 
+			 A."U_TYPE" AS "TYPE"
+			,A."U_CONTAINERTYPE" AS CONTAINERTYPE
+			,A."U_CONTAINERNO" AS CONTAINERNO
+			,A."U_OWNER" AS OWNER
+			,A."U_GROSSWEIGHT" AS GROSSWEIGHT
+			,A."U_YARD" AS YARD
+			,A."U_FCL_LCL" AS FCL_LCL
+			,A."U_LOLO_UNLOADING" AS LOLO_UNLOADING
+			,B."Location" AS TRUCKPROVINCE
+			,D."InventryNo" AS TRUCKPLATENO
+			,A."U_TRUCKTYPE" AS TRUCKTYPE
+			,A."U_BRAND" AS BRAND
+			,A."U_COLOR" AS COLOR
+			,A."U_TRAILERPROVINCE" AS TRAILERPROVINCE
+			,A."U_TRAILERPLATE" AS TRAILERPLATE
+			,A."U_TRAILERTYPE" AS TRAILERTYPE
+			,C."firstName" ||' '|| C."lastName" AS DriverName1
+			,C."mobile" AS TPNO1
+			,C."govID" AS IDCARD1
+			,C."U_DriverID" AS DRIVERLICENSE1
+			,CC."firstName" ||' '|| C."lastName" AS DriverName2
+			,CC."mobile" AS TPNO2
+			,CC."govID" AS IDCARD2
+			,CC."U_DriverID" AS DRIVERLICENSE2
+			,E."CardName" AS VENDOR
+			,A."U_TRUCKCOSTTHB" AS TRUCKCOSTTHB
+			,A."U_SEALNO1" AS SEALNO1
+			,A."U_SEALNO2" AS SEALNO2
+		FROM EW_PRD_TEST."@TRUCKINFORMATION" AS A 
+		LEFT JOIN EW_PRD_TEST."OLCT" AS B ON B."Code"=A."U_TRUCKPROVINCE"
+		LEFT JOIN EW_PRD_TEST."OHEM" AS C ON C."empID"=A."U_DRIVER1"
+		LEFT JOIN EW_PRD_TEST."OHEM" AS CC ON CC."empID"=A."U_DRIVER2"
+		LEFT JOIN EW_PRD_TEST."OITM" AS D ON D."ItemCode"=A."U_TRUCKPLATENO"
+		LEFT JOIN EW_PRD_TEST."OCRD" AS E ON E."CardCode"=A."U_VENDORCODE" --Vendor
+			WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='ListOfPurchaseRequestConfirmLayout' THEN
+		SELECT 
+			 B."NumAtCard" AS REFNO
+			,D."NAME" AS PROJECTMANAGEMENT
+			,F."Code" AS ISSUEBY
+			,B."DocDate" AS ISSUEDATE
+			,E."CardName" AS VendorName
+			,B."DocDueDate" AS DUEDATE
+			,0 AS THBAMOUNT
+			,B."DocTotal" AS GRANDTOTAL
+			,E."DflAccount" AS BANKACCOUNT
+			,E."DflBranch" AS BRANCH	  
+			,(SELECT "OCRY"."Name" FROM EW_PRD_TEST."OCRY" WHERE "OCRY"."Code"=E."BankCountr") AS BANKCOUNTRY
+			,(SELECT "ODSC"."BankName" FROM EW_PRD_TEST."ODSC" WHERE "ODSC"."BankCode"=E."BankCode") AS BANKNAME
+			,E."DflSwift" AS SWIFTCODE
+			,B."Comments" AS "COMMENT"
+			,G."ListName" AS PRICELISTNAME
+		FROM EW_PRD_TEST."@TBPURCHASEREQUEST" AS A 
+		LEFT JOIN EW_PRD_TEST."ORDR" AS B ON B."DocEntry"=A."U_DOCENTRY"
+		LEFT JOIN EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS C ON C."DocEntry"=A."DocEntry"
+		LEFT JOIN EW_PRD_TEST."OPLN" AS G ON G."ListNum"=C."U_PRICELIST"
+		LEFT JOIN EW_PRD_TEST."@TBUSER" AS F ON F."Code"=C."U_CreateUser"
+		LEFT JOIN EW_PRD_TEST."OPMG" AS D ON D."AbsEntry"=C."U_PROJECTMANAGEMENTID"
+		LEFT JOIN EW_PRD_TEST."OCRD" AS E ON E."CardCode"=(SELECT 
+														DISTINCT E0."LineVendor" 
+														FROM EW_PRD_TEST."PRQ1" AS E0 
+														WHERE E0."BaseEntry"=B."DocEntry" 
+														  	AND E0."BaseType"='17')
+		WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='ListOfPurchaseRequestLineConfirmLayout' THEN
+		SELECT 
+			 E0."Dscription" AS DESCRIPTION
+			,E0."UomCode" AS SERVICETYPE
+			,E0."U_ORIGIN" AS ORIGIN
+			,E0."U_DESTINATION" AS DESTINATION
+			,E0."LineTotal" AS AMOUNT 
+		FROM EW_PRD_TEST."@TBPURCHASEREQUEST" AS A
+		LEFT JOIN EW_PRD_TEST."PRQ1" AS E0 ON E0."BaseEntry"=A."U_DOCENTRY" 
+		WHERE A."DocEntry"=:par2 AND E0."BaseType"='17';
+	ELSE IF :par1='GetDetailAdvancePaymentByDocEntry' THEN
+		SELECT 
+			 IFNULL(CAST(F."DocNum" AS NVARCHAR(20)),'') AS DOCNUM
+			,A."DocNum" AS "ADDONDOCNUM"
+			,A."DocEntry" AS DOCENTRY
+			,IFNULL(F."ProjectNumber",(SELECT DISTINCT "NAME" FROM EW_PRD_TEST."OPMG" WHERE "AbsEntry"=A."U_Project")) AS PROJECTNUMBER
+			,TO_VARCHAR(A."U_IssueDate",'dd-mm-YYYY') AS ISSUEDATE
+			,TO_VARCHAR(A."U_DueDate",'dd-mm-YYYY') AS DUEDATE
+			,A."U_VendorCode" AS VENDORCODE
+			,B."CardName" AS VENDORNAME
+			,D."ChkName" AS CURRENCY
+			,A."U_UserID" AS EMPLOYEEID
+			,C."firstName" AS EMPLOYEENAME --||' '|| C."lastName" 
+			,TO_DECIMAL(A."U_Amount",3,2) AS AMOUNT
+			,TO_DECIMAL(A."U_AmountTHB",3,2) AS AMOUNTTHB
+			,A."Remark" AS REMARKS
+			,B."DflAccount" AS BANKACCOUNT
+			,B."DflBranch" AS BRANCH	  
+			,(SELECT "OCRY"."Name" FROM EW_PRD_TEST."OCRY" WHERE "OCRY"."Code"=B."BankCountr") AS BANKCOUNTRY
+			,(SELECT "ODSC"."BankName" FROM EW_PRD_TEST."ODSC" WHERE "ODSC"."BankCode"=B."BankCode") AS BANKNAME
+			,B."DflSwift" AS SWIFTCODE	
+			,C."firstName" ||' '|| C."lastName" AS ISSUEBY
+			,B0."PymntGroup" AS "CREDITTERM"
+		FROM EW_PRD_TEST."@ADVANCEPAYMENT" AS A
+		LEFT JOIN EW_PRD_TEST."OCRD" AS B ON A."U_VendorCode"=B."CardCode"
+		LEFT JOIN EW_PRD_TEST."OCTG" AS B0 ON B0."GroupNum"=B."GroupNum"
+		LEFT JOIN EW_PRD_TEST."OHEM" AS C ON A."U_UserID"=C."empID"
+		LEFT JOIN EW_PRD_TEST."OCRN" AS D ON A."U_CurrencyType"=D."CurrCode"
+		LEFT JOIN EW_PRD_TEST."OPMG" AS E ON E."AbsEntry"=A."U_Project"
+		LEFT JOIN (
+			SELECT DISTINCT
+				 T0."BaseEntry" AS "DocEntry"
+				,T1."DocNum"
+				,T1."U_PROJECT_NO" AS "ProjectNumber"
+			FROM EW_PRD_TEST."POR1" AS T0
+			LEFT JOIN EW_PRD_TEST."OPOR" AS T1 ON T1."DocEntry"=T0."DocEntry" 
+			WHERE T0."BaseType"='1470000113'
+		) AS F ON F."DocEntry"=A."U_PRDocEntry"
+		WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='GetPurchaseOrderByJobSheetSeaAir' THEN
+		SELECT 
+			 IFNULL(CAST(F."DocNum" AS NVARCHAR(20)),'') AS DOCNUM
+			,
+			A."DocNum" AS "ADDONDOCNUM"
+			,A."DocEntry" AS DOCENTRY
+			,IFNULL(F."ProjectNumber",(SELECT DISTINCT IFNULL("NAME",'') FROM EW_PRD_TEST."OPMG" WHERE "NAME"=AA."U_JOBNO")) AS PROJECTNUMBER
+			,TO_VARCHAR(A."DocDate",'dd-mm-YYYY') AS ISSUEDATE
+			,TO_VARCHAR(A."TaxDate",'dd-mm-YYYY') AS DUEDATE
+			,A."CardCode" AS VENDORCODE
+			,B."CardName" AS VENDORNAME
+			,D."ChkName" AS CURRENCY
+			,AA."U_UserID" AS EMPLOYEEID
+			,C."firstName" ||' '|| C."lastName" AS EMPLOYEENAME
+			,TO_DECIMAL((CASE WHEN A."DocCur" IN('THB','THS') THEN A."DocTotal"-A."VatSum" ELSE A."DocTotalFC"-A."VatSumFC" END),12,2) AS AMOUNT
+			,TO_DECIMAL((CASE WHEN A."DocCur" IN('THB','THS') THEN A."DocTotal"-A."VatSum" ELSE A."DocTotalFC"-A."VatSumFC" END),12,2) AS AMOUNTTHB
+			,A."Comments" AS REMARKS
+			,B."DflAccount" AS BANKACCOUNT
+			,B."DflBranch" AS BRANCH	  
+			,(SELECT "OCRY"."Name" FROM EW_PRD_TEST."OCRY" WHERE "OCRY"."Code"=B."BankCountr") AS BANKCOUNTRY
+			,(SELECT "ODSC"."BankName" FROM EW_PRD_TEST."ODSC" WHERE "ODSC"."BankCode"=B."BankCode") AS BANKNAME
+			,B."DflSwift" AS SWIFTCODE	
+			,C."firstName" ||' '|| C."lastName" AS ISSUEBY
+			,B0."PymntGroup" AS "CREDITTERM"
+		FROM EW_PRD_TEST."OPOR" AS A
+		LEFT JOIN (
+			SELECT TOP 1
+				 MAX(T1."U_USERCREATE") AS "U_UserID"
+				,'THB' AS "U_CurrencyType"
+				,MAX(T0."U_PurchaseOrder") AS "U_PurchaseOrder"
+				,MAX(T1."U_JOBNO") AS "U_JOBNO"
+				,MAX(T1."U_PurchaseOrder") AS "U_PurchaseRequest"
+			FROM EW_PRD_TEST."@TB_JOBSHEET_COSTING" AS T0
+			LEFT JOIN EW_PRD_TEST."@TB_JOBSHEET_SEA_AIR" AS T1 ON T1."DocEntry"=T0."DocEntry"
+			GROUP BY T0."U_PurchaseOrder"
+		) AS AA ON AA."U_PurchaseOrder"=A."DocEntry"
+		LEFT JOIN EW_PRD_TEST."OCRD" AS B ON A."CardCode"=B."CardCode"
+		LEFT JOIN EW_PRD_TEST."OCTG" AS B0 ON B0."GroupNum"=B."GroupNum"
+		LEFT JOIN EW_PRD_TEST."@TBUSER" AS C0 ON C0."Code"=AA."U_UserID"
+		LEFT JOIN EW_PRD_TEST."OHEM" AS C ON C0."U_EMPLOYEEID"=C."empID"
+		LEFT JOIN EW_PRD_TEST."OCRN" AS D ON A."DocCur"=D."CurrCode"
+		LEFT JOIN EW_PRD_TEST."OPMG" AS E ON E."NAME"=AA."U_JOBNO"
+		LEFT JOIN (
+			SELECT DISTINCT
+				 T0."BaseEntry" AS "DocEntry"
+				,T1."DocNum"
+				,T1."DocEntry" AS "PODocEntry"
+				,T1."U_PROJECT_NO" AS "ProjectNumber"
+			FROM EW_PRD_TEST."POR1" AS T0
+			LEFT JOIN EW_PRD_TEST."OPOR" AS T1 ON T1."DocEntry"=T0."DocEntry" 
+			WHERE T0."BaseType"='1470000113'
+		) AS F ON F."DocEntry"=AA."U_PurchaseRequest" AND F."PODocEntry"=A."DocEntry"
+		WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='GetDetailSalesCommissionByDocEntry' THEN
+		SELECT 
+			 IFNULL(CAST(F."DocNum" AS NVARCHAR(20)),'') AS DOCNUM
+			,A."DocEntry" AS DOCENTRY
+			,(SELECT STRING_AGG(T1."NAME",',')
+				FROM EW_PRD_TEST."@TBCOMMISSIONROW" AS T0 
+				LEFT JOIN EW_PRD_TEST."OPMG" AS T1 ON T1."AbsEntry"=T0."U_JobNumber"
+				WHERE "DocEntry"=A."DocEntry") AS PROJECTNUMBER
+			,TO_VARCHAR(A."U_IssueDate",'dd-mm-YYYY') AS ISSUEDATE
+			,TO_VARCHAR(A."U_DueDate",'dd-mm-YYYY') AS DUEDATE
+			,AA."U_VendorCode" AS VENDORCODE
+			,B."CardName" AS VENDORNAME
+			,D."ChkName" AS CURRENCY
+			,A."U_UserID" AS EMPLOYEEID
+			,C."firstName" ||' '|| C."lastName" AS EMPLOYEENAME
+			,TO_DECIMAL((SELECT SUM("U_GrossProfit") FROM EW_PRD_TEST."@TBCOMMISSIONROW" WHERE "DocEntry"=A."DocEntry"),9,2) AS AMOUNT
+			,TO_DECIMAL((SELECT SUM("U_GrossProfit") FROM EW_PRD_TEST."@TBCOMMISSIONROW" WHERE "DocEntry"=A."DocEntry"),9,2) AS AMOUNTTHB
+			,A."Remark" AS REMARKS
+			,B."DflAccount" AS BANKACCOUNT
+			,B."DflBranch" AS BRANCH	  
+			,(SELECT "OCRY"."Name" FROM EW_PRD_TEST."OCRY" WHERE "OCRY"."Code"=B."BankCountr") AS BANKCOUNTRY
+			,(SELECT "ODSC"."BankName" FROM EW_PRD_TEST."ODSC" WHERE "ODSC"."BankCode"=B."BankCode") AS BANKNAME
+			,B."DflSwift" AS SWIFTCODE	
+		FROM EW_PRD_TEST."@TBCOMMISSION" AS A
+		LEFT JOIN (
+			SELECT 
+				T0."U_VendorCode",
+				T1."SlpCode"
+			FROM EW_PRD_TEST."OHEM" AS T0
+			LEFT JOIN EW_PRD_TEST."OSLP" AS T1 ON T0."salesPrson"=T1."SlpCode"
+		)AS AA ON AA."SlpCode"=A."U_SlpCode"
+		LEFT JOIN EW_PRD_TEST."OCRD" AS B ON AA."U_VendorCode"=B."CardCode"
+		LEFT JOIN EW_PRD_TEST."OHEM" AS C ON A."U_UserID"=C."empID"
+		LEFT JOIN EW_PRD_TEST."OCRN" AS D ON B."Currency"=D."CurrCode"
+		LEFT JOIN (
+			SELECT DISTINCT
+				 T0."BaseEntry" AS "DocEntry"
+				,T1."DocNum"
+				,T1."U_PROJECT_NO" AS "ProjectNumber"
+			FROM EW_PRD_TEST."POR1" AS T0
+			LEFT JOIN EW_PRD_TEST."OPOR" AS T1 ON T1."DocEntry"=T0."DocEntry" 
+			WHERE T0."BaseType"='1470000113'
+		) AS F ON F."DocEntry"=A."U_PODocEntry"
+		WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='GetDetailPurchaseOrderByJobSheetSeaAirLines' THEN
+		SELECT 
+			 A."ItemCode" AS ITEMCODE
+			,B."ItemName" AS ITEMNAME
+			,A."Quantity" AS QTY
+			,TO_DECIMAL(CASE WHEN AAA."DocCur" IN('THB','THS') THEN A."LineTotal" ELSE A."TotalFrgn" END,12,2) AS PRICE
+			,'' AS ORIGIN
+			,TO_DECIMAL(CASE WHEN AAA."DocCur" IN('THB','THS') THEN A."LineTotal" ELSE A."TotalFrgn" END,12,2) AS AMOUNT
+			,'' AS REMARKS
+			,A."UomCode" AS SERVICETYPE
+			,IFNULL(C0."NAME",IFNULL(D."NAME",'')) AS JOBNUMBER
+			,A."OcrCode" AS "DistributionRule"
+			,'' AS "TurckNo"
+			,'' AS "RefInvoice"
+			,'' AS "Remark"
+			,CASE WHEN IFNULL(A."VatGroup",'')='' THEN 
+				0 
+			 ELSE 
+			 	TO_DECIMAL(
+			 		CASE WHEN AAA."DocCur" IN('THB','THS') THEN 
+			 			A."LineTotal" 
+			 		ELSE A."TotalFrgn" END,3,2)
+			 		*(SELECT T0."Rate"/100 FROM EW_PRD_TEST."OVTG" AS T0 WHERE T0."Code"=A."VatGroup") 
+			 END AS "VatAmount"
+		FROM EW_PRD_TEST."POR1" AS A
+		LEFT JOIN (
+			SELECT TOP 1
+				 MAX(T1."U_USERCREATE") AS "U_UserID"
+				,'THB' AS "U_CurrencyType"
+				,MAX(T0."U_PurchaseOrder") AS "U_PurchaseOrder"
+				,MAX(T1."U_JOBNO") AS "U_JOBNO"
+				,MAX(T1."U_PurchaseOrder") AS "U_PurchaseRequest"
+			FROM EW_PRD_TEST."@TB_JOBSHEET_COSTING" AS T0
+			LEFT JOIN EW_PRD_TEST."@TB_JOBSHEET_SEA_AIR" AS T1 ON T1."DocEntry"=T0."DocEntry"
+			GROUP BY T0."U_PurchaseOrder"
+		) AS AA ON AA."U_PurchaseOrder"=A."DocEntry"
+		LEFT JOIN EW_PRD_TEST."OPOR" AS AAA ON AAA."DocEntry"=A."DocEntry"
+		LEFT JOIN EW_PRD_TEST."OITM" AS B ON A."ItemCode"=B."ItemCode"
+		LEFT JOIN EW_PRD_TEST."@ADVANCEPAYMENT" AS C ON C."DocEntry"=A."DocEntry" --Get in Header for PR
+		LEFT JOIN EW_PRD_TEST."OPMG" AS C0 ON C0."NAME"=AA."U_JOBNO" -- Get Detail Project Management In Header
+		LEFT JOIN EW_PRD_TEST."OPMG" AS D ON D."NAME"=AA."U_JOBNO" -- Get Detail Project Management in Row
+		WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='GetDetailAdvancePaymentByDocEntryLines' THEN
+		SELECT 
+			 A."U_ItemCode" AS ITEMCODE
+			,B."ItemName" AS ITEMNAME
+			,A."U_Qty" AS QTY
+			,TO_DECIMAL(A."U_Price",3,2) AS PRICE
+			,A."U_Origin"||'-'|| A."U_Destination" AS ORIGIN
+			,TO_DECIMAL(A."U_Price",3,2) AS AMOUNT
+			,A."U_Remarks" AS REMARKS
+			,F."UomCode" AS SERVICETYPE
+			,IFNULL(C0."NAME",IFNULL(D."NAME",'')) AS JOBNUMBER
+			,A."U_DistributionRule" AS "DistributionRule"
+			,IFNULL(E."InventryNo"||' / ','')||IFNULL(E0."AttriTxt1",'') AS "TurckNo"
+			,A."U_RefInv" AS "RefInvoice"
+			,A."U_Remarks" AS "Remark"
+			,CASE WHEN IFNULL(A."U_TaxCode",'')='' THEN 0 ELSE TO_DECIMAL(A."U_Price",3,2)*(SELECT T0."Rate"/100 FROM EW_PRD_TEST."OVTG" AS T0 WHERE T0."Code"=A."U_TaxCode") END AS "VatAmount"
+		FROM EW_PRD_TEST."@ADVANCEPAYMENTROW" AS A
+		LEFT JOIN EW_PRD_TEST."OITM" AS B ON A."U_ItemCode"=B."ItemCode"
+		LEFT JOIN EW_PRD_TEST."@ADVANCEPAYMENT" AS C ON C."DocEntry"=A."DocEntry" --Get in Header for PR
+		LEFT JOIN EW_PRD_TEST."OPMG" AS C0 ON C0."AbsEntry"=C."U_Project" -- Get Detail Project Management In Header
+		LEFT JOIN EW_PRD_TEST."OPMG" AS D ON D."AbsEntry"=A."U_JobNumber" -- Get Detail Project Management in Row
+		LEFT JOIN EW_PRD_TEST."OITM" AS E ON E."ItemCode"=A."U_TruckNo" --Get Truck Information Detail
+		LEFT JOIN EW_PRD_TEST."ITM13" AS E0 ON E0."ItemCode"=E."ItemCode" --Get Truck Detailer Information Trailer Plate No
+		LEFT JOIN EW_PRD_TEST."OUOM" AS F ON TO_VARCHAR(F."UomEntry")=A."U_ContainerType"
+		WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='GetDetailSalesCommissionByDocEntryLines' THEN
+		SELECT 
+			 A."U_AccountCode" AS ITEMCODE
+			,B."AcctName" AS ITEMNAME
+			,1 AS QTY
+			,TO_DECIMAL(A."U_TotalSaleCommission",9,2) AS PRICE
+			,'' AS ORIGIN
+			,TO_DECIMAL(A."U_TotalSaleCommission",9,2) AS AMOUNT
+			,'' AS REMARKS
+			,'Sales Commission' AS SERVICETYPE
+			,C."NAME" AS "JOBNO"
+			,D."CardName" AS "CO"
+			,(
+				SELECT 
+					STRING_AGG(T1."DocNum",',')
+				FROM EW_PRD_TEST."RCT2" AS T0
+				LEFT JOIN EW_PRD_TEST."ORCT" AS T1 ON T1."DocEntry"=T0."DocNum"
+				WHERE T0."DocEntry"=A."U_ARInvoice"
+			) AS "RECEIPT"
+		FROM EW_PRD_TEST."@TBCOMMISSIONROW" AS A
+		LEFT JOIN EW_PRD_TEST."OACT" AS B ON A."U_AccountCode"=B."AcctCode"
+		LEFT JOIN EW_PRD_TEST."OPMG" AS C ON C."AbsEntry"=A."U_JobNumber"
+		LEFT JOIN EW_PRD_TEST."OINV" AS D ON D."DocEntry"=A."U_ARInvoice"
+		WHERE A."DocEntry"=:par2;
+	ELSE IF :par1='GetPLACEOFLOADING' THEN
+		SELECT 
+			B."Name"||', '||B."U_COUNTRY" AS PLACELOADING
+		FROM EW_PRD_TEST."@BOOKINGSHEET" AS AA
+		LEFT JOIN EW_PRD_TEST."@PLACEOFLOADING" AS A ON A."DocEntry"=AA."DocEntry"
+		LEFT JOIN EW_PRD_TEST."@TBPLACEOFLOADING" AS B ON B."Code"=A."U_PLACELOADING"			
+		WHERE AA."U_CONFIRMBOOKINGSHEETID"=:par2;
+	ELSE IF	:par1='GetSHIPPER' THEN
+		SELECT 
+			B."CardName" AS SHIPPER 
+		FROM EW_PRD_TEST."@BOOKINGSHEET" AS AA
+		LEFT JOIN EW_PRD_TEST."@TBSHIPPER" AS A ON A."DocEntry"=AA."DocEntry"
+		LEFT JOIN EW_PRD_TEST."OCRD" AS B ON B."CardCode"=A."U_SHIPPER"
+		WHERE AA."U_CONFIRMBOOKINGSHEETID"=:par2;
+	ELSE IF	:par1='GetPLACEOFDELIVERY' THEN
+		SELECT 
+			B."Name"||', '||B."U_COUNTRY" AS PLACEOFDELIVERY 
+		FROM EW_PRD_TEST."@BOOKINGSHEET" AS AA
+		LEFT JOIN EW_PRD_TEST."@PLACEOFDELIVERY" AS A ON AA."DocEntry"=A."DocEntry"
+		LEFT JOIN EW_PRD_TEST."@TBPLACEOFDELIVERY" AS B ON B."Code"=A."U_PLACEDELIVERY"
+		WHERE AA."U_CONFIRMBOOKINGSHEETID"=:par2;
+	ELSE IF	:par1='GetCONSIGNEE' THEN
+		SELECT 
+			B."CardName" AS CONSIGNEE 
+		FROM EW_PRD_TEST."@BOOKINGSHEET" AS AA
+		LEFT JOIN EW_PRD_TEST."@TBCONSIGNEE" AS A ON AA."DocEntry"=A."DocEntry"
+		LEFT JOIN EW_PRD_TEST."OCRD" AS B ON B."CardCode"=A."U_CONSIGNEE"
+		WHERE AA."U_CONFIRMBOOKINGSHEETID"=:par2;
+	ELSE IF :par1='GetListCommodities' THEN
+		SELECT 
+			A."U_INVOICE" AS INVOICE
+		FROM EW_PRD_TEST."@COMMODITY" AS A 
+		LEFT JOIN EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS B ON B."U_BOOKINGID"=A."DocEntry"
+		WHERE B."DocEntry"=:par2;
+	ELSE IF :par1='GetVolumeBookingSheetByDocEntry' THEN
+		SELECT 
+			 A."U_QTY" AS QTY
+			,B."Code" AS VOLUMECODE
+			,B."Name" AS VOLUME
+		FROM EW_PRD_TEST."@VOLUME" AS A
+		LEFT JOIN EW_PRD_TEST."@TBVOLUME" AS B ON B."Code"=A."U_VOLUMECODE"
+		LEFT JOIN EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS D ON D."U_BOOKINGID"=A."DocEntry"
+		WHERE D."DocEntry"=:par2;
+	ELSE IF :par1='GetInvoiceLayoutSQ' THEN
+		SELECT DISTINCT
+			CONCAT(NNM1."SeriesName",right(OQUT."DocNum",4)) AS "DocNum",
+			OCRD."CardCode",
+			OCRD."CardName",
+			OCRD."Address",
+			OCRD."Address2",
+			OCRD."Address3",
+			IFNULL(OCRD."Phone1",'') AS "Phone1",
+			IFNULL(OCRD."Fax",'') AS "Fax",
+			IFNULL(OCRD."LicTradNum",'') AS "LicTradNum",
+			TO_VARCHAR(OQUT."DocDate",'dd-mm-YYYY')AS "DocDate",
+			QUT1."Project",
+			TO_VARCHAR(OQUT."DocDueDate",'dd-mm-YYYY')AS "DocDueDate",
+			OCTG."PymntGroup" AS "CREDIT TERM",
+			OSLP."SlpName" AS "SALE EMPLOYEE",
+			OQUT."U_SP" AS "Shipper",
+			OQUT."U_CONSIGN" AS "Consignee",
+			OQUT."NumAtCard" AS "INV No.",
+			OQUT."U_GOODS_DESC" AS "Goods Description",
+			OQUT."U_T_PACKAGE" AS "Total Package",
+			TO_DECIMAL(OQUT."U_NET_W",9,2) AS "N.W.(KGS)",
+			TO_DECIMAL(OQUT."U_GROSS_W",9,2) AS "G.W.(KGS)",
+			--OQUT."U_loaddate",
+			--OQUT."U_deliverdate",
+			/*OQUT."U_ETA",
+			OQUT."U_ORIGIN" AS "POLoading",
+			OQUT."U_DESTINATION" AS "PODelivery",
+			IFNULL(OQUT."U_T_N_1",'') AS "Truck No 1",
+			IFNULL(OQUT."U_C_N_1",'') AS "Container No 1",
+			IFNULL(OQUT."U_T_N_2",'') AS "Truck No 2",
+			IFNULL(OQUT."U_C_N_2",'') AS "Container No 2",
+			IFNULL(OQUT."U_T_N_3",'') AS "Truck No 3",
+			IFNULL(OQUT."U_C_N_3",'') AS "Container No 3",
+			IFNULL(OQUT."U_T_N_4",'') AS "Truck No 4",
+			IFNULL(OQUT."U_C_N_4",'') AS "Container No 4",
+			IFNULL(OQUT."U_T_N_5",'') AS "Truck No 5",
+			IFNULL(OQUT."U_C_N_5",'') AS "Container No 5",
+			IFNULL(OQUT."U_T_N_6",'') AS "Truck No 6",
+			IFNULL(OQUT."U_C_N_6",'') AS "Container No 6",
+			IFNULL(OQUT."U_T_N_7",'') AS "Truck No 7",
+			IFNULL(OQUT."U_C_N_7",'') AS "Container No 7",
+			IFNULL(OQUT."U_T_N_8",'') AS "Truck No 8",
+			IFNULL(OQUT."U_C_N_8",'') AS "Container No 8",
+			IFNULL(OQUT."U_T_N_9",'') AS "Truck No 9",
+			IFNULL(OQUT."U_C_N_9",'') AS "Container No 9",
+			IFNULL(OQUT."U_T_N_10",'') AS "Truck No 10",
+			IFNULL(OQUT."U_C_N_10",'') AS "Container No 10",*/
+			OQUT."DocCur" AS "HCur",
+			QUT1."LineNum",
+			QUT1."ItemCode",
+			QUT1."Dscription",
+			OITM."ItmsGrpCod",
+			TO_DECIMAL(QUT1."Price",9,2)AS "Price",
+			QUT1."Currency" AS "LCur",
+			TO_DECIMAL(QUT1."Quantity",9,2)AS "Quantity",
+			QUT1."UomCode",
+			TO_DECIMAL(CASE WHEN OQUT."DocCur" = 'THS' THEN QUT1."LineTotal"
+			 ELSE QUT1."TotalFrgn" END,9,2) AS "LineTotal",
+			--CASE WHEN Typ='O' THEN 0 ELSE QUT5."Rate" END,
+			--SELECT * FROM EW_PRD_TEST."QUT5"
+			TO_DECIMAL(QUT5."Rate",9,2)AS "Rate",
+			TO_DECIMAL(OQUT."GrosProfit",9,2)AS "GrosProfit",
+			TO_DECIMAL((OQUT."VatSum" - OQUT."DiscSum"),9,2) AS "VatSum",
+			TO_DECIMAL(CASE WHEN OQUT."DocCur" = 'THS' THEN OQUT."DocTotal"
+			 ELSE OQUT."DocTotalFC" END,9,2) AS "DocTotal",
+			TO_DECIMAL(OQUT."WTSum",9,2)AS "WTSum",
+			TO_DECIMAL(QUT5."TaxbleAmnt",9,2)AS "TaxbleAmnt",
+			OQUT."Comments" AS "Remark",
+			OUSR."U_NAME" AS "UserName"
+		FROM EW_PRD_TEST."OQUT" AS OQUT
+			left join EW_PRD_TEST."QUT1" QUT1 ON OQUT."DocEntry" = QUT1."DocEntry"
+			left join 	(
+						SELECT A."CardCode",
+								A."CardName",
+								A."LicTradNum",
+								B."Address",
+								B."Address2",
+								B."Address3",
+								A."Phone1",
+								A."Fax"
+						FROM EW_PRD_TEST."OCRD" AS A
+							left join EW_PRD_TEST."CRD1" AS B ON A."CardCode" = B."CardCode"
+						WHERE B."AdresType" = 'S'
+					  	) AS OCRD ON OQUT."CardCode" = OCRD ."CardCode"
+			left join EW_PRD_TEST."NNM1" AS NNM1 ON OQUT."Series" = NNM1."Series"
+			left join EW_PRD_TEST."QUT5" AS QUT5 ON OQUT."DocEntry" = QUT5."AbsEntry"
+			left join EW_PRD_TEST."OITM" AS OITM ON QUT1."ItemCode" = OITM."ItemCode"
+			left join EW_PRD_TEST."OCTG" AS OCTG ON OQUT."GroupNum" = OCTG."GroupNum"
+		  	left join EW_PRD_TEST."OUSR" AS OUSR ON OQUT."UserSign" = OUSR."USERID"
+		  	left join EW_PRD_TEST."OSLP" AS OSLP ON OQUT."SlpCode" = OSLP."SlpCode"
+			WHERE OQUT."DocEntry" = :par2 ;
+	ELSE IF :par1='GetJobSheetTruckingHeadByDocEntry' THEN
+		SELECT 
+			 B."DocNum" AS "EWTInvNo"
+			,C."DocNum" AS "SQRef"
+			,A."U_JOBNO" AS "JobNumber"
+			,F."descript"||' - '|| FF."descript" AS "ROUTE"
+			,TO_VARCHAR(E."U_BOOKINGDATE",'DD-MM-YYYY') AS "BookingDate"
+			,G."Name" AS "ImportType"
+			,H."SlpName" AS "SaleName"
+			,E."U_UserCreate" AS "CSName" --J."firstName"||' - '||J."lastName"
+			,A."U_USERCREATE" AS "CreateBy"
+			,IFNULL(K."CardName",'') AS "CO"
+			,E."U_TOTALPACKAGE" AS "TotalPackage"
+			,E."U_NETWEIGHT" AS "NETWEIGHT"
+			,E."U_GROSSWEIGHT" AS "GROSSWEIGHT"
+			,TO_VARCHAR(E."U_LOADINGDATE",'DD-MM-YYYY') AS "LOADINGDATE"
+			,TO_VARCHAR(E."U_CROSSBORDERDATE",'DD-MM-YYYY') AS "CROSSBORDERDATE"
+			,TO_VARCHAR(E."U_ETAREQUIREMENT",'DD-MM-YYYY') AS "ETAREQUIREMENT"
+			,E."U_GOODSDESCRIPTION" AS "GOODSDESCRIPTION"
+			,(SELECT 
+					STRING_AGG(T1."CardName")
+				FROM EW_PRD_TEST."@TBOVERSEATRUCKER" T0
+				LEFT JOIN EW_PRD_TEST."OCRD" AS T1 ON T1."CardCode"=T0."U_OVERSEATRUCKERCODE"
+				WHERE T0."DocEntry"=E."DocEntry") AS "OVERSEASTRANSPORT"
+			,A."U_TOTALCOSTING" AS "TOTALCOSTING"
+			,A."U_REBATE" AS "REBATE"
+			--,TO_DECIMAL(A."U_TOTALCOSTING"+A."U_REBATE",12,2) AS "GRANDTOTALCOSTING"
+			,IFNULL(TO_DECIMAL((A."U_TOTALCOSTING"+A."U_REBATE")*IFNULL((SELECT "Rate" FROM EW_PRD_TEST."ORTT" WHERE "RateDate"=A."CreateDate" AND "Currency"=A."U_CURRENCYCOSTING"),1),12,2),0) "GRANDTOTALCOSTING"
+			,A."U_TOTALSELLING" AS "TOTALSELLING"
+			,CASE WHEN A."U_GRANDTOTALSELLINGUSD"=0 THEN A."U_TOTALSELLING" ELSE A."U_GRANDTOTALSELLINGUSD" END AS "GRANDTOTALSELLING"
+			--,A."U_GRANDTOTALSELLINGUSD"-(IFNULL(TO_DECIMAL((A."U_TOTALCOSTING"+A."U_REBATE")*(SELECT "Rate" FROM EW_PRD_TEST."ORTT" WHERE "RateDate"=A."CreateDate" AND "Currency"=A."U_CURRENCYCOSTING"),12,2),0)) AS "TOTALPROFIT"
+			,CASE WHEN A."U_GRANDTOTALSELLINGUSD"=0 THEN A."U_TOTALSELLING" ELSE A."U_GRANDTOTALSELLINGUSD" END-(IFNULL(TO_DECIMAL((IFNULL(A."U_TOTALCOSTING",0)+IFNULL(A."U_REBATE",0))* IFNULL((SELECT "Rate" FROM EW_PRD_TEST."ORTT" WHERE "RateDate"=A."CreateDate" AND "Currency"=A."U_CURRENCYCOSTING"),1),12,2),0)) AS "TOTALPROFIT"
+			,TO_VARCHAR(A."U_REMARKSCOSTING") AS "REMARKSCOSTING"
+			,TO_VARCHAR(A."U_REMAKRSSELLING") AS "REMARKSELLING"
+			,A."U_CURRENCYCOSTING" AS "CURRENCYCOSTING"
+			,A."U_CURRENCYSELLING" AS "CURRENCYSELLING"
+			,A."U_DutyTaxAmountCosting" AS "DUTYAMOUNTCOSTING"
+			,A."U_DutyTaxAmountSelling" AS "DUTYAMOUNTSELLING"
+			,A."U_AdvanceAmountCosting" AS "ADVANCEAMOUNTCOSTING"
+			,A."U_AdvanceAmountSelling" AS "ADVANCEAMOUNTSELLING"
+			,(SELECT 
+					STRING_AGG(B."U_INVOICE",',') AS "COMMODITIES"
+				FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS AA
+				LEFT JOIN EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS C ON C."DocEntry"=AA."U_CONFIRMBOOKINGID"
+				LEFT JOIN EW_PRD_TEST."@BOOKINGSHEET" AS A ON A."DocEntry"=C."U_BOOKINGID"
+				LEFT JOIN EW_PRD_TEST."@COMMODITY" AS B ON B."DocEntry"=A."DocEntry"
+				WHERE AA."DocEntry"=:par2) AS "COMMODITIES"
+		FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS A
+		LEFT JOIN EW_PRD_TEST."ORDR" AS B ON B."DocEntry"=A."U_SALESORDERDOCNUM"
+		LEFT JOIN (
+			SELECT DISTINCT
+				  T0."BaseEntry"
+				 ,T0."BaseType"
+				 ,T0."DocEntry"
+				 ,T1."DocNum"
+			FROM EW_PRD_TEST."RDR1" AS T0
+			LEFT JOIN EW_PRD_TEST."OQUT" AS T1 ON T1."DocEntry"=T0."BaseEntry"
+			WHERE T0."BaseType"='23'
+		)AS C ON C."DocEntry"=B."DocEntry"
+		LEFT JOIN EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS D ON D."DocEntry"=A."U_CONFIRMBOOKINGID"
+		LEFT JOIN EW_PRD_TEST."@BOOKINGSHEET" AS E ON E."DocEntry"=D."U_BOOKINGID"
+		LEFT JOIN EW_PRD_TEST."OTER" AS F ON F."territryID"=E."U_ORIGIN" --Origin Route
+		LEFT JOIN EW_PRD_TEST."OTER" AS FF ON FF."territryID"=E."U_DESTINATION" --Destination Route
+		LEFT JOIN EW_PRD_TEST."@TBJOBTYPE" AS G ON G."Code"=E."U_IMPORTTYPE"
+		LEFT JOIN EW_PRD_TEST."OSLP" AS H ON H."SlpCode"=E."U_SALEEMPLOYEE"
+		LEFT JOIN EW_PRD_TEST."@TBUSER" AS I ON I."Code"=E."U_UserCreate"
+		LEFT JOIN EW_PRD_TEST."OHEM" AS J ON J."empID"=I."U_EMPLOYEEID"
+		--LEFT JOIN EW_PRD_TEST."OSLP" AS J ON J."SlpCode"=I."U_SALEEMPLOYEE"
+		LEFT JOIN EW_PRD_TEST."OCRD" AS K ON K."CardCode"=IFNULL(B."CardCode",A."U_CARDCODE")
+		LEFT JOIN EW_PRD_TEST."OCRD" AS L ON L."CardCode"=E."U_OVERSEAFORWARDER" -- Get OverseaTransporter
+		WHERE A."DocEntry"= :par2 ;
+		--SELECT * FROM EW_PRD_TEST."@BOOKINGSHEET" WHERE "DocEntry"='167'
+	ELSE IF :par1='GetCommoditiesJobSheetTrucking' THEN
+		SELECT 
+			B."U_INVOICE" AS "COMMODITIES"
+		FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS AA
+		LEFT JOIN EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS C ON C."DocEntry"=AA."U_CONFIRMBOOKINGID"
+		LEFT JOIN EW_PRD_TEST."@BOOKINGSHEET" AS A ON A."DocEntry"=C."U_BOOKINGID"
+		LEFT JOIN EW_PRD_TEST."@COMMODITY" AS B ON B."DocEntry"=A."DocEntry"
+		WHERE AA."DocEntry"=:par2;
+	ELSE IF :par1='GetShipperJobSheetTrucking' THEN
+		SELECT 
+			D."CardName" AS "SHIPPER"
+		FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS AA
+		LEFT JOIN EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS C ON C."DocEntry"=AA."U_CONFIRMBOOKINGID"
+		LEFT JOIN EW_PRD_TEST."@BOOKINGSHEET" AS A ON A."DocEntry"=C."U_BOOKINGID"
+		LEFT JOIN EW_PRD_TEST."@TBSHIPPER" AS B ON B."DocEntry"=A."DocEntry"		
+		LEFT JOIN EW_PRD_TEST."OCRD" AS D ON D."CardCode"=B."U_SHIPPER"
+		WHERE AA."DocEntry"=:par2;
+	ELSE IF :par1='GetConsigneeJobSheetTrucking' THEN
+		SELECT 
+			D."CardName" AS "Consignee"
+		FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS AA
+		LEFT JOIN EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS C ON C."DocEntry"=AA."U_CONFIRMBOOKINGID"
+		LEFT JOIN EW_PRD_TEST."@BOOKINGSHEET" AS A ON A."DocEntry"=C."U_BOOKINGID"
+		LEFT JOIN EW_PRD_TEST."@TBCONSIGNEE" AS B ON B."DocEntry"=A."DocEntry"
+		LEFT JOIN EW_PRD_TEST."OCRD" AS D ON D."CardCode"=B."U_CONSIGNEE"
+		WHERE AA."DocEntry"=:par2;
+	ELSE IF :par1='GetPlaceOfloadingJobSheetTrucking' THEN
+		SELECT 
+			IFNULL(D."Name",'') AS "PlaceOfloading"
+			,IFNULL(E."Name",'') AS "District"
+		FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS AA
+		LEFT JOIN EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS C ON C."DocEntry"=AA."U_CONFIRMBOOKINGID"
+		LEFT JOIN EW_PRD_TEST."@BOOKINGSHEET" AS A ON A."DocEntry"=C."U_BOOKINGID"
+		LEFT JOIN EW_PRD_TEST."@PLACEOFLOADING" AS B ON B."DocEntry"=A."DocEntry"		
+		LEFT JOIN EW_PRD_TEST."@TBPLACEOFLOADING" AS D ON D."Code"=B."U_PLACELOADING"
+		LEFT JOIN EW_PRD_TEST."@TBDISTRICT" AS E ON E."Code"=B."U_District"
+		WHERE AA."DocEntry"=:par2;
+	ELSE IF :par1='GetPlaceOfDeliveryJobSheetTrucking' THEN
+		SELECT 
+			IFNULL(D."Name",'') AS "PlaceOfDelivery"
+			,IFNULL(E."Name",'') AS "District"
+		FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS AA
+		LEFT JOIN EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS C ON C."DocEntry"=AA."U_CONFIRMBOOKINGID"
+		LEFT JOIN EW_PRD_TEST."@BOOKINGSHEET" AS A ON A."DocEntry"=C."U_BOOKINGID"
+		LEFT JOIN EW_PRD_TEST."@PLACEOFDELIVERY" AS B ON B."DocEntry"=A."DocEntry"		
+		LEFT JOIN EW_PRD_TEST."@TBPLACEOFLOADING" AS D ON D."Code"=B."U_PLACEDELIVERY"
+		LEFT JOIN EW_PRD_TEST."@TBDISTRICT" AS E ON E."Code"=B."U_District"
+		WHERE AA."DocEntry"=:par2;
+	ELSE IF :par1='GetVolumeJobSheetTrucking' THEN
+		SELECT * FROM (
+			SELECT 
+				IFNULL(CAST(SUM(B."U_QTY") AS VARCHAR),'')||IFNULL(' X '||B."U_VOLUMECODE",'') AS "Volume"
+			FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS AA
+			LEFT JOIN EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS C ON C."DocEntry"=AA."U_CONFIRMBOOKINGID"
+			LEFT JOIN EW_PRD_TEST."@BOOKINGSHEET" AS A ON A."DocEntry"=C."U_BOOKINGID"
+			LEFT JOIN EW_PRD_TEST."@VOLUME" AS B ON B."DocEntry"=A."DocEntry"
+			WHERE AA."DocEntry"=:par2 GROUP BY B."U_VOLUMECODE"
+			UNION ALL
+			SELECT 
+				IFNULL(CAST(SUM(CAST(B."U_QTY" AS INT)) AS VARCHAR),'')||IFNULL(' X '||B."U_TRUCKTYPE",'') AS "Volume"
+			FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS AA
+			LEFT JOIN EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS C ON C."DocEntry"=AA."U_CONFIRMBOOKINGID"
+			LEFT JOIN EW_PRD_TEST."@BOOKINGSHEET" AS A ON A."DocEntry"=C."U_BOOKINGID"
+			LEFT JOIN EW_PRD_TEST."@TBTRUCKTYPEROW" AS B ON B."DocEntry"=A."DocEntry"
+			WHERE AA."DocEntry"=:par2 GROUP BY B."U_TRUCKTYPE"
+		)AS A WHERE A."Volume"!='';
+	ELSE IF :par1='GetThaiForwarderJobSheetTrucking' THEN
+		SELECT 
+			IFNULL(D."CardName",'') AS "ThaiForwarder"
+		FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS AA
+		LEFT JOIN EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS C ON C."DocEntry"=AA."U_CONFIRMBOOKINGID"
+		LEFT JOIN EW_PRD_TEST."@BOOKINGSHEET" AS A ON A."DocEntry"=C."U_BOOKINGID"
+		LEFT JOIN EW_PRD_TEST."@THAIFORWARDER" AS B ON B."DocEntry"=A."DocEntry"
+		LEFT JOIN EW_PRD_TEST."OCRD" AS D ON D."CardCode"=B."U_THAIFORWARDER"
+		WHERE AA."DocEntry"=:par2;
+	ELSE IF :par1='GetOverSeaForwarderJobSheetTrucking' THEN
+		SELECT 
+			IFNULL(D."CardName",'') AS "OverSeaForwarder"
+		FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS AA
+		LEFT JOIN EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS C ON C."DocEntry"=AA."U_CONFIRMBOOKINGID"
+		LEFT JOIN EW_PRD_TEST."@BOOKINGSHEET" AS A ON A."DocEntry"=C."U_BOOKINGID"
+		LEFT JOIN EW_PRD_TEST."@TBOVERSEAFORWARDER" AS B ON B."DocEntry"=A."DocEntry"
+		LEFT JOIN EW_PRD_TEST."OCRD" AS D ON D."CardCode"=B."U_OVERSEAFORWARDERCODE"
+		WHERE AA."DocEntry"=:par2;
+	ELSE IF :par1='GetThaiBorderJobSheetTrucking' THEN
+		SELECT 
+			IFNULL(D."Name",'') AS "ThaiBorder"
+		FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS AA
+		LEFT JOIN EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS C ON C."DocEntry"=AA."U_CONFIRMBOOKINGID"
+		LEFT JOIN EW_PRD_TEST."@BOOKINGSHEET" AS A ON A."DocEntry"=C."U_BOOKINGID"
+		LEFT JOIN EW_PRD_TEST."@THAIBORDER" AS B ON B."DocEntry"=A."DocEntry"
+		LEFT JOIN EW_PRD_TEST."@TBTHAIBORDER" AS D ON D."Code"=B."U_ThaiBorder"
+		WHERE AA."DocEntry"=:par2;
+	ELSE IF :par1='GetContainerJobSheetTruckingOdd' THEN
+		SELECT DISTINCT
+				*
+		FROM (
+			SELECT 
+					 ROW_NUMBER ( ) OVER( ORDER BY B."LineId" DESC ) AS "ROWNUM"			
+					,EE."Location"||' '||IFNULL(E."InventryNo",'')||' /'||B."U_TRAILERPROVINCE"||' '||B."U_TRAILERPLATE" AS "TruckNo"
+					,IFNULL(B."U_CONTAINERNO",'') AS "ContainerNo"
+					,IFNULL(IFNULL(D."U_ShortName",D."CardName"),'') AS "Transporter"
+					,IFNULL(IFNULL((SELECT 
+									SUM(T0."U_Price")
+									FROM EW_PRD_TEST."@ADVANCEPAYMENTROW" AS T0
+									LEFT JOIN EW_PRD_TEST."@ADVANCEPAYMENT" AS T1 ON T1."DocEntry"=T0."DocEntry"
+									LEFT JOIN EW_PRD_TEST."PRQ1" AS T2 ON T2."DocEntry"=T1."U_PRDocEntry"
+									LEFT JOIN EW_PRD_TEST."OPOR" AS T3 ON T3."DocEntry"=T2."TrgetEntry"
+									WHERE T0."U_TruckNo"=B."U_TRUCKCODE" 
+									AND T1."U_Project"=A."U_PROJECTMANAGEMENTID" AND T1."Status"!='C' AND T3."CANCELED"<>'Y'),B."U_TRUCKCOSTTHB"),0) AS "TruckCost"
+				FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS AA
+				LEFT JOIN EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS A ON A."DocEntry"=AA."U_CONFIRMBOOKINGID"
+				LEFT JOIN EW_PRD_TEST."@TRUCKINFORMATION" AS B ON B."DocEntry"=A."DocEntry"
+				--LEFT JOIN EW_PRD_TEST."@THAIFORWARDER" AS C ON C."DocEntry"=A."U_BOOKINGID"
+				LEFT JOIN EW_PRD_TEST."OCRD" AS D ON D."CardCode"=B."U_VENDORCODE"
+				LEFT JOIN EW_PRD_TEST."OITM" AS E ON E."ItemCode"=B."U_TRUCKPLATENO"
+				LEFT JOIN EW_PRD_TEST."OLCT" AS EE ON EE."Code"=E."Location"--Location
+				WHERE  B."LineId" IS NOT NULL AND AA."DocEntry"=:par2
+		)AS A WHERE MOD(A."ROWNUM",2)=1;
+	ELSE IF :par1='GetContainerJobSheetTruckingEvent' THEN
+		SELECT
+				*
+		FROM (
+			SELECT DISTINCT
+					 ROW_NUMBER ( ) OVER( ORDER BY B."LineId" DESC ) AS "ROWNUM"			
+					,EE."Location"||' '||IFNULL(E."InventryNo",'')||' /'||B."U_TRAILERPROVINCE"||' '||B."U_TRAILERPLATE" AS "TruckNo"
+					,IFNULL(B."U_CONTAINERNO",'') AS "ContainerNo"
+					,IFNULL(IFNULL(D."U_ShortName",D."CardName"),'') AS "Transporter"
+					,IFNULL(IFNULL((SELECT 
+									SUM(T0."U_Price")
+									FROM EW_PRD_TEST."@ADVANCEPAYMENTROW" AS T0
+									LEFT JOIN EW_PRD_TEST."@ADVANCEPAYMENT" AS T1 ON T1."DocEntry"=T0."DocEntry"
+									LEFT JOIN EW_PRD_TEST."PRQ1" AS T2 ON T2."DocEntry"=T1."U_PRDocEntry"
+									LEFT JOIN EW_PRD_TEST."OPOR" AS T3 ON T3."DocEntry"=T2."TrgetEntry"
+									WHERE T0."U_TruckNo"=B."U_TRUCKCODE" 
+									AND T1."U_Project"=A."U_PROJECTMANAGEMENTID" AND T1."Status"!='C' AND T3."CANCELED"<>'Y'),B."U_TRUCKCOSTTHB"),0) AS "TruckCost"
+				FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS AA
+				LEFT JOIN EW_PRD_TEST."@CONFIRMBOOKINGSHEET" AS A ON A."DocEntry"=AA."U_CONFIRMBOOKINGID"
+				LEFT JOIN EW_PRD_TEST."@TRUCKINFORMATION" AS B ON B."DocEntry"=A."DocEntry"
+				--LEFT JOIN EW_PRD_TEST."@THAIFORWARDER" AS C ON C."DocEntry"=A."U_BOOKINGID"
+				LEFT JOIN EW_PRD_TEST."OCRD" AS D ON D."CardCode"=B."U_VENDORCODE"
+				LEFT JOIN EW_PRD_TEST."OITM" AS E ON E."ItemCode"=B."U_TRUCKPLATENO"
+				LEFT JOIN EW_PRD_TEST."OLCT" AS EE ON EE."Code"=E."Location"--Location
+				WHERE  B."LineId" IS NOT NULL AND AA."DocEntry"=:par2
+		)AS A WHERE MOD(A."ROWNUM",2)=0;
+	ELSE IF :par1='GetItemCostingJobSheetTrucking' THEN
+		SELECT * FROM (
+			SELECT
+				 C."ItemName" AS "ItemCode"
+				,B."U_Qty"*B."U_TOTALPRICE" AS "TotalPrice"
+			FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS A
+			LEFT JOIN EW_PRD_TEST."@JOBTRUCKCOSTING" AS B ON A."DocEntry"=B."DocEntry"
+			LEFT JOIN EW_PRD_TEST."OITM" AS C ON C."ItemCode"=B."U_ITEMCODE"
+			--LEFT JOIN EW_PRD_TEST."@JOBTRUCKINGSELLING" AS D ON D."U_ITEMCODE"=B."U_ITEMCODE" AND D."DocEntry"=B."DocEntry"
+			WHERE A."DocEntry"=:par2 
+			GROUP BY B."VisOrder",C."ItemName",B."U_Qty",B."U_TOTALPRICE"--,B."LineId",D."LineId"
+			ORDER BY B."VisOrder" ASC --D."LineId",
+		)AS A;
+		/*
+		Declare maxCount int;
+		Declare i int=1;
+		Declare totalPrice double=0;
+		Declare itemName nvarchar(255)='';
+		Declare typeLine nvarchar(255)='';
+		create column table EW_PRD_TEST."table_clear_advance" --as
+		(
+			"ItemCode" nvarchar(255),
+			"TotalPrice" double,
+			"row_num" int
+			--,
+			--"TypeLine" nvarchar(255)
+		);
+		INSERT INTO EW_PRD_TEST."table_clear_advance" ("ItemCode", "TotalPrice","row_num") --,"TypeLine"*/
+		/*SELECT 
+				 C."ItemName" AS "ItemCode"
+				,B."U_Qty" * B."U_TOTALPRICE" AS "TotalPrice"
+				,ROW_NUMBER() OVER (ORDER BY "ItemName") AS "row_num"
+				--,TO_VARCHAR(D."LineId") AS "TypeLine"
+			FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS A
+			LEFT JOIN EW_PRD_TEST."@JOBTRUCKCOSTING" AS B ON A."DocEntry"=B."DocEntry"
+			LEFT JOIN EW_PRD_TEST."OITM" AS C ON C."ItemCode"=B."U_ITEMCODE"
+			LEFT JOIN EW_PRD_TEST."@JOBTRUCKINGSELLING" AS D ON D."U_ITEMCODE"=B."U_ITEMCODE" AND D."DocEntry"=B."DocEntry"
+			WHERE A."DocEntry"=:par2
+			ORDER BY IFNULL(D."LineId",B."LineId") ASC;*/
+		/*		
+		SELECT 
+			 C."ItemName" AS "ItemCode"
+			,SUM(B."U_Qty" * B."U_TOTALPRICE") AS "TotalPrice"
+			,ROW_NUMBER() OVER (ORDER BY "ItemName") AS "row_num"
+			--,TO_VARCHAR(D."LineId") AS "TypeLine"
+		FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS A
+		LEFT JOIN EW_PRD_TEST."@JOBTRUCKCOSTING" AS B ON A."DocEntry"=B."DocEntry"
+		LEFT JOIN EW_PRD_TEST."OITM" AS C ON C."ItemCode"=B."U_ITEMCODE"
+		LEFT JOIN EW_PRD_TEST."@JOBTRUCKINGSELLING" AS D ON D."U_ITEMCODE"=B."U_ITEMCODE" AND D."DocEntry"=B."DocEntry"
+		WHERE A."DocEntry"=:par2
+		GROUP BY C."ItemName",D."LineId"
+		ORDER BY IFNULL(MAX(D."LineId"),MAX(B."LineId")) ASC;
+		
+		SELECT COUNT(*) INTO maxCount FROM EW_PRD_TEST."table_clear_advance";
+		WHILE  i<=maxCount DO
+			Select "ItemCode" INTO itemName from EW_PRD_TEST."table_clear_advance" WHERE "row_num"=:i;
+			select "TotalPrice" INTO totalPrice from EW_PRD_TEST."table_clear_advance" WHERE "row_num"=:i;
+			--select "TypeLine" INTO typeLine from EW_PRD_TEST."table_clear_advance" WHERE "row_num"=:i;
+			--AND "TypeLine"=typeLine
+			IF(SELECT COUNT(*) FROM EW_PRD_TEST."table_clear_advance" WHERE "ItemCode"=itemName And "TotalPrice"=totalPrice)!=1 THEN
+				DELETE FROM EW_PRD_TEST."table_clear_advance" WHERE "row_num"=:i;
+			END IF;
+			i := i + 1;
+		END WHILE;
+		
+		
+		SELECT  "ItemCode"
+				,"TotalPrice" 
+		FROM EW_PRD_TEST."table_clear_advance";
+		
+		DROP TABLE EW_PRD_TEST."table_clear_advance";*/
+		
+	ELSE IF :par1='GetItemCostingJobSheetTruckingDutyTax' THEN
+		SELECT 
+			 IFNULL(B."Dscription",'') AS "ItemCode"
+			,IFNULL(B."LineTotal",0) AS "TotalPrice"
+		FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS A
+		LEFT JOIN EW_PRD_TEST."RDR10" AS C ON C."DocEntry"=A."U_SALESORDERDOCNUM"
+		LEFT JOIN EW_PRD_TEST."RDR1" AS B ON B."DocEntry"=C."DocEntry" AND  B."LineNum"=C."AftLineNum"+1
+		WHERE A."DocEntry"=:par2 ORDER BY B."LineNum" ASC;
+	ELSE IF :par1='GetItemSellingJobSheetTrucking' THEN
+		/*SELECT 
+			 C."ItemName" AS "ItemCode"
+			,B."U_Qty"*B."U_TOTALPRICE" AS "TotalPrice"
+		FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS A
+		LEFT JOIN EW_PRD_TEST."@JOBTRUCKINGSELLING" AS B ON A."DocEntry"=B."DocEntry"
+		LEFT JOIN EW_PRD_TEST."OITM" AS C ON C."ItemCode"=B."U_ITEMCODE"
+		WHERE A."DocEntry"=:par2 ORDER BY B."LineId" ASC;*/
+		/*SELECT 
+			 C."ItemName" AS "ItemCode"
+			,SUM(B."U_Qty"*B."U_TOTALPRICE") AS "TotalPrice"
+		FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS A
+		LEFT JOIN EW_PRD_TEST."@JOBTRUCKINGSELLING" AS B ON A."DocEntry"=B."DocEntry"
+		LEFT JOIN EW_PRD_TEST."OITM" AS C ON C."ItemCode"=B."U_ITEMCODE"
+		WHERE A."DocEntry"=:par2
+		GROUP BY C."ItemName"
+		ORDER BY MAX(B."LineId") ASC;*/
+		SELECT 
+			 C."ItemName" AS "ItemCode"
+			,SUM(B."U_Qty"*B."U_TOTALPRICE") AS "TotalPrice"
+		FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS A
+		LEFT JOIN EW_PRD_TEST."@JOBTRUCKINGSELLING" AS B ON A."DocEntry"=B."DocEntry"
+		LEFT JOIN EW_PRD_TEST."OITM" AS C ON C."ItemCode"=B."U_ITEMCODE"
+		WHERE A."DocEntry"=:par2
+		GROUP BY B."VisOrder",C."ItemName",B."U_Qty",B."U_TOTALPRICE"--,B."LineId",D."LineId"
+			ORDER BY B."VisOrder" ASC; --D."LineId",
+	ELSE IF :par1='GetItemSellingJobSheetTruckingDutyTax' THEN
+		SELECT 
+			 IFNULL(B."Dscription",'') AS "ItemCode"
+			,IFNULL(B."LineTotal",0) AS "TotalPrice"
+		FROM EW_PRD_TEST."@JOBSHEETRUCKING" AS A
+		LEFT JOIN EW_PRD_TEST."RDR10" AS C ON C."DocEntry"=A."U_SALESORDERDOCNUM"
+		LEFT JOIN EW_PRD_TEST."RDR1" AS B ON B."DocEntry"=C."DocEntry" AND  B."LineNum"=C."AftLineNum"+1
+		WHERE A."DocEntry"=:par2 ORDER BY B."LineNum" ASC;
+	ELSE IF :par1='GetPettyCashReportHeader' THEN
+		SELECT TOP 1  * INTO par3 FROM LIBRARY:SPLIT_TO_TABLE(:par2,'-') ORDER BY "RESULT" DESC;
+		SELECT TOP 1  * INTO par2 FROM LIBRARY:SPLIT_TO_TABLE(:par2,'-');
+		IF :par3='JE' THEN
+			SELECT 
+				 A."U_WEBID" AS "VoucherNo"
+				,B."SeriesName" AS "Series"
+				,TO_VARCHAR(A."RefDate",'dd-MM-yyyy') AS "PostingDate"
+				,A."Memo" AS "Remarks"
+				,A."Ref1" AS "Ref1"
+				,A."Ref2" AS "Ref2"
+				,A."Ref3" AS "Ref3"
+				,A."LocTotal" AS "TotalCredit"
+				,A."LocTotal" AS "TotalDebit"
+			FROM EW_PRD_TEST."OJDT" AS A
+			LEFT JOIN EW_PRD_TEST."NNM1" AS B ON B."Series"=A."Series"
+			WHERE "TransId"=:par2;
+		ELSE
+			SELECT 
+				 "U_WebID" AS "VoucherNo"
+				,B."SeriesName" AS "Series"
+				,A."CreateDate" AS "PostingDate"
+				,A."U_Remarks" AS "Remarks"
+				,A."U_Ref1" AS "Ref1"
+				,A."U_Ref2" AS "Ref2"
+				,A."U_Ref3" AS "Ref3"
+				,C."TotalCredit" AS "TotalCredit"
+				,IFNULL(C."TotalDebit",0) AS "TotalDebit"
+			FROM EW_PRD_TEST."@TB_DRF_JE" AS A
+			LEFT JOIN EW_PRD_TEST."NNM1" AS B ON B."Series"=A."U_Series"
+			LEFT JOIN (
+				SELECT 
+					 T0."DocEntry" AS "DocEntry"
+					,SUM(T0."U_Debit") AS "TotalCredit"
+					--,CASE WHEN IFNULL(T2."U_JEDocEntry",0)=0 THEN 0
+					--	ELSE SUM(T1."Credit") END AS "TotalDebit"
+					,0 AS "TotalDebit"
+				FROM EW_PRD_TEST."@TB_DRF_JE_ROW" AS T0
+				LEFT JOIN EW_PRD_TEST."@TB_DRF_JE" AS T2 ON T2."DocEntry"=T0."DocEntry"
+				--LEFT JOIN EW_PRD_TEST."JDT1" AS T1 ON T1."DocEntry"=T2."U_JEDocEntry"
+				GROUP BY T0."DocEntry",T2."U_JEDocEntry"
+			) AS C ON C."DocEntry"=A."DocEntry"
+			WHERE A."DocEntry"=:par2;
+		END IF;
+	ELSE IF :par1='GetPettyCashReportRow' THEN
+		SELECT TOP 1  * INTO par3 FROM LIBRARY:SPLIT_TO_TABLE(:par2,'-') ORDER BY "RESULT" DESC;
+		SELECT TOP 1  * INTO par2 FROM LIBRARY:SPLIT_TO_TABLE(:par2,'-');
+		IF :par3='JE' THEN
+			SELECT 
+				 A."Account" AS "AccountCode"
+				,CAST(B."AcctName" AS NVARCHAR(255)) AS "AccountName"
+				,IFNULL(C."firstName",'')||' - '||IFNULL(C."lastName",'') AS "CustomerName"
+				,A."Debit" AS "Debit"
+				,A."Credit" AS "Credit"
+				,IFNULL(TO_VARCHAR(A."U_TaxDate",'dd-MM-yyyy'),'') AS "LineDate"
+				,A."LineMemo" AS "Remark"
+			FROM EW_PRD_TEST."JDT1" AS A
+			LEFT JOIN EW_PRD_TEST."OACT" AS B ON B."AcctCode"=A."Account"
+			LEFT JOIN EW_PRD_TEST."OHEM" AS C ON TO_VARCHAR(C."empID")=A."U_CardCode"
+			WHERE "TransId"=:par2;
+		ELSE
+			SELECT DISTINCT
+				 A."U_AccountCodeOrBpCode" AS "AccountCode"
+				,CAST(B."AcctName" AS NVARCHAR(255)) AS "AccountName"
+				,C."firstName"||' - '||C."lastName" AS "CustomerName"
+				,A."U_Debit" AS "Debit"
+				,A."U_Credit" AS "Credit"
+				,A."U_DateLine" AS "LineDate"
+				,A."U_Remarks" AS "Remark"
+			FROM EW_PRD_TEST."@TB_DRF_JE_ROW" AS A
+			LEFT JOIN EW_PRD_TEST."@TB_DRF_JE" AS AA ON AA."DocEntry"=A."DocEntry"
+			LEFT JOIN EW_PRD_TEST."OACT" AS B ON B."AcctCode"=A."U_AccountCodeOrBpCode"
+			LEFT JOIN EW_PRD_TEST."OHEM" AS C ON TO_VARCHAR(C."empID")=A."U_CardCode"
+			LEFT JOIN EW_PRD_TEST."JDT1" AS E ON E."TransId"=AA."U_JEDocEntry"
+			WHERE A."DocEntry"=:par2;
+		END IF;
+	ELSE IF :par1='GetCreditNoteCBT' THEN
+		SELECT 
+			 (T2."SeriesName"||''||RIGHT(T0."DocNum",4)) AS "DocNum"
+			,T0."CardCode" AS "CardCode"
+			,T0."CardName" AS "CardName"
+			,IFNULL(G."LicTradNum",'') AS "TaxID"
+			,T0."DocDate" AS "DocDate"
+			,(T5."SeriesName"||''||RIGHT(T4."DocNum",4)) AS "ReferTaxInvoiceNo"
+			,T0."TaxDate" AS "TaxDate"
+			,CASE WHEN T4."DocCur" = 'THS' THEN 
+				T4."DocTotal"
+			 ELSE T4."DocTotalFC" END AS "OrginalTaxInvoiceAmount"
+			,(
+				CASE WHEN T4."DocCur" = 'THS' THEN 
+					T4."DocTotal"
+				ELSE T4."DocTotalFC" END
+			 )
+			 -
+			 (
+				CASE WHEN T0."DocCur" = 'THS' THEN 
+					T0."DocTotal"
+				ELSE T0."DocTotalFC" END
+			 ) AS "CorrectAmount"
+			,CASE WHEN T0."DocCur" = 'THS' THEN 
+				T0."DocTotal"
+			 ELSE T0."DocTotalFC" END AS "DifferentAmount"
+			,CASE WHEN T4."DocCur" = 'THS' THEN 
+				T0."VatSum"
+			 ELSE T0."VatSumFC" END AS "Vat"
+			,CASE WHEN T0."DocCur" = 'THS' THEN 
+				T0."DocTotal"
+			 ELSE T0."DocTotalFC" END AS "TotalAmount"
+			,T0."Comments" AS "Remark"
+			,'' AS "CreditNoteFor"
+			,T1."ItemCode" AS "ItemCode"
+			,T1."Dscription" AS "ItemName"
+			,T1."Quantity" AS "Qty"
+			,CASE WHEN T0."DocCur" = 'THS' THEN 
+				T1."LineTotal"
+			 ELSE T1."TotalFrgn" END AS "Amount"
+			,ROW_NUMBER ( ) OVER( ORDER BY T1."LineNum" DESC ) AS "LineId"			
+			,IFNULL(H."Address",'')
+				||','||
+			 IFNULL(H."Address2",'')
+				||', '||
+			 IFNULL(H."Address3",'') AS "Address"
+			,T4."DocCur" AS "CurrencyName"
+		FROM "EW_PRD_TEST"."ORIN" T0
+		LEFT JOIN "EW_PRD_TEST"."RIN1" T1 ON T0."DocEntry" = T1."DocEntry" and T1."PriceBefDi" <> '0'
+		LEFT JOIN "EW_PRD_TEST"."RIN12" E ON T0."DocEntry" = E."DocEntry" 
+		LEFT JOIN "EW_PRD_TEST"."OCRD" G ON T0."CardCode" = G."CardCode"
+		LEFT JOIN "EW_PRD_TEST"."CRD1" H ON T0."CardCode" = H."CardCode" AND H."AdresType" = 'B'
+		LEFT JOIN "EW_PRD_TEST"."NNM1" T2 ON T0."Series" = T2."Series"
+		LEFT JOIN "EW_PRD_TEST"."OINV" T4 ON CASE IFNULL(T1."BaseRef",'') WHEN '' Then 0 Else T1."BaseRef" End =  T4."DocNum"
+		LEFT JOIN "EW_PRD_TEST"."NNM1" T5 ON T4."Series" = T5."Series"
+		LEFT JOIN "EW_PRD_TEST"."OITM" T6 ON T1."ItemCode" = T6."ItemCode"
+		LEFT OUTER JOIN "EW_PRD_TEST"."OADM" BU2 ON 1 = 1
+		LEFT JOIN "EW_PRD_TEST"."OSLP" T9 ON T0."SlpCode" = T9."SlpCode" 
+		LEFT OUTER JOIN "EW_PRD_TEST"."ADM1" AS ZA ON 1 = 1 
+		LEFT OUTER JOIN "EW_PRD_TEST"."OADM" AS ZB ON 1 = 1 		
+		WHERE T0."DocEntry" =:par2
+			--AND T0."draftKey" NOT IN (SELECT "draftKey" FROM EW_PRD_TEST."ODRF" WHERE "draftKey" IS NOT NULL)
+		
+		UNION ALL
+		
+		SELECT 
+			 (T2."SeriesName"||''||RIGHT(T0."DocNum",4)) AS "DocNum"
+			,T0."CardCode" AS "CardCode"
+			,T0."CardName" AS "CardName"
+			,IFNULL(G."LicTradNum",'') AS "TaxID"
+			,T0."DocDate" AS "DocDate"
+			,(T5."SeriesName"||''||RIGHT(T4."DocNum",4)) AS "ReferTaxInvoiceNo"
+			,T0."TaxDate" AS "TaxDate"
+			,CASE WHEN T4."DocCur" = 'THS' THEN 
+				T4."DocTotal"
+			 ELSE T4."DocTotalFC" END AS "OrginalTaxInvoiceAmount"
+			,(
+				CASE WHEN T4."DocCur" = 'THS' THEN 
+					T4."DocTotal"
+				ELSE T4."DocTotalFC" END
+			 )
+			 -
+			 (
+				CASE WHEN T0."DocCur" = 'THS' THEN 
+					T0."DocTotal"
+				ELSE T0."DocTotalFC" END
+			 ) AS "CorrectAmount"
+			,CASE WHEN T0."DocCur" = 'THS' THEN 
+				T0."DocTotal"
+			 ELSE T0."DocTotalFC" END AS "DifferentAmount"
+			,CASE WHEN T4."DocCur" = 'THS' THEN 
+				T0."VatSum"
+			 ELSE T0."VatSumFC" END AS "Vat"
+			,CASE WHEN T0."DocCur" = 'THS' THEN 
+				T0."DocTotal"
+			 ELSE T0."DocTotalFC" END AS "TotalAmount"
+			,T0."Comments" AS "Remark"
+			,'' AS "CreditNoteFor"
+			,T1."ItemCode" AS "ItemCode"
+			,T1."Dscription" AS "ItemName"
+			,T1."Quantity" AS "Qty"
+			,CASE WHEN T0."DocCur" = 'THS' THEN 
+				T1."LineTotal"
+			 ELSE T1."TotalFrgn" END AS "Amount"
+			,ROW_NUMBER ( ) OVER( ORDER BY T1."LineNum" DESC ) AS "LineId"			
+			,IFNULL(H."Address",'')
+				||','||
+			 IFNULL(H."Address2",'')
+				||', '||
+			 IFNULL(H."Address3",'') AS "Address"
+			,T4."DocCur" AS "CurrencyName"
+		FROM "EW_PRD_TEST"."ODRF" T0
+		LEFT JOIN "EW_PRD_TEST"."DRF1" T1 ON T0."DocEntry" = T1."DocEntry" and T1."PriceBefDi" <> '0'
+		LEFT JOIN "EW_PRD_TEST"."DRF12" E ON T0."DocEntry" = E."DocEntry" 
+		LEFT JOIN "EW_PRD_TEST"."OCRD" G ON T0."CardCode" = G."CardCode"
+		LEFT JOIN "EW_PRD_TEST"."CRD1" H ON T0."CardCode" = H."CardCode" AND H."AdresType" = 'B'
+		LEFT JOIN "EW_PRD_TEST"."NNM1" T2 ON T0."Series" = T2."Series"
+		LEFT JOIN "EW_PRD_TEST"."OINV" T4 ON CASE IFNULL(T1."BaseRef",'') WHEN '' Then 0 Else T1."BaseRef" End =  T4."DocNum"
+		LEFT JOIN "EW_PRD_TEST"."NNM1" T5 ON T4."Series" = T5."Series"
+		LEFT JOIN "EW_PRD_TEST"."OITM" T6 ON T1."ItemCode" = T6."ItemCode"
+		LEFT OUTER JOIN "EW_PRD_TEST"."OADM" BU2 ON 1 = 1
+		LEFT JOIN "EW_PRD_TEST"."OSLP" T9 ON T0."SlpCode" = T9."SlpCode" 
+		LEFT OUTER JOIN "EW_PRD_TEST"."ADM1" AS ZA ON 1 = 1 
+		LEFT OUTER JOIN "EW_PRD_TEST"."OADM" AS ZB ON 1 = 1 		
+		WHERE T0."DocEntry" =:par2
+				AND T0."ObjType"=14
+				AND T0."DocEntry" NOT IN (SELECT "draftKey" FROM EW_PRD_TEST."ORIN" WHERE "draftKey" IS NOT NULL);
+		
+	ELSE IF :par1='GetDebitNoteCBT' THEN
+		SELECT 
+			 (T2."SeriesName"||''||RIGHT(T0."DocNum",4)) AS "DocNum"
+			,T0."CardCode" AS "CardCode"
+			,T0."CardName" AS "CardName"
+			,IFNULL(G."LicTradNum",'') AS "TaxID"
+			,T0."DocDate" AS "DocDate"
+			,(T5."SeriesName"||''||RIGHT(T4."DocNum",4)) AS "ReferTaxInvoiceNo"
+			,T0."TaxDate" AS "TaxDate"
+			,CASE WHEN T4."DocCur" = 'THS' THEN 
+				T4."DocTotal"
+			 ELSE T4."DocTotalFC" END AS "OrginalTaxInvoiceAmount"
+			,(
+				CASE WHEN T4."DocCur" = 'THS' THEN 
+					T4."DocTotal"
+				ELSE T4."DocTotalFC" END
+			 )
+			 +
+			 (
+				CASE WHEN T0."DocCur" = 'THS' THEN 
+					T0."DocTotal"*-1
+				ELSE T0."DocTotalFC"*-1 END
+			 ) AS "CorrectAmount"
+			,CASE WHEN T0."DocCur" = 'THS' THEN 
+				T0."DocTotal"*-1
+			 ELSE T0."DocTotalFC"*-1 END AS "DifferentAmount"
+			,CASE WHEN T4."DocCur" = 'THS' THEN 
+				T0."VatSum"*-1
+			 ELSE T0."VatSumFC"*-1 END AS "Vat"
+			,CASE WHEN T0."DocCur" = 'THS' THEN 
+				T0."DocTotal"*-1
+			 ELSE T0."DocTotalFC"*-1 END AS "TotalAmount"
+			,IFNULL(TO_VARCHAR(T1."Project"),'')||IFNULL(T0."Comments",'') AS "Remark"
+			,'' AS "CreditNoteFor"
+			,T1."ItemCode" AS "ItemCode"
+			,T1."Dscription" AS "ItemName"
+			,T1."Quantity"*-1 AS "Qty"
+			,CASE WHEN T0."DocCur" = 'THS' THEN 
+				T1."LineTotal"*-1
+			 ELSE T1."TotalFrgn"*-1 END AS "Amount"
+			,ROW_NUMBER ( ) OVER( ORDER BY T1."LineNum" DESC ) AS "LineId"				
+			,IFNULL(H."Address",'')
+				||','||
+			 IFNULL(H."Address2",'')
+				||', '||
+			 IFNULL(H."Address3",'') AS "Address"
+			,T1."Project" AS "JobNumber"
+			,T4."DocCur" AS "CurrencyName"
+		FROM "EW_PRD_TEST"."ORIN" T0
+		LEFT JOIN "EW_PRD_TEST"."RIN1" T1 ON T0."DocEntry" = T1."DocEntry" and T1."PriceBefDi" <> '0'
+		LEFT JOIN "EW_PRD_TEST"."RIN12" E ON T0."DocEntry" = E."DocEntry" 
+		LEFT JOIN "EW_PRD_TEST"."OCRD" G ON T0."CardCode" = G."CardCode"
+		LEFT JOIN "EW_PRD_TEST"."CRD1" H ON T0."CardCode" = H."CardCode" AND H."AdresType" = 'B'
+		LEFT JOIN "EW_PRD_TEST"."NNM1" T2 ON T0."Series" = T2."Series"
+		LEFT JOIN "EW_PRD_TEST"."OINV" T4 ON T4."DocEntry" =  T0."U_REFINV"
+		LEFT JOIN "EW_PRD_TEST"."NNM1" T5 ON T4."Series" = T5."Series"
+		LEFT JOIN "EW_PRD_TEST"."OITM" T6 ON T1."ItemCode" = T6."ItemCode"
+		LEFT OUTER JOIN "EW_PRD_TEST"."OADM" BU2 ON 1 = 1
+		LEFT JOIN "EW_PRD_TEST"."OSLP" T9 ON T0."SlpCode" = T9."SlpCode" 
+		LEFT OUTER JOIN "EW_PRD_TEST"."ADM1" AS ZA ON 1 = 1 
+		LEFT OUTER JOIN "EW_PRD_TEST"."OADM" AS ZB ON 1 = 1 		
+		WHERE T0."DocEntry" =:par2
+			--AND T0."draftKey" NOT IN (SELECT "draftKey" FROM EW_PRD_TEST."ODRF" WHERE "draftKey" IS NOT NULL)
+		UNION ALL
+		
+		SELECT 
+				 (T2."SeriesName"||''||RIGHT(T0."DocNum",4)) AS "DocNum"
+				,T0."CardCode" AS "CardCode"
+				,T0."CardName" AS "CardName"
+				,IFNULL(G."LicTradNum",'') AS "TaxID"
+				,T0."DocDate" AS "DocDate"
+				,(T5."SeriesName"||''||RIGHT(T4."DocNum",4)) AS "ReferTaxInvoiceNo"
+				,T0."TaxDate" AS "TaxDate"
+				,CASE WHEN T4."DocCur" = 'THS' THEN 
+					T4."DocTotal"
+				 ELSE T4."DocTotalFC" END AS "OrginalTaxInvoiceAmount"
+				,(
+					CASE WHEN T4."DocCur" = 'THS' THEN 
+						T4."DocTotal"
+					ELSE T4."DocTotalFC" END
+				 )
+				 +
+				 (
+					CASE WHEN T0."DocCur" = 'THS' THEN 
+						T0."DocTotal"*-1
+					ELSE T0."DocTotalFC"*-1 END
+				 ) AS "CorrectAmount"
+				,CASE WHEN T0."DocCur" = 'THS' THEN 
+					T0."DocTotal"*-1
+				 ELSE T0."DocTotalFC"*-1 END AS "DifferentAmount"
+				,CASE WHEN T4."DocCur" = 'THS' THEN 
+					T0."VatSum"*-1
+				 ELSE T0."VatSumFC"*-1 END AS "Vat"
+				,CASE WHEN T0."DocCur" = 'THS' THEN 
+					T0."DocTotal"*-1
+				 ELSE T0."DocTotalFC"*-1 END AS "TotalAmount"
+				,IFNULL(TO_VARCHAR(T1."Project"),'')||IFNULL(T0."Comments",'') AS "Remark"
+				,'' AS "CreditNoteFor"
+				,T1."ItemCode" AS "ItemCode"
+				,T1."Dscription" AS "ItemName"
+				,T1."Quantity"*-1 AS "Qty"
+				,CASE WHEN T0."DocCur" = 'THS' THEN 
+					T1."LineTotal"*-1
+				 ELSE T1."TotalFrgn"*-1 END AS "Amount"
+				,ROW_NUMBER ( ) OVER( ORDER BY T1."LineNum" DESC ) AS "LineId"				
+				,IFNULL(H."Address",'')
+					||','||
+				 IFNULL(H."Address2",'')
+					||', '||
+				 IFNULL(H."Address3",'') AS "Address"
+				,T1."Project" AS "JobNumber"
+				,T4."DocCur" AS "CurrencyName"
+		FROM "EW_PRD_TEST"."ODRF" T0
+		LEFT JOIN "EW_PRD_TEST"."DRF1" T1 ON T0."DocEntry" = T1."DocEntry" and T1."PriceBefDi" <> '0'
+		LEFT JOIN "EW_PRD_TEST"."DRF12" E ON T0."DocEntry" = E."DocEntry" 
+		LEFT JOIN "EW_PRD_TEST"."OCRD" G ON T0."CardCode" = G."CardCode"
+		LEFT JOIN "EW_PRD_TEST"."CRD1" H ON T0."CardCode" = H."CardCode" AND H."AdresType" = 'B'
+		LEFT JOIN "EW_PRD_TEST"."NNM1" T2 ON T0."Series" = T2."Series"
+		LEFT JOIN "EW_PRD_TEST"."OINV" T4 ON T4."DocEntry" =  T0."U_REFINV"
+		LEFT JOIN "EW_PRD_TEST"."NNM1" T5 ON T4."Series" = T5."Series"
+		LEFT JOIN "EW_PRD_TEST"."OITM" T6 ON T1."ItemCode" = T6."ItemCode"
+		LEFT OUTER JOIN "EW_PRD_TEST"."OADM" BU2 ON 1 = 1
+		LEFT JOIN "EW_PRD_TEST"."OSLP" T9 ON T0."SlpCode" = T9."SlpCode" 
+		LEFT OUTER JOIN "EW_PRD_TEST"."ADM1" AS ZA ON 1 = 1 
+		LEFT OUTER JOIN "EW_PRD_TEST"."OADM" AS ZB ON 1 = 1 		
+		WHERE T0."DocEntry" =:par2
+			AND T0."ObjType"=14
+			AND T0."DocEntry" NOT IN (SELECT "draftKey" FROM EW_PRD_TEST."ORIN" WHERE "draftKey" IS NOT NULL);
+			
+	ELSE IF :par1='GetPRSettlementHeaderLayout' THEN
+		SELECT TOP 1  * INTO par3 FROM LIBRARY:SPLIT_TO_TABLE(:par2,'-') ORDER BY "RESULT" DESC;
+		SELECT TOP 1  * INTO par2 FROM LIBRARY:SPLIT_TO_TABLE(:par2,'-');
+		IF :par3='draft' THEN
+			SELECT 
+				 A."DocNum" AS "DOCNUM"
+				,A."DocEntry" AS "DOCENTRY"
+				,'' AS "PROJECTNUMBER"
+				,TO_VARCHAR(C."DocDate",'dd-MM-yyyy') AS "ISSUEDATE"
+				,TO_VARCHAR(C."TaxDate",'dd-MM-yyyy') AS "DUEDATE"
+				,C."CardCode" AS "VENDORCODE"
+				,C."CardName" AS "VENDORNAME"
+				,D."ChkName" AS "CURRENCY"
+				,0 AS "EMPLOYEEID"
+				,A."U_CreateBy" AS "EMPLOYEENAME"
+				,0 AS "AMOUNT"
+				,0 AS "AMOUNTTHB"
+				,A."Remark" AS "REMARKS"
+				,F."DflAccount" AS "BANKACCOUNT"	
+				,F."DflBranch" AS "BRANCH"
+				,(SELECT "OCRY"."Name" FROM EW_PRD_TEST."OCRY" WHERE "OCRY"."Code"=F."BankCountr") AS "BANKCOUNTRY"
+				,(SELECT "ODSC"."BankName" FROM EW_PRD_TEST."ODSC" WHERE "ODSC"."BankCode"=F."BankCode") AS "BANKNAME"
+				,F."DflSwift" AS SWIFTCODE
+				,A."DocNum" AS "ADDONDOCNUM"
+				,E."PymntGroup" AS "CREDITTERM"
+				,(SELECT SUM("Price") FROM EW_PRD_TEST."POR1" WHERE "DocEntry"=C."DocEntry") AS "ADVAmount"
+				,CASE WHEN (SELECT SUM("PriceBefDi") FROM EW_PRD_TEST."POR1" WHERE "DocEntry"=C."DocEntry" And "DiscPrcnt"=100)
+					-(SELECT SUM("LineTotal") FROM EW_PRD_TEST."POR1" WHERE "DocEntry"=C."DocEntry")<0 THEN 
+					(SELECT SUM("PriceBefDi") FROM EW_PRD_TEST."POR1" WHERE "DocEntry"=C."DocEntry" And "DiscPrcnt"=100)
+						-
+					(SELECT SUM("LineTotal") FROM EW_PRD_TEST."POR1" WHERE "DocEntry"=C."DocEntry")
+				 ELSE 
+				 	0 
+				 END  AS "DiffAmount"
+			FROM EW_PRD_TEST."@SETTLEMENTHEADER" AS A
+			--LEFT JOIN EW_PRD_TEST."@SETTLEMENTROW" AS B ON B."DocEntry"=A."DocEntry"
+			LEFT JOIN EW_PRD_TEST."OPOR" AS C ON C."DocEntry"=A."U_PODocEntry"
+			LEFT JOIN EW_PRD_TEST."OCRN" AS D ON D."CurrCode"=C."DocCur"
+			LEFT JOIN EW_PRD_TEST."OCTG" AS E ON E."GroupNum"=C."GroupNum"
+			LEFT JOIN EW_PRD_TEST."OCRD" AS F ON F."CardCode"=C."CardCode"
+			WHERE A."DocEntry"=:par2;
+		ELSE 
+			SELECT
+				 C."DocNum" AS "DOCNUM"
+				,C."DocEntry" AS "DOCENTRY"
+				,'' AS "PROJECTNUMBER"
+				,TO_VARCHAR(C."DocDate",'dd-MM-yyyy') AS "ISSUEDATE"
+				,TO_VARCHAR(C."TaxDate",'dd-MM-yyyy') AS "DUEDATE"
+				,C."CardCode" AS "VENDORCODE"
+				,C."CardName" AS "VENDORNAME"
+				,D."ChkName" AS "CURRENCY"
+				,0 AS "EMPLOYEEID"
+				,IFNULL(A."U_CreateBy",(SELECT "Code" FROM EW_PRD_TEST."@TBUSER" WHERE "U_EMPLOYEEID"=G."U_UserID")) AS "EMPLOYEENAME"
+				,0.00 AS "AMOUNT"
+				,0.00 AS "AMOUNTTHB"
+				,IFNULL(A."Remark",G."Remark") AS "REMARKS"
+				,F."DflAccount" AS "BANKACCOUNT"	
+				,F."DflBranch" AS "BRANCH"
+				,(SELECT "OCRY"."Name" FROM EW_PRD_TEST."OCRY" WHERE "OCRY"."Code"=F."BankCountr") AS "BANKCOUNTRY"
+				,(SELECT "ODSC"."BankName" FROM EW_PRD_TEST."ODSC" WHERE "ODSC"."BankCode"=F."BankCode") AS "BANKNAME"
+				,F."DflSwift" AS SWIFTCODE
+				,IFNULL(A."DocNum",G."DocNum") AS "ADDONDOCNUM"
+				,E."PymntGroup" AS "CREDITTERM"
+				,(SELECT SUM("PriceBefDi") FROM EW_PRD_TEST."POR1" WHERE "DocEntry"=C."DocEntry" And "DiscPrcnt"=100) AS "ADVAmount"
+				/*,CASE WHEN (SELECT SUM("PriceBefDi") FROM EW_PRD_TEST."POR1" WHERE "DocEntry"=C."DocEntry" And "DiscPrcnt"=100)
+					-(SELECT SUM("LineTotal") FROM EW_PRD_TEST."POR1" WHERE "DocEntry"=C."DocEntry")<0 THEN 
+					(SELECT SUM("PriceBefDi") FROM EW_PRD_TEST."POR1" WHERE "DocEntry"=C."DocEntry" And "DiscPrcnt"=100)
+						-
+					(SELECT SUM("LineTotal") FROM EW_PRD_TEST."POR1" WHERE "DocEntry"=C."DocEntry")
+				 ELSE 
+				 	0 
+				 END  AS "DiffAmount" */
+				,(SELECT SUM("PriceBefDi") FROM EW_PRD_TEST."POR1" WHERE "DocEntry"=C."DocEntry" And "DiscPrcnt"=100)
+					-(SELECT SUM("LineTotal") FROM EW_PRD_TEST."POR1" WHERE "DocEntry"=C."DocEntry") AS "DiffAmount"
+			FROM 
+			--EW_PRD_TEST."@SETTLEMENTHEADER" AS A
+			--LEFT JOIN EW_PRD_TEST."@SETTLEMENTROW" AS B ON B."DocEntry"=A."DocEntry"
+			--LEFT JOIN 
+			EW_PRD_TEST."OPOR" AS C --ON C."DocEntry"=A."U_PODocEntry"
+			LEFT JOIN EW_PRD_TEST."@SETTLEMENTHEADER" AS A ON A."U_PODocEntry"=C."DocEntry"
+			LEFT JOIN EW_PRD_TEST."@ADVANCEPAYMENT" AS G ON G."U_NumAtCard"=C."U_WEBID"
+			LEFT JOIN EW_PRD_TEST."OCRN" AS D ON D."CurrCode"=C."DocCur"
+			LEFT JOIN EW_PRD_TEST."OCTG" AS E ON E."GroupNum"=C."GroupNum"
+			LEFT JOIN EW_PRD_TEST."OCRD" AS F ON F."CardCode"=C."CardCode"
+			WHERE C."DocEntry"=:par2;
+		END IF;
+	ELSE IF :par1='GetPRSettlementLineLayout' THEN
+		SELECT TOP 1  * INTO par3 FROM LIBRARY:SPLIT_TO_TABLE(:par2,'-') ORDER BY "RESULT" DESC;
+		SELECT TOP 1  * INTO par2 FROM LIBRARY:SPLIT_TO_TABLE(:par2,'-');	
+		IF :par3='draft' THEN
+			SELECT
+				 A."U_ItemCode" AS "ITEMCODE"
+				,B."ItemName" AS "ITEMNAME"
+				,1 AS "QTY"
+				,A."U_Paid" AS "PRICE"
+				,A."U_Paid" AS "AMOUNT"
+				,A."U_RemarkOrRisk" AS "REMARKS"
+				,'' AS "SERVICETYPE"
+				,A."U_JobNumber" AS "JOBNO" --A."U_JobNumber"
+				,'' AS "DistributionRule"
+				,'' AS "TurckNo"
+				,IFNULL(TO_VARCHAR(D."DocNum"),'') AS "RefInvoice"
+				,A."U_RemarkOrRisk" AS "Remark"
+				,0 AS "VatAmount"
+				,A."U_CustomerCode" AS "CardCode"
+				,IFNULL(C."CardName",'') AS "CardName"
+				,IFNULL(A."U_DeclarationNo",'') AS "TransportationNo"
+			FROM EW_PRD_TEST."@SETTLEMENTROW" AS A
+			LEFT JOIN EW_PRD_TEST."OITM" AS B ON B."ItemCode"=A."U_ItemCode"
+			LEFT JOIN EW_PRD_TEST."OCRD" AS C ON C."CardCode"=A."U_CustomerCode"
+			LEFT JOIN EW_PRD_TEST."OINV" AS D ON TO_VARCHAR(D."DocEntry")=A."U_InvNumber"
+			WHERE A."DocEntry"=:par2;
+		ELSE
+			SELECT DISTINCT
+				 A."ItemCode" AS "ITEMCODE"
+				,A."Dscription" AS "ITEMNAME"
+				,1 AS "QTY"
+				,A."Price" AS "PRICE"
+				,A."LineTotal" AS "AMOUNT"
+				,A."U_Remark" AS "REMARKS"
+				,'' AS "SERVICETYPE"
+				,A."Project" AS "JOBNO"
+				,A."OcrCode" AS "DistributionRule"
+				,'' AS "TurckNo"
+				,IFNULL(TO_VARCHAR(C."DocNum"),'') AS "RefInvoice"
+				,A."U_Remark" AS "Remark"
+				,0 AS "VatAmount"
+				,A."U_CustomerCode" AS "CardCode"
+				,IFNULL(B."CardName",'') AS "CardName"
+				,A."U_TransportationNo" AS "TransportationNo"
+			FROM EW_PRD_TEST."POR1" AS A
+			LEFT JOIN EW_PRD_TEST."OCRD" AS B ON B."CardCode"=A."U_CustomerCode"
+			LEFT JOIN EW_PRD_TEST."OINV" AS C ON TO_VARCHAR(C."DocEntry")=A."U_LinkToARInvoice"
+			WHERE A."DocEntry"=:par2 AND IFNULL(A."DiscPrcnt",0)!=100;
+		END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;		
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+END

@@ -1,0 +1,140 @@
+--Available Stock With Out Invoice
+		SELECT 
+			 A."ItemCode" AS ITEMCODE
+			,A."ItemCode" AS ITEMNAME  --A."ItemName"
+			,IFNULL(A."DeprGroup",'') AS ITEMTYPE
+			,IFNULL(B."Price",0) AS PRICE 
+			,IFNULL(A."CardCode",'') AS VENDORCODE
+			,IFNULL(C."CardName",'') AS VENDORNAME
+			,IFNULL(A."AssetGroup",'') AS OWNER
+			,IFNULL(A."U_YARD",'') AS YARD
+			,IFNULL(A."U_FCL",'') AS LCLORFLC
+			,IFNULL(A."U_LOLO",'') AS LOLOORUNLOADING
+			,IFNULL(D."Status",'') AS "Status"
+			,IFNULL(D."TYPE",'') AS "Type"
+		FROM EW_PRD_TEST_NEW."OITM" AS A 
+		LEFT JOIN EW_PRD_TEST_NEW."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1
+		LEFT JOIN EW_PRD_TEST_NEW."OCRD" AS C ON C."CardCode"=A."CardCode"
+		LEFT JOIN (
+			--Confirm Booking Sheet => Job Sheet Trucking => Sales Order(Cancel)
+			SELECT 
+				 'Cancel Sales Order' AS "Status"
+				,T0."U_TYPE" AS "TYPE"
+				,T0."U_CONTAINERNO" AS "ItemCode"
+			FROM EW_PRD_TEST_NEW."@TRUCKINFORMATION" AS T0
+			LEFT JOIN EW_PRD_TEST_NEW."@CONFIRMBOOKINGSHEET" AS TT0 ON TT0."DocEntry"=T0."DocEntry"
+			LEFT JOIN EW_PRD_TEST_NEW."@JOBSHEETRUCKING" AS T1 ON T1."U_CONFIRMBOOKINGID"=T0."DocEntry"
+			LEFT JOIN EW_PRD_TEST_NEW."ORDR" AS T2 ON T2."DocEntry"=T1."U_SALESORDERDOCNUM"
+			WHERE --"U_CONTAINERNO"='TESTING2' AND 
+				IFNULL(CAST(T1."U_SALESORDERDOCNUM" AS VARCHAR(25)),'')!='' 
+				AND T2."CANCELED"='Y'
+				AND TT0."Status"='O'
+				--End Confirm Booking Sheet => Job Sheet Trucking => Sales Order
+			--Confirm Booking Sheet
+			/*UNION ALL
+			
+			SELECT 
+				 'Confirm Booking Sheet'
+				,T0."U_TYPE" AS "TYPE"
+				,T0."U_CONTAINERNO" AS "ItemCode"
+			FROM EW_PRD_TEST_NEW."@TRUCKINFORMATION" AS T0
+			LEFT JOIN EW_PRD_TEST_NEW."@CONFIRMBOOKINGSHEET" AS T1 ON T1."DocEntry"=T0."DocEntry"
+			WHERE --T0."U_CONTAINERNO"='TESTING2' AND
+				 (SELECT COUNT(*) FROM EW_PRD_TEST_NEW."@JOBSHEETRUCKING" WHERE "U_CONFIRMBOOKINGID"=T0."DocEntry")=0
+				 AND T1."Status"='O'
+			-- End Confirm Booking Sheet
+			UNION ALL
+			--Confirm Booking Sheet => Job Sheet Trucking => Sales Order(Open or Not Cancel)
+			SELECT 
+				 'Transfer Complete' AS "Status"
+				,T0."U_TYPE" AS "TYPE"
+				,T0."U_CONTAINERNO" AS "ItemCode"
+			FROM EW_PRD_TEST_NEW."@TRUCKINFORMATION" AS T0
+			LEFT JOIN EW_PRD_TEST_NEW."@JOBSHEETRUCKING" AS T1 ON T1."U_CONFIRMBOOKINGID"=T0."DocEntry"
+			LEFT JOIN EW_PRD_TEST_NEW."ORDR" AS T2 ON T2."DocEntry"=T1."U_SALESORDERDOCNUM"
+			WHERE --"U_CONTAINERNO"='TESTING2'  AND
+				 IFNULL(CAST(T1."U_SALESORDERDOCNUM" AS VARCHAR(25)),'')!='' AND T2."CANCELED"='N'
+				 AND IFNULL(T0."U_TransferStatus",'')='Y'*/
+		) AS D ON D."ItemCode"=A."ItemCode"
+		WHERE  A."ItmsGrpCod"IN ('130','127') 
+		   AND A."OnHand"=1 
+		   AND (SELECT "WhsCode" FROM EW_PRD_TEST_NEW."OITW" WHERE "OnHand"=1 AND "ItemCode"=A."ItemCode")=
+				(SELECT T1."WhsCode" FROM EW_PRD_TEST_NEW."@BOOKINGSHEET" AS T0 LEFT JOIN EW_PRD_TEST_NEW."OWHS" AS T1 ON T0."U_ORIGIN"=T1."U_TerritoryID" WHERE T0."DocEntry"=:par1)
+		   AND (SELECT COUNT(*) 
+					FROM EW_PRD_TEST_NEW."@JOBSHEETRUCKING" 
+				WHERE "U_CONFIRMBOOKINGID" IN (SELECT T1."U_CONFIRMBOOKINGID"
+				   											FROM EW_PRD_TEST_NEW."@TRUCKINFORMATION" AS T0 
+				   											LEFT JOIN EW_PRD_TEST_NEW."@JOBSHEETRUCKING" AS T1 ON T1."U_CONFIRMBOOKINGID"=T0."DocEntry"
+				   											LEFT JOIN EW_PRD_TEST_NEW."ORDR" AS T2 ON T2."DocEntry"=T1."U_SALESORDERDOCNUM"
+				   								WHERE T0."U_CONTAINERNO"=A."ItemCode" AND T2."CANCELED"!='Y'))=0
+		UNION ALL
+		--Available Stock With Invoice Cancel
+		SELECT 
+			 A."ItemCode" AS ITEMCODE
+			,A."ItemCode" AS ITEMNAME  --A."ItemName"
+			,IFNULL(A."DeprGroup",'') AS ITEMTYPE
+			,IFNULL(B."Price",0) AS PRICE 
+			,IFNULL(A."CardCode",'') AS VENDORCODE
+			,IFNULL(C."CardName",'') AS VENDORNAME
+			,IFNULL(A."AssetGroup",'') AS OWNER
+			,IFNULL(A."U_YARD",'') AS YARD
+			,IFNULL(A."U_FCL",'') AS LCLORFLC
+			,IFNULL(A."U_LOLO",'') AS LOLOORUNLOADING
+			,IFNULL(D."Status",'') AS "Status"
+			,IFNULL(D."TYPE",'') AS "Type"
+		 FROM EW_PRD_TEST_NEW."OITM" AS A 
+		 LEFT JOIN EW_PRD_TEST_NEW."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1
+		 LEFT JOIN EW_PRD_TEST_NEW."OCRD" AS C ON C."CardCode"=A."CardCode"
+		 LEFT JOIN (
+			--Confirm Booking Sheet => Job Sheet Trucking => Sales Order(Cancel)
+			SELECT 
+				 'Cancel Sales Order' AS "Status"
+				,MAX(T0."U_TYPE") AS "TYPE"
+				,MAX(T0."U_CONTAINERNO") AS "ItemCode"
+			FROM EW_PRD_TEST_NEW."@TRUCKINFORMATION" AS T0
+			LEFT JOIN EW_PRD_TEST_NEW."@CONFIRMBOOKINGSHEET" AS TT0 ON TT0."DocEntry"=T0."DocEntry"
+			LEFT JOIN EW_PRD_TEST_NEW."@JOBSHEETRUCKING" AS T1 ON T1."U_CONFIRMBOOKINGID"=T0."DocEntry"
+			LEFT JOIN EW_PRD_TEST_NEW."ORDR" AS T2 ON T2."DocEntry"=T1."U_SALESORDERDOCNUM"
+			WHERE --"U_CONTAINERNO"='TESTING2' AND 
+				IFNULL(CAST(T1."U_SALESORDERDOCNUM" AS VARCHAR(25)),'')!='' 
+				AND T2."CANCELED"='Y'
+				AND TT0."Status"='O'
+			--End Confirm Booking Sheet => Job Sheet Trucking => Sales Order
+			UNION ALL
+			--Confirm Booking Sheet
+			SELECT 
+				 'Confirm Booking Sheet'
+				,MAX(T0."U_TYPE") AS "TYPE"
+				,MAX(T0."U_CONTAINERNO") AS "ItemCode"
+			FROM EW_PRD_TEST_NEW."@TRUCKINFORMATION" AS T0
+			LEFT JOIN EW_PRD_TEST_NEW."@CONFIRMBOOKINGSHEET" AS T1 ON T1."DocEntry"=T0."DocEntry"
+			WHERE --T0."U_CONTAINERNO"='TESTING2' AND
+			 	 (SELECT COUNT(*) FROM EW_PRD_TEST_NEW."@JOBSHEETRUCKING" WHERE "U_CONFIRMBOOKINGID"=T0."DocEntry")=0
+			 	 AND T1."Status"='O'
+			-- End Confirm Booking Sheet
+			--Confirm Booking Sheet => Job Sheet Trucking => Sales Order(Open or Not Cancel)
+			--Confirm Booking Sheet => Job Sheet Trucking => Sales Order(Cancel)
+			/*UNION ALL
+			SELECT 
+				 'Transfer Complete' AS "Status"
+				,T0."U_TYPE" AS "TYPE"
+				,T0."U_CONTAINERNO" AS "ItemCode"
+			FROM EW_PRD_TEST_NEW."@TRUCKINFORMATION" AS T0
+			LEFT JOIN EW_PRD_TEST_NEW."@JOBSHEETRUCKING" AS T1 ON T1."U_CONFIRMBOOKINGID"=T0."DocEntry"
+			LEFT JOIN EW_PRD_TEST_NEW."ORDR" AS T2 ON T2."DocEntry"=T1."U_SALESORDERDOCNUM"
+			WHERE --"U_CONTAINERNO"='TESTING2' AND
+				  IFNULL(CAST(T1."U_SALESORDERDOCNUM" AS VARCHAR(25)),'')!='' AND T2."CANCELED"='N'
+			  AND IFNULL(T0."U_TransferStatus",'')='Y'*/
+		) AS D ON D."ItemCode"=A."ItemCode"
+		WHERE  A."ItmsGrpCod"IN ('130','127') 
+		   AND A."OnHand"=1 
+		   AND (SELECT "WhsCode" FROM EW_PRD_TEST_NEW."OITW" WHERE "OnHand"=1 AND "ItemCode"=A."ItemCode")=
+				   				(SELECT T1."WhsCode" FROM EW_PRD_TEST_NEW."@BOOKINGSHEET" AS T0 LEFT JOIN EW_PRD_TEST_NEW."OWHS" AS T1 ON T0."U_ORIGIN"=T1."U_TerritoryID" WHERE T0."DocEntry"=:par1)
+		   AND (SELECT COUNT(*) FROM EW_PRD_TEST_NEW."@TRUCKINFORMATION" AS T0 WHERE T0."U_CONTAINERNO"=A."ItemCode" AND T0."U_TransferStatus"='Y')!=0
+		   AND (SELECT COUNT(*) 
+					FROM EW_PRD_TEST_NEW."@JOBSHEETRUCKING" 
+				   	WHERE "U_CONFIRMBOOKINGID" IN (SELECT T1."U_CONFIRMBOOKINGID"
+				   											FROM EW_PRD_TEST_NEW."@TRUCKINFORMATION" AS T0 
+				   											LEFT JOIN EW_PRD_TEST_NEW."@JOBSHEETRUCKING" AS T1 ON T1."U_CONFIRMBOOKINGID"=T0."DocEntry"
+				   											LEFT JOIN EW_PRD_TEST_NEW."ORDR" AS T2 ON T2."DocEntry"=T1."U_SALESORDERDOCNUM"
+				   								   WHERE T0."U_CONTAINERNO"=A."ItemCode" AND T2."CANCELED"!='Y'))!=0;

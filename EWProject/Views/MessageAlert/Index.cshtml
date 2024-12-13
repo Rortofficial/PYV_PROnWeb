@@ -1,0 +1,70 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Client.Models.Response.ResponseData<List<Client.Models.Gets.CSName>>
+<title>@ViewData["Title"] - EWSystem</title>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Message To"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <select class="form-select" id="cboUserList">
+                            <option selected value="-1">Select User Message</option>
+                            @*<option value="694">Lina Lina</option>*@
+                            @foreach(var a in Model.Data)
+                            {
+                                <option value="@a.Code">@a.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row mt-2">
+            <div class="col-4" style="text-align:left;font-weight:bold;">@localizer["Message Header"]</div>
+            <div class="col-8">
+                <textarea id="txtMessage" rows="2" class="form-control"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6" style="text-align:left;font-weight:bold;">
+        @localizer["Message Description"]
+    </div>
+    <div class="col-6"></div>
+</div>
+<div class="row mt-2">
+    <div class="col-12">
+        <textarea id="txtMessageDescription" rows="5" class="form-control"></textarea>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">        
+    </div>
+    <div class="col-6">
+        <button class="btn" id="testingMessage" style="float:right;background-color:#01295C;color:white">Send Notification</button>
+    </div>
+</div>
+@section scripts{
+    <script defer>
+        $("#testingMessage").click(function () {
+            if(confirm("Are you sure to sending alert?")){
+                var currenctUser = $("#UserID").attr("data-empid");
+                var user = document.getElementById("cboUserList").value;
+                var message = document.getElementById("txtMessage").value;
+                var messageDescription = document.getElementById("txtMessageDescription").value;
+                connection.invoke("SendMessage", currenctUser, user, message, messageDescription).catch(function (err) {
+                    console.error(err.toString());
+                    return;
+                });
+                $("#cboUserList").val(-1);
+                $("#txtMessage").val("");
+                $("#txtMessageDescription").val("");
+            }
+            event.preventDefault();
+        });
+    </script>
+}

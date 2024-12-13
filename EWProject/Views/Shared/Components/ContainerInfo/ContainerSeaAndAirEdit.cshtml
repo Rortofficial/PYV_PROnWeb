@@ -1,0 +1,731 @@
+﻿@using Newtonsoft.Json;
+@*@ViewBag.ShowPrevious
+@ViewBag.ShowUpcoming*@
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Client.Models.Response.ListMasterConfirmBookingSheet
+
+<script type="text/javascript" src="~/js/ContainerInfoSeaAndAir/default.js" defer></script>
+
+<script defer>
+    var containerType = [];
+</script>
+@if (Model.getDetailBookingSheetByUsers != null)
+{
+    var i = 1;
+    @foreach (var a in Model.getDetailBookingSheetByUsers[0].Volume)
+    {
+        var objEditConfirmBookingSheet = Model.GetEditConfirmBookingSheets.Where(x => x.LineId == a.ConfirmBookingID).ToArray();
+        @if (a.VoulumeCode == "20FT")
+        {
+            @for (var qtyVolumne = 1; qtyVolumne <= a.ContainerNumber; qtyVolumne++)
+            {
+                <script defer>
+                    containerType.push({ "Volumne": @a.DocEntry, "ContainerQty": @a.ContainerNumber, "LineId": @a.LineId, "id": "@a.DocEntry-@i" });
+                </script>
+            }
+        }
+        else
+        {
+            <script defer>
+                containerType.push({ "Volumne": @a.DocEntry, "ContainerQty": @a.ContainerNumber, "LineId": @a.LineId, "id": "@a.DocEntry-@i" });
+            </script>
+        }
+        @for (var k = 1; k <= a.ContainerNumber; k++)
+        {
+            <div class="row">
+                <div class="col-1">
+                    <hr />
+                </div>
+                <div class="col-2">
+                    <div class="align-content-center">
+                        @a.VolumeDescription-@i
+                    </div>
+                </div>
+                <div class="col-9">
+                    <hr />
+                </div>
+            </div>
+            @if (a.VoulumeCode == "20FT")
+            {
+                <div class="row">
+                    <div class="col-4">
+                        <div class="row">
+                            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TYPE"]</div>
+                            <div class="col-8">
+                                @*<select class="form-select" onchange="onChangeContainerType('@a.DocEntry-@i')" id="cboSelectType-@a.DocEntry-@i">
+                <option selected value="-1">Choose...</option>
+                <option value="ASSET">ASSET</option>
+                <option value="RENTAL">RENTAL</option>
+                <option value="EXCHANGE">EXCHANGE</option>
+                </select>*@
+                                <div class="row">
+                                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Invoice List"]</div>
+                                    <div class="col-8">
+                                        <input type="text" value="@a.VolumeInvoiceList" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Container Option"]</div>
+                            <div class="col-8">
+                                <select class="form-select" onchange="onChangeOptionContainer('@a.DocEntry-@i')" id="cboSelectOptionContainer-@a.DocEntry-@i">
+                                    <option selected value="-1">Select Option Container</option>
+                                    <option value="unused">Unused</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                    </div>
+                </div>
+                <div id="Panel20Ft-@a.DocEntry-@i">
+                    <div class="row mt-3">
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CONTAINER TYPE"]</div>
+                                <div class="col-8">
+                                    <input type="text" id="txtContainerType-@a.DocEntry-@i" class="form-control" disabled value="@a.VolumeDescription">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CONTAINER NO"]</div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" id="cboContainerNoTEST-@a.DocEntry-@i">
+                                    @*<select class="form-control" multiple="multiple" id="cboContainerNoTEST-@a.DocEntry-@i">
+                    @foreach (var z in Model.getContainers)
+                    {
+                    <option value="@z.ItemCode" data-obj='@JsonConvert.SerializeObject(z)'>@z.ItemName</option>
+                    }
+                    </select>*@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["OWNER"]</div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" id="txtOwner-@a.DocEntry-@i">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["GW"]</div>
+                                <div class="col-8">
+                                    <input type="text" id="txtGW-@a.DocEntry-@i" class="form-control" value="@a.GrossWeight" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["YARD"]</div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" disabled id="txtYard-@a.DocEntry-@i">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-6" style="margin:auto;text-align:left;font-weight:bold;">
+                                    <input type="text" class="form-control" disabled value="" id="txtFCLorLCL-@a.DocEntry-@i">
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" class="form-control" disabled value="" id="txtLOLOorUNLOADING-@a.DocEntry-@i">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                var css = "";
+                var cssTypeInvoice = "";
+                <input type="hidden" id="hideTypeID-@a.DocEntry-@i" value="@a.Type" />
+                @if (a.Type != "C") { css = "display:none"; cssTypeInvoice = ""; } else { cssTypeInvoice = "display:none"; }
+                <div style="@css">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Invoice List"]</div>
+                                <div class="col-8">
+                                    <input type="text" value="@a.VolumeInvoiceList" disabled />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                        </div>
+                        <div class="col-4">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CONTAINER TYPE"]</div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" id="txtContainerType-@a.DocEntry-@i" disabled value="@a.VolumeDescription">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["CONTAINER NO"]</div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" id="cboContainerNoTEST-@a.DocEntry-@i">
+                                    @*<select class="form-control" multiple="multiple" id="cboContainerNoTEST-@a.DocEntry-@i">
+                    @foreach (var z in Model.getContainers)
+                    {
+                    <option value="@z.ItemCode" data-obj='@JsonConvert.SerializeObject(z)'>@z.ItemName</option>
+                    }
+                    </select>*@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["OWNER"]</div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" id="txtOwner-@a.DocEntry-@i">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-4">
+                                <div class="row">
+                                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["GW"]</div>
+                                    <div class="col-8">
+                                        <input type="text" id="txtGW-@a.DocEntry-@i" class="form-control" value="@a.GrossWeight" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="row">
+                                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["YARD"]</div>
+                                    <div class="col-8">
+                                        <input type="text" id="txtYard-@a.DocEntry-@i" disabled value="@Model.getDetailBookingSheetByUsers[0].LOLOYARDRemark" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="row">
+                                    <div class="col-6" style="margin:auto;text-align:left;font-weight:bold;">
+                                        <input type="text" id="txtFCLorLCL-@a.DocEntry-@i" class="form-control" disabled value="@Model.getDetailBookingSheetByUsers[0].FCLORLCL">
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" id="txtLOLOorUNLOADING-@a.DocEntry-@i" disabled class="form-control" value="@Model.getDetailBookingSheetByUsers[0].LOLOUNLOADING">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="@cssTypeInvoice">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Invoice List"]</div>
+                                <div class="col-8">
+                                    <input type="text" value="@a.VolumeInvoiceList" disabled />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-8"></div>
+                    </div>
+                </div>
+            }
+            <div id="PanelTruck20Ft-@a.DocEntry-@i">
+                <div class="row mt-2">
+                    <div class="col-4">
+                        <div class="row">
+                            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Truck Type"]</div>
+                            <div class="col-8">
+                                <select class="form-select" onchange="onChangeContainerType('@a.DocEntry-@i')" id="cboSelectType-@a.DocEntry-@i">
+                                    <option selected value="MasterData">Master Data</option>
+                                    <option value="FreeKey">FreeKey</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                    </div>
+                    <div class="col-4">
+                    </div>
+                </div>
+                <div id="plTruckType-@a.DocEntry-@i" style="">
+                    <div class="row mt-2">
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TRUCK NO"]</div>
+                                <div class="col-10">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <select class="form-control" multiple="multiple" id="cboProvinceTruck-@a.DocEntry-@i">
+                                                @foreach (var z in Model.getTruckProvinces)
+                                                {
+                                                    <option value="@z.Code">@z.Name</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <select class="form-control" multiple="multiple" id="cboTruckNo-@a.DocEntry-@i">
+                                                @foreach (var z in Model.getTruckNos)
+                                                {
+                                                    <option data-obj='@Json.Serialize(z)' value="@z.Code">@z.Name</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TRUCK TYPE"]</div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" disabled id="txtTrcukType-@a.DocEntry-@i">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["BRAND"]</div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" value="" disabled id="txtBrand-@a.DocEntry-@i">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["COLOR"]</div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" disabled id="txtColor-@a.DocEntry-@i">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <input type="hidden" class="form-control" disabled id="txtTruckCode-@a.DocEntry-@i">
+                            @{
+                                var cssGW = "";
+                            }
+                            @if (a.Type == "C") { cssGW = "display:none"; }
+                            <div class="row" style="@cssGW">
+                                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["GW"]</div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" value="@a.GrossWeight" disabled id="txtGrossWeightTruck-@a.DocEntry-@i">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TRAILER NO"]</div>
+                                <div class="col-10">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <input type="text" class="form-control" id="txtTralerProvince-@a.DocEntry-@i" value="" disabled>
+                                        </div>
+                                        <div class="col-6">
+                                            <select class="form-control" multiple="multiple" id="txtTralerNo-@a.DocEntry-@i">
+                                                @foreach (var z in Model.getTrailerNos)
+                                                {
+                                                    <option data-province='@z.Province' value="@z.TrailerName">@z.TrailerName</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-4" style="text-align:left;font-weight:bold;">@localizer["TRAILER TYPE"]</div>
+                                <div class="col-8">
+                                    <textarea id="txtTrailerType-@a.DocEntry-@i" class="form-control" disabled></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="plTruckTypeFreeKey-@a.DocEntry-@i" style="display:none">
+                    <div class="row mt-2">
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TRUCK NO"]</div>
+                                <div class="col-10">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <input type="text" class="form-control" placeholder="Truck Province" id="cboProvinceTruckFreeKey-@a.DocEntry-@i">
+                                        </div>
+                                        <div class="col-6">
+                                            <input type="text" class="form-control" placeholder="Plate Number" id="cboTruckNoFreeKey-@a.DocEntry-@i">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TRUCK TYPE"]</div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" placeholder="Truck Type" id="txtTrcukTypeFreeKey-@a.DocEntry-@i">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["BRAND"]</div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" placeholder="Brand" id="txtBrandFreeKey-@a.DocEntry-@i">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["COLOR"]</div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" placeholder="Color" id="txtColorFreeKey-@a.DocEntry-@i">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <input type="hidden" class="form-control" disabled id="txtTruckCode-@a.DocEntry-@i">
+                            @if (a.Type == "C") { cssGW = "display:none"; }
+                            <div class="row" style="@cssGW">
+                                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["GW"]</div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" value="@a.GrossWeight" disabled id="txtGrossWeightTruck-@a.DocEntry-@i">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TRAILER NO"]</div>
+                                <div class="col-10">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <input type="text" class="form-control" placeholder="Trailer Province" id="txtTralerProvinceFreeKey-@a.DocEntry-@i" value="">
+                                        </div>
+                                        <div class="col-6">
+                                            <input type="text" class="form-control" placeholder="Trailer Number" id="txtTralerNoFreeKey-@a.DocEntry-@i" value="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-4" style="text-align:left;font-weight:bold;">@localizer["TRAILER TYPE"]</div>
+                                <div class="col-8">
+                                    <textarea id="txtTrailerTypeFreeKey-@a.DocEntry-@i" class="form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Drive 1 Name-->
+                <div class="row mt-2">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["DRIVER NAME1"]</div>
+                            <div class="col-8">
+                                <select class="form-control" multiple="multiple" id="cboDriverName1-@a.DocEntry-@i">
+                                    @foreach (var z in Model.getEmployees)
+                                    {
+                                        <option value="@z.DriverCode" data-obj='@JsonConvert.SerializeObject(z)'>@z.DriverName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["T/P NO"]</div>
+                            <div class="col-8">
+                                <input type="text" class="form-control" id="txtTPNo1-@a.DocEntry-@i" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ID CARD"]</div>
+                            <div class="col-8">
+                                <input type="text" class="form-control" id="txtIDCard1-@a.DocEntry-@i" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["DRIVER LICENSE"]</div>
+                            <div class="col-8">
+                                <input type="text" class="form-control" id="txtDriverLicense1-@a.DocEntry-@i" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End Driver Name 1-->
+                <!--Drive Name 2-->
+                <div class="row mt-2">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["DRIVER NAME2"]</div>
+                            <div class="col-8">
+                                <select class="form-control" multiple="multiple" id="cboDriverName2-@a.DocEntry-@i">
+                                    @foreach (var z in Model.getEmployees)
+                                    {
+                                        <option value="@z.DriverCode" data-obj='@JsonConvert.SerializeObject(z)'>@z.DriverName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["T/P NO2"]</div>
+                            <div class="col-8">
+                                <input type="text" class="form-control" id="txtTPNo2-@a.DocEntry-@i" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ID CARD2"]</div>
+                            <div class="col-8">
+                                <input type="text" class="form-control" id="txtIDCard2-@a.DocEntry-@i" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["DRIVER LICENSE2"]</div>
+                            <div class="col-8">
+                                <input type="text" class="form-control" id="txtDriverLicense2-@a.DocEntry-@i" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End Driver Name 2-->
+                <div class="row mt-2">
+                    <div class="col-4">
+                        <div class="row">
+                            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["VENDOR NO"]</div>
+                            <div class="col-8">
+                                <select class="form-control" multiple="multiple" id="cboVendorCode-@a.DocEntry-@i">
+                                    @foreach (var z in Model.getVendors)
+                                    {
+                                        <option value="@z.CustomerCode">@z.CustomerName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TRUCK COST THB"]</div>
+                            <div class="col-8">
+                                <input type="text" id="txtTruckCostTHB-@a.DocEntry-@i" onchange="formartNumber('txtTruckCostTHB-@a.DocEntry-@i')" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SEAL NO"]</div>
+                            <div class="col-9">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <input type="text" id="txtSealNo1-@a.DocEntry-@i" class="form-control" value="">
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" id="txtSealNo2-@a.DocEntry-@i" class="form-control" value="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                    </div>
+                    <div class="col-2">
+                    </div>
+                </div>
+            </div>
+
+            <script defer>
+                @Html.Raw("$('#txtOwner2-"+a.DocEntry+"-"+i+"').select2({placeholder: 'Select a Owner',maximumSelectionLength: 1});")
+                @Html.Raw("$('#cboContainerExisting-"+a.DocEntry+"-"+i+"').select2({placeholder: 'Select a Container',maximumSelectionLength: 1});")
+                    // Container
+                    //@Html.Raw("$('#cboContainerNoTEST-"+a.DocEntry+"-"+i+"').select2({placeholder: 'Select a Container',maximumSelectionLength: 1});")
+                    //$("#cboContainerNoTEST-@a.DocEntry-@i").change(function () {
+                    //        if ($("#cboContainerNoTEST-@a.DocEntry-@i").val()[0] !== undefined) {
+                    //            var obj = $("#cboContainerNoTEST-@a.DocEntry-@i option:selected").attr("data-obj");
+                    //            setobj = JSON.parse(obj);
+                    //            $("#txtOwner-@a.DocEntry-@i").val(setobj.Owner);
+                    //            //$("#txtYard-@a.DocEntry-@i").val(setobj.Yard);
+                    //            //$("#txtFCLorLCL-@a.DocEntry-@i").val(setobj.FCLorLCL);
+                    //            //$("#txtLOLOorUNLOADING-@a.DocEntry-@i").val(setobj.LOLOorYard);
+                    //        } else {
+                    //            $("#txtOwner-@a.DocEntry-@i").val("");
+                    //            $("#txtYard-@a.DocEntry-@i").val("");
+                    //            $("#txtFCLorLCL-@a.DocEntry-@i").val("");
+                    //            $("#txtLOLOorUNLOADING-@a.DocEntry-@i").val("");
+                    //        }
+                    //    });
+                    //Truck Province No
+                @Html.Raw("$('#cboProvinceTruck-"+a.DocEntry+"-"+i+"').select2({placeholder: 'Select a Province Truck',maximumSelectionLength: 1});")
+                    $("#cboProvinceTruck-@a.DocEntry-@i").change(function () {
+                        if ($("#cboProvinceTruck-@a.DocEntry-@i").val()[0] !== undefined) {
+                            if ($("#cboTruckNo-@a.DocEntry-@i").val()[0] == undefined) {
+                                $.ajax({
+                                    url: '@Url.Action("GetTruckNo","ConfirmBookingSheet")',
+                                    type: "GET",
+                                    data: { Province: $("#cboProvinceTruck-@a.DocEntry-@i").val()[0] },
+                                    dataType: "JSON",
+                                    beforeSend: function () {
+                                        $('#Modalloder').modal('show');
+                                    },
+                                    success: function (data) {
+                                        $('#Modalloder').modal('hide');
+                                        $('#cboTruckNo-@a.DocEntry-@i').empty().trigger("change");
+                                        for (var i = 0; i < data.data.length; i++) {
+                                            $('#cboTruckNo-@a.DocEntry-@i').append("<option data-obj='" + JSON.stringify(data.data[i]) + "' value='" + data.data[i].code + "'>" + data.data[i].name + "</option>");
+                                        }
+                                        $('#cboTruckNo-@a.DocEntry-@i').trigger('change');
+                                        $('#cboTruckNo-@a.DocEntry-@i').removeAttr("disabled");
+                                    },
+                                    error: function (erro) {
+                                        $('#Modalloder').modal('hide');
+                                        $('#ModalSuccess').modal('show');
+                                        $('#ErrMsg').html(erro.responseText);
+                                    }
+                                });
+                            }
+                        } else {
+                            $('#cboTruckNo-@a.DocEntry-@i').val("").trigger("change");
+                            if ($("#cboSelectType-@a.DocEntry-@i").val() == "MasterData") {
+                                $('#cboDriverName1-@a.DocEntry-@i').val("").trigger("change");
+                                $('#cboDriverName2-@a.DocEntry-@i').val("").trigger("change");
+                                $('#cboVendorCode-@a.DocEntry-@i').val("").trigger("change");
+                            }
+                            //$('#cboTruckNo-@a.DocEntry-@i').prop('disabled', true);
+                        }
+                    });
+                //Truck No cboTruckNo-@a.DocEntry-@i
+                @Html.Raw("$('#cboDriverName1-"+a.DocEntry+"-"+i+"').select2({placeholder: 'Select a Driver Name1',maximumSelectionLength: 1});")
+                    $("#cboDriverName1-@a.DocEntry-@i").change(function () {
+                        if ($("#cboDriverName1-@a.DocEntry-@i").val()[0] !== undefined) {
+                            var obj = $("#cboDriverName1-@a.DocEntry-@i option:selected").attr("data-obj");
+                            setobj = JSON.parse(obj);
+                            $("#txtTPNo1-@a.DocEntry-@i").val(setobj.HP);
+                            $("#txtIDCard1-@a.DocEntry-@i").val(setobj.CardID);
+                            $("#txtDriverLicense1-@a.DocEntry-@i").val(setobj.DriverID);
+                        } else {
+                            $("#txtTPNo1-@a.DocEntry-@i").val("");
+                            $("#txtIDCard1-@a.DocEntry-@i").val("");
+                            $("#txtDriverLicense1-@a.DocEntry-@i").val("");
+                        }
+                    });
+                @Html.Raw("$('#cboDriverName2-"+a.DocEntry+"-"+i+"').select2({placeholder: 'Select a Driver Name2',maximumSelectionLength: 1});")
+                    $("#cboDriverName2-@a.DocEntry-@i").change(function () {
+                        if ($("#cboDriverName2-@a.DocEntry-@i").val()[0] !== undefined) {
+                            var obj = $("#cboDriverName2-@a.DocEntry-@i option:selected").attr("data-obj");
+                            setobj = JSON.parse(obj);
+                            $("#txtTPNo2-@a.DocEntry-@i").val(setobj.HP);
+                            $("#txtIDCard2-@a.DocEntry-@i").val(setobj.CardID);
+                            $("#txtDriverLicense2-@a.DocEntry-@i").val(setobj.DriverID);
+                        } else {
+                            $("#txtTPNo2-@a.DocEntry-@i").val("");
+                            $("#txtIDCard2-@a.DocEntry-@i").val("");
+                            $("#txtDriverLicense2-@a.DocEntry-@i").val("");
+                        }
+                    });
+                //Truck No cboTruckNo-@a.DocEntry-@i
+                @Html.Raw("$('#cboVendorCode-"+a.DocEntry+"-"+i+"').select2({placeholder: 'Select a Vendor Code',maximumSelectionLength: 1});")
+                    //Truck No cboTruckNo-@a.DocEntry-@i
+                @Html.Raw("$('#cboTruckNo-"+a.DocEntry+"-"+i+"').select2({placeholder: 'Select a Truck Plate No',maximumSelectionLength: 1});")
+                    $("#cboTruckNo-@a.DocEntry-@i").change(function () {
+                        if ($("#cboTruckNo-@a.DocEntry-@i").val()[0] !== undefined) {
+                            var obj = $("#cboTruckNo-@a.DocEntry-@i option:selected").attr("data-obj");
+                            setobj = JSON.parse(obj);
+                            $("#txtTrcukType-@a.DocEntry-@i").val(setobj.truckType);
+                            $("#txtBrand-@a.DocEntry-@i").val(setobj.brand);
+                            $("#txtColor-@a.DocEntry-@i").val(setobj.color);
+                            //$("#txtTralerNo-@a.DocEntry-@i").val(setobj.trailerNo);
+                            $("#txtTralerNo-@a.DocEntry-@i").val(setobj.trailerNo).trigger("change");
+                            $("#txtTralerProvince-@a.DocEntry-@i").val(setobj.trailerProvince);
+                            $("#txtTrailerType-@a.DocEntry-@i").val(setobj.trailerType);
+                            onChangeTruck("-@a.DocEntry-@i", '' + setobj.driverName2, '' + setobj.driverName1, '' + setobj.ownertruck, '' + setobj.location);
+                        } else {
+                            $("#txtTrcukType-@a.DocEntry-@i").val("");
+                            $("#txtBrand-@a.DocEntry-@i").val("");
+                            $("#txtColor-@a.DocEntry-@i").val("");
+                            $("#txtTralerNo-@a.DocEntry-@i").val("").trigger("change");
+                            $("#txtTralerProvince-@a.DocEntry-@i").val("");
+                            $("#txtTrailerType-@a.DocEntry-@i").val("");
+                            if ($("#cboSelectType-@a.DocEntry-@i").val() == "MasterData") {
+                                $('#cboDriverName1-@a.DocEntry-@i').val("").trigger("change");
+                                $('#cboDriverName2-@a.DocEntry-@i').val("").trigger("change");
+                            }
+                        }
+                    });
+                @Html.Raw("$('#txtTralerNo-"+a.DocEntry+"-"+i+"').select2({placeholder: 'Select a Trailer No',maximumSelectionLength: 1});")
+                    $("#txtTralerNo-@a.DocEntry-@i").change(function () {
+                        if ($("#txtTralerNo-@a.DocEntry-@i").val()[0] !== undefined) {
+                            var obj = $("#txtTralerNo-@a.DocEntry-@i option:selected").attr("data-province");
+                            $("#txtTralerProvince-@a.DocEntry-@i").val(obj);
+                        } else {
+                            $("#txtTralerProvince-@a.DocEntry-@i").val("");
+                        }
+                    });
+                $("#cboTypeExchangeType-@a.DocEntry-@i").change(function () {
+                    if ($("#cboTypeExchangeType-@a.DocEntry-@i").val() == "Existing") {  //Existing
+                        $("#displayExchangeContainerNew-@a.DocEntry-@i").attr("style", "display:none");
+                        $("#displayExchangeContainerExisting-@a.DocEntry-@i").attr("style", "");
+                        $("#txtContainer2-@a.DocEntry-@i").val("");
+                    } else if ($("#cboTypeExchangeType-@a.DocEntry-@i").val() == "New") { // New
+                        $("#displayExchangeContainerNew-@a.DocEntry-@i").attr("style", "");
+                        $("#displayExchangeContainerExisting-@a.DocEntry-@i").attr("style", "display:none");
+                        $("#cboContainerExisting-@a.DocEntry-@i").val("").trigger("change");
+                    }
+                });
+                onEditConfirmBookingSheet("@a.DocEntry-@i", '@Json.Serialize(objEditConfirmBookingSheet)');
+                onChangeContainerType("@a.DocEntry-@i", "U");
+                $("#cboSelectOptionContainer-@a.DocEntry-@i").val('@((@objEditConfirmBookingSheet.Length != 0) ? @objEditConfirmBookingSheet.FirstOrDefault().ContainerOption :"")');
+                $("#cboSelectType-@a.DocEntry-@i").val(('@((objEditConfirmBookingSheet.Length!=0)?@objEditConfirmBookingSheet.FirstOrDefault().Type:"")' == '') ? '-1' : '@((objEditConfirmBookingSheet.Length!=0)?objEditConfirmBookingSheet.FirstOrDefault().Type:"")');
+                onChangeOptionContainer('@a.DocEntry-@i');
+            </script>
+            <div class="row">
+                <div class="col-12">
+                    <hr />
+                </div>
+            </div>
+            i++;
+        }
+    }
+}
+else
+{
+    <h2 style="color:red">Something Wrong in your Data</h2>
+}
+@*defer*@
+
+

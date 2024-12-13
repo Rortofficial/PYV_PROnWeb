@@ -1,0 +1,974 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Client.Models.Response.ListMasterBookingSheet
+<title>@ViewData["Title"] - EWSystem</title>
+@if (Model.GetDetailBookingSheetByID.ErrorCode == 0)
+{
+    <div class="main">
+        <div class="row">
+            <div class="col-2">
+                <ul class="navbar-nav flex-grow-1 btn" style="float:right;background-color:#01295C;color:white;width:100%">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown" href="#">@localizer["Print"]</a>
+                        @{
+                            var k = 1;
+                        }
+                        <ul class="dropdown-menu" style="border: 1px solid #01295C">
+                            @foreach (var z in Model.GetDetailBookingSheetByID.ListLayoutPrint)
+                            {
+                                @if (k == 1)
+                                {
+                                    <li>
+                                        <a class="dropdown-item btn btn-info" target="_blank" asp-route-layoutCode="@z.Code" asp-route-docEntry="@Model.GetDetailBookingSheetByID.Data.DocEntry" asp-controller="CallLayout" asp-action="PrintLayout">
+                                            @z.Name
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item btn btn-info" target="_blank" asp-route-layoutCode="@z.Code" asp-route-docEntry="@Model.GetDetailBookingSheetByID.Data.DocEntry" asp-controller="CallLayout" asp-action="PrintLayout">
+                                            @z.Name
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-10">
+                <div style="float:right">
+                    <h2>@localizer["BOOKING SHEET"]</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["BOOKING ID"]</div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" value="@Model.GetDetailBookingSheetByID.Data.BookingID" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="row mt-2">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SALE PERSON"]</div>
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col-12">
+                                <select class="form-select" id="cboSalePerson" disabled>
+                                    <option selected>@Model.GetDetailBookingSheetByID.Data.SaleEmployee</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row mt-2">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["JOB NO."]</div>
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="text" class="form-control" value="@Model.GetDetailBookingSheetByID.Data.JobNo" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="row mt-2">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["JOB TYPE"]</div>
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col-12">
+                                <select class="form-select" id="cboImportType" disabled>
+                                    <option selected>@Model.GetDetailBookingSheetByID.Data.JobType</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row mt-2">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["BOOKING DATE"]</div>
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col-12">
+                                <input readonly type="text" id="txtBookingDate" value="@Model.GetDetailBookingSheetByID.Data.BookingDate" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="row mt-2">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SERVICE TYPE"]</div>
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col-12">
+                                <select class="form-select" id="cboServiceType" disabled>
+                                    <option selected>@Model.GetDetailBookingSheetByID.Data.ServiceType</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row mt-2">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ROUTE"]</div>
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="text" class="form-control" id="txtShowOrigin" value="@Model.GetDetailBookingSheetByID.Data.Route" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <hr style="color:black;font-weight:bold" />
+        <div class="row">
+            <div class="col-12">
+                <h5>
+                    <u>CUSTOMER DATA</u>
+                </h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3" style="margin:auto;">
+                @localizer["SHIPPER"]
+            </div>
+            <div class="col-9">
+                <select class="form-control" multiple="multiple" size="@Model.GetDetailBookingSheetByID.Data.Shipper.Count()" id="txtShipper" disabled>
+                    @foreach (var a in Model.GetDetailBookingSheetByID.Data.Shipper)
+                    {
+                        <option>@a</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-3" style="margin:auto;">
+                @localizer["CONSIGNEE"]
+            </div>
+            <div class="col-9">
+                <select class="form-control" multiple="multiple" size="@Model.GetDetailBookingSheetByID.Data.Consignee.Count()" id="txtConsignee" disabled>
+                    @foreach (var a in Model.GetDetailBookingSheetByID.Data.Consignee)
+                    {
+                        <option>@a</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <h5>
+                    <u>SALES QUOTATION</u>
+                </h5>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-3" style="margin:auto;">
+                @localizer["LIST OF SALESQUOTATION"]
+            </div>
+            <div class="col-9">
+                <select class="form-control" multiple="multiple" size="@Model.GetDetailBookingSheetByID.Data.SalesQuotation.Count()" id="txtSaleQuotations" disabled>
+                    @foreach (var a in Model.GetDetailBookingSheetByID.Data.SalesQuotation)
+                    {
+                        <option>@a</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <h5>
+                    <u>@localizer["COMMODITY"]</u>
+                </h5>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-3" style="margin:auto;">
+                @localizer["INVOICE NO#"]<span style="color:red">*</span>:
+            </div>
+            <div class="col-9">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Invoice Number" id="txtInvoiceNumber">
+                    <button class="input-group-text" id="btnAddInvoiceNumber" style="background-color:#01295C;color:white;">
+                        Add Invoice
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6" id="odd">
+            </div>
+            <div class="col-6" id="event">
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6" id="odd">
+            </div>
+            <div class="col-6" id="event">
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-3" style="margin:auto;">
+                @localizer["GOODS DESCRIPTION"]:
+            </div>
+            <div class="col-9">
+                <div class="input-group">
+                    <input type="text" class="form-control" value="@Model.GetDetailBookingSheetByID.Data.GoodsDescription" placeholder="@localizer["GOODS DESCRIPTION"]" id="txtGoodsDescription">
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-3" style="margin:auto;">
+                @localizer["TOTAL PACKAGE"]:
+            </div>
+            <div class="col-9">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="@localizer["TOTAL PACKAGE"]" value="@Model.GetDetailBookingSheetByID.Data.TotalPackage" id="txtTotalPackage">
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["NET WEIGHT(KGS)"]:
+                    </div>
+                    <div class="col-7">
+                        <div class="input-group">
+                            <input type="number" class="form-control" placeholder="@localizer["NET WEIGHT(KGS)"]" id="txtNetWeight" value="@Model.GetDetailBookingSheetByID.Data.NetWeight">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["GROSS WEIGHT(KGS)"]:
+                    </div>
+                    <div class="col-7">
+                        <div class="input-group">
+                            <input type="number" class="form-control" placeholder="@localizer["GROSS WEIGHT(KGS)"]" id="txtGrossWeight" value="@Model.GetDetailBookingSheetByID.Data.GrossWeight">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <u style="font-weight:bold">@localizer["SHIPMENT DETAILS"]</u>
+            </div>
+            <div class="col-6">
+                <u style="font-weight:bold">@localizer["TRANSPORTER AND FORWARDER"]</u>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["LOADING DATE"]:
+                    </div>
+                    <div class="col-7">
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="@((Model.GetDetailBookingSheetByID.Data.LoadingDate!="")?@Convert.ToDateTime(@Model.GetDetailBookingSheetByID.Data.LoadingDate).ToString("dd/MM/yyyy"):"")" id="txtLoadingDate" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["CROSS BORDER DATE"]:
+                    </div>
+                    <div class="col-7">
+                        <div class="input-group">
+                            <input type="text" value="@((Model.GetDetailBookingSheetByID.Data.CrossBorderDate!="")?@Convert.ToDateTime(@Model.GetDetailBookingSheetByID.Data.CrossBorderDate).ToString("dd/MM/yyyy"):"")" class="form-control" id="txtCrossBorderDate" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["ETA REQUIREMENT"]:
+                    </div>
+                    <div class="col-7">
+                        <div class="input-group">
+                            <input type="text" value="@((Model.GetDetailBookingSheetByID.Data.ETARequirement!="")?@Convert.ToDateTime(@Model.GetDetailBookingSheetByID.Data.ETARequirement).ToString("dd/MM/yyyy"):"")" class="form-control" id="txtEtaRequirement" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["OVERSEA TRANSPORT"]:
+                    </div>
+                    <div class="col-7">
+                        <select class="form-control" multiple="multiple" id="cboMultiOverseaTrucker">
+                            @foreach (var a in Model.GetOverseaTruckers)
+                            {
+                                @if (Model.GetDetailBookingSheetByID.Data.OverseaTrucker.Where(x => x == a.Name)?.Count() != 0)
+                                {
+                                    <option selected value="@a.Code" data-obj="@Json.Serialize(a)">@a.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@a.Code" data-obj="@Json.Serialize(a)">@a.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["PLACE OF LOADING"]:
+                    </div>
+                    <div class="col-7">
+                        <!--selectpicker-->
+                        @* <select class="form-control" size="@Model.GetDetailBookingSheetByID.Data.PlaceOfLoading.Count" multiple="multiple" id="cboMultiPlaceOfLoading" disabled>
+                    @foreach (var a in Model.GetDetailBookingSheetByID.Data.PlaceOfLoading)
+                    {
+                    <option>@a.PLACELOADING</option>
+                    }
+                    </select>*@
+                        <select class="form-control" multiple="multiple" id="cboMultiPlaceOfLoading">
+                            @foreach (var a in Model.GetPlaceOfLoadings)
+                            {
+                                @if (Model.GetDetailBookingSheetByID.Data.PlaceOfLoading.Where(x => x.LineId.ToString() == a.Code)?.Count() != 0)
+                                {
+                                    <option selected data-obj="@Json.Serialize(a)" value="@a.Code">@a.Name</option>
+                                }
+                                else
+                                {
+                                    <option data-obj="@Json.Serialize(a)" value="@a.Code">@a.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-4">
+                        <input class="form-control" value="@Model.GetDetailBookingSheetByID.Data.LoloYardRemark" type="text" id="rdoLCLOrFCL">
+                    </div>
+                    @foreach (var a in Model.GetLOLOYARDORUNLOADINGs)
+                    {
+                        <div class="col-4" style="margin:auto;">
+                            <div class="form-check">
+                                <input class="form-check-input" value="@a.Code" type="radio" name="LOLOYARD/UNLOADING">
+                                <label class="form-check-label" for="loloyard">
+                                    @a.Name<span style="color:red">*</span>
+                                </label>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["DISTRICT OF LOADING"]<span style="color:red">*</span>:
+                    </div>
+                    <div class="col-7">
+                        <!--selectpicker-->
+                        <select class="form-control" id="cboMultiDistrictPlaceOfLoading" multiple="multiple">
+                            @foreach (var a in Model.GetDistricts)
+                            {
+                                @if (Model.GetDetailBookingSheetByID.Data.PlaceOfLoading.Where(x => x.District == a.Name)?.Count() != 0)
+                                {
+                                    <option data-obj='@Json.Serialize(a)' selected value="@a.Code">@a.Name</option>
+                                }
+                                else
+                                {
+                                    <option data-obj='@Json.Serialize(a)' value="@a.Code">@a.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                <div class="row">
+                    <div class="col-5">
+                        <div id="plLoloOther" style="display:none;">
+                            @localizer["Other Remarks"]<span style="color:red">*</span>:
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <div id="plLoloOtherTxt" style="display:none;">
+                            <textarea id="txtLoloOtherRemark" rows="4" class="form-control">@Model.GetDetailBookingSheetByID.Data.OtherRemark</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["PLACE OF DELIVERY"]:
+                    </div>
+                    <div class="col-7">
+                        <!--selectpicker-->
+                        <select class="form-control" multiple="multiple" id="cboMultiPlaceOfDelivery">
+                            @foreach (var a in Model.GetPlaceOfDeliveries)
+                            {
+                                @if (Model.GetDetailBookingSheetByID.Data.PlaceOfDelivery.Where(x => x.PLACEDELIVERY == a.Name)?.Count() != 0)
+                                {
+                                    <option data-obj="@Json.Serialize(a)" selected value="@a.Code">@a.Name</option>
+                                }
+                                else
+                                {
+                                    <option data-obj="@Json.Serialize(a)" value="@a.Code">@a.Name</option>
+                                }
+                            }
+                        </select>
+                        @* <select class="form-control" id="cboMultiPlaceOfDelivery" size="@Model.GetDetailBookingSheetByID.Data.PlaceOfDelivery.Count" multiple="multiple" disabled>
+                    @foreach (var a in Model.GetDetailBookingSheetByID.Data.PlaceOfDelivery)
+                    {
+                    <option>@a.PLACEDELIVERY</option>
+                    }
+                    </select>*@
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["THAI FORWARDER"]:
+                    </div>
+                    <div class="col-7">
+                        <select class="form-control" multiple="multiple" id="cboThaiForwarder">
+                            @foreach (var a in Model.GetThaiForwarders)
+                            {
+                                @if (Model.GetDetailBookingSheetByID.Data.ThaiForwarder.Where(x => x == a.Name)?.Count() != 0)
+                                {
+                                    <option data-obj='@Json.Serialize(a)' selected value="@a.Code">@a.Name</option>
+                                }
+                                else
+                                {
+                                    <option data-obj='@Json.Serialize(a)' value="@a.Code">@a.Name</option>
+                                }
+                            }
+                        </select>
+                        @*<select class="form-control" size="@Model.GetDetailBookingSheetByID.Data.ThaiForwarder.Count" multiple="multiple" id="cboThaiForwarder" disabled>
+                    @foreach (var a in Model.GetDetailBookingSheetByID.Data.ThaiForwarder)
+                    {
+                    <option value="@a">@a</option>
+                    }
+                    </select>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["DISTRICT OF DELIVERY"]<span style="color:red">*</span>:
+                    </div>
+                    <div class="col-7">
+                        <!--selectpicker-->
+                        <select class="form-control" id="cboMultiDistrictPlaceOfDelivery" multiple="multiple">
+                            @foreach (var a in Model.GetDistricts)
+                            {
+                                @if (Model.GetDetailBookingSheetByID.Data.PlaceOfDelivery.Where(x => x.District == a.Name)?.Count() != 0)
+                                {
+                                    <option data-obj='@Json.Serialize(a)' selected value="@a.Code">@a.Name</option>
+                                }
+                                else
+                                {
+                                    <option data-obj='@Json.Serialize(a)' value="@a.Code">@a.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row" style="margin-top:10px">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["TRUCK TYPE"]:
+                    </div>
+                    <div class="col-7">
+                        @foreach (var a in Model.GetDetailBookingSheetByID.Data.TruckType)
+                        {
+                            <div class="row">
+                                <div class="col-3">
+                                    @a.QTY
+                                </div>
+                                <div class="col-3">
+                                    @a.TRUCKTYPE
+                                </div>
+                                <div class="col-3">
+                                    @a.GROSSWEIGHT
+                                </div>
+                                <div class="col-3">
+                                    @a.InvoiceList
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["OVERSEA FORWARDER"]:
+                    </div>
+                    <div class="col-7">
+                        <select class="form-control" multiple="multiple" id="cboOverseaForwarder">
+                            @foreach (var a in Model.GetOverseaForwarders)
+                            {
+                                @if (Model.GetDetailBookingSheetByID.Data.OverseaForwarder.Where(x => x == a.Name)?.Count() != 0)
+                                {
+                                    <option selected data-obj="@Json.Serialize(a)" value="@a.Code">@a.Name</option>
+                                }
+                                else
+                                {
+                                    <option data-obj="@Json.Serialize(a)" value="@a.Code">@a.Name</option>
+                                }
+                            }
+                        </select>
+                        @*<select class="form-control" multiple="multiple" id="cboOverseaForwarder" disabled size="@Model.GetDetailBookingSheetByID.Data.OverseaForwarder.Count">
+                    @foreach (var a in Model.GetDetailBookingSheetByID.Data.OverseaForwarder)
+                    {
+                    <option>@a</option>
+                    }
+                    </select>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5">
+                        @localizer["CONTAINER TYPE"]:
+                    </div>
+                    <div class="col-7">
+                        @foreach (var a in Model.GetDetailBookingSheetByID.Data.Volume)
+                        {
+                            <div class="row">
+                                <div class="col-3">
+                                    @a.QTY
+                                </div>
+                                <div class="col-3">
+                                    @a.VOLUMECODE
+                                </div>
+                                <div class="col-3">
+                                    @a.GROSSWEIGHT
+                                </div>
+                                <div class="col-3">
+                                    @a.InvoiceList
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row" style="margin-top:10px">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["THAI BORDER"]:
+                    </div>
+                    <div class="col-7">
+                        <select class="form-control" multiple="multiple" id="cboThaiBorder">
+                            @foreach (var a in Model.GetThaiBorders)
+                            {
+                                @if (Model.GetDetailBookingSheetByID.Data.ThaiBorder.Where(x => x == a.Name)?.Count() != 0)
+                                {
+                                    <option selected data-obj="@Json.Serialize(a)" value="@a.Code">@a.Name</option>
+                                }
+                                else
+                                {
+                                    <option data-obj="@Json.Serialize(a)" value="@a.Code">@a.Name</option>
+                                }
+                            }
+                        </select>
+                        @* <select class="form-control" multiple="multiple" disabled size="@Model.GetDetailBookingSheetByID.Data.ThaiBorder.Count" id="cboThaiBorder">
+                    @foreach (var a in Model.GetDetailBookingSheetByID.Data.ThaiBorder)
+                    {
+                    <option>@a</option>
+                    }
+                    </select>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="row">
+                    @foreach (var a in Model.GetLCLORFCLs)
+                    {
+                        <div class="col-4" style="margin:auto">
+                            <div class="form-check">
+                                <input class="form-check-input" value="@a.Code" type="radio" name="lcl/fcl">
+                                <label class="form-check-label" for="loloyard">
+                                    @a.Name<span style="color:red">*</span>
+                                </label>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row" style="margin-top:10px">
+                    <div class="col-5" style="margin:auto;">
+                        @localizer["Dangerous Goods"]:
+                    </div>
+                    <div class="col-7">
+                        <select class="form-control" id="cboDamageGood">
+                            <option selected value="">Select</option>
+                            <option value="NON-DG">NON-DG</option>
+                            <option value="DG">DG</option>
+                            <option value="DG and NON-DG">DG and NON-DG</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row">
+                    @foreach (var a in Model.GetCYORCFSs)
+                    {
+                        <div class="col-4" style="margin:auto">
+                            <div class="form-check">
+                                <input class="form-check-input" value="@a.Code" type="radio" name="CY/CFS">
+                                <label class="form-check-label" for="loloyard">
+                                    @a.Name<span style="color:red">*</span>
+                                </label>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-6"></div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <u style="font-weight:bold">DOCUMENT REQUIREMENT</u>
+            </div>
+            <div class="col-6">
+                <u style="font-weight:bold">SPECIAL REQUEST</u>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <textarea id="documentRequirement" rows="4" disabled class="form-control">
+                    @Model.GetDetailBookingSheetByID.Data.Remark</textarea>
+            </div>
+            <div class="col-6">
+                <textarea id="specialRequest" rows="4" disabled class="form-control">
+                    @Model.GetDetailBookingSheetByID.Data.SpecialRequest </textarea>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-6">
+        </div>
+        <div class="col-6">
+            <button class="btn" id="btnConfirmTransaction" onclick="onConfirmTransaction('@Url.Action("OnUpdateCommoditiesBookingSheet","BookingSheet")','@Url.Action("ViewDetailBookingSheet","BookingSheet")')" style="float:right;background-color:#01295C;color:white"> Confirm Transaction</button>
+        </div>
+    </div>
+}
+else
+{
+    <div style="color:red">@Model.GetDetailBookingSheetByID.ErrorCode:@Model.GetDetailBookingSheetByID.ErrorMessage</div>
+}
+<!--Import Modal OnSubmitBookingSheet-->
+@*@await Html.PartialAsync("Modal/ModalCO", Model.GetCOs)*@
+@*@await Html.PartialAsync("Modal/ModalConsignee", Model.GetConsignees)*@
+@*@await Html.PartialAsync("Modal/ModalShipper", Model.GetShippers)*@
+@section scripts {
+    <script>
+        var listInvoice = [];
+        var numberEvenOrOdd = 1;
+        initCommodity(@Json.Serialize(@Model.GetDetailBookingSheetByID.Data.Commodity));
+        $('input[name="LOLOYARD/UNLOADING"]').val(["@Model.GetDetailBookingSheetByID.Data.LoloYard"]);
+        $('input[name="lcl/fcl"]').val(["@Model.GetDetailBookingSheetByID.Data.FCLLCL"]);
+        $('input[name="CY/CFS"]').val(["@Model.GetDetailBookingSheetByID.Data.CYCFS"]);
+        $('#cboDamageGood').val("@Model.GetDetailBookingSheetByID.Data.DG");
+        if ($('input[name="LOLOYARD/UNLOADING"]:checked').val() == '3') {
+            $("#plLoloOther").removeAttr("style");
+            $("#plLoloOtherTxt").removeAttr("style");
+        }
+        $('input[type=radio][name="LOLOYARD/UNLOADING"]').change(function () {
+            if ($('input[name="LOLOYARD/UNLOADING"]:checked').val() == '3') {
+                $("#plLoloOther").removeAttr("style");
+                $("#plLoloOtherTxt").removeAttr("style");
+            }
+            else {
+                $("#plLoloOther").attr("style", "display:none;");
+                $("#plLoloOtherTxt").attr("style", "display:none;");
+            }
+        });
+        function initCommodity(obj) {
+            for (var i = 0; i < obj.length; i++) {
+                listInvoice.push({
+                    "ID": numberEvenOrOdd,
+                    "InvoiceNumber": obj[i],
+                });
+                numberEvenOrOdd++;
+            }
+            RerenderAgain();
+        }
+        function RerenderAgain() {
+            $("#odd").empty();
+            $("#event").empty();
+            var k = 1;
+            for (var i = 0; i < listInvoice.length; i++) {
+                var result = i % 2;
+                if (result == 0) {
+                    $("#odd").append('<div id="btnAddInv' + listInvoice[i].ID + '" class="row mt-2"><div class="col-3">INVOICE NO' + k + ':</div><div class="col-6" id="txtInvoice' + listInvoice[i].ID + '">' + listInvoice[i].InvoiceNumber + '</div><div class="col-3"><button class="btn btn-danger" onclick="removeInvoiceAdd(' + listInvoice[i].ID + ')">DELETE</button></div></div>');
+                } else {
+                    $("#event").append('<div id="btnAddInv' + listInvoice[i].ID + '" class="row mt-2"><div class="col-3">INVOICE NO' + k + ':</div><div class="col-6" id="txtInvoice' + listInvoice[i].ID + '">' + listInvoice[i].InvoiceNumber + '</div><div class="col-3"><button class="btn btn-danger" onclick="removeInvoiceAdd(' + listInvoice[i].ID + ')">DELETE</button></div></div>');
+                }
+                k++;
+            }
+        }
+        function removeInvoiceAdd(numberEvent) {
+            listInvoice = listInvoice.filter(e => e.ID !== numberEvent);
+            RerenderAgain();
+        }
+        //Add Invoice
+        $("#btnAddInvoiceNumber").click(function () {
+            if ($("#txtInvoiceNumber").val() != "") {
+                numberEvenOrOdd++;
+                var objInvoice = {};
+                objInvoice.ID = numberEvenOrOdd;
+                objInvoice.InvoiceNumber = $("#txtInvoiceNumber").val();
+                listInvoice.push(objInvoice);
+                RerenderAgain();
+            }
+            $("#txtInvoiceNumber").val("");
+        });
+        function onConfirmTransaction(url, urlPDF) {
+            if (confirm("Are you sure to Update Commodity Invoice?")) {
+                var invoiceList = [];
+                //Add Commodities
+                for (var i = 0; i < listInvoice.length; i++) {
+                    var invoice = {};
+                    invoice.INVOICE = listInvoice[i].InvoiceNumber;
+                    invoiceList.push(invoice);
+                }
+                var overseaTransportList = [];
+                var cboMultiOverseaTrucker = $("#cboMultiOverseaTrucker").val();
+                //Add OVERSEA TRANSPORT
+                for (var i = 0; i < cboMultiOverseaTrucker.length; i++) {
+                    var overseaTransport = {};
+                    overseaTransport.LineId = 0;
+                    overseaTransport.OVERSEATRUCKERCODE = cboMultiOverseaTrucker[i];
+                    overseaTransportList.push(overseaTransport);
+                }
+                var thaiforwarderList = [];
+                var cboThaiForwarder = $("#cboThaiForwarder").val();
+                //Add Thai Forwarder
+                for (var i = 0; i < cboThaiForwarder.length; i++) {
+                    var thaiforwarder = {};
+                    thaiforwarder.LineId = 0;
+                    thaiforwarder.THAIFORWARDER = cboThaiForwarder[i];
+                    thaiforwarderList.push(thaiforwarder);
+                }
+                var OverseaForwarderList = [];
+                var cboOverseaForwarder = $("#cboOverseaForwarder").val();
+                //Add OVERSEA FORWARDER
+                for (var i = 0; i < cboOverseaForwarder.length; i++) {
+                    var OverseaForwarder = {};
+                    OverseaForwarder.LineId = 0;
+                    OverseaForwarder.OVERSEAFORWARDERCODE = cboOverseaForwarder[i];
+                    OverseaForwarderList.push(OverseaForwarder);
+                }
+                var thaiBordersList = [];
+                var cboThaiBorder = $("#cboThaiBorder").val();
+                //Add Thai Border
+                for (var i = 0; i < cboThaiBorder.length; i++) {
+                    var thaiBorders = {};
+                    thaiBorders.LineId = 0;
+                    thaiBorders.ThaiBorder = cboThaiBorder[i];
+                    thaiBordersList.push(thaiBorders);
+                }
+                var placeOfLoadings = {};
+                placeOfLoadings.PLACELOADING = $("#cboMultiPlaceOfLoading").val()[0];
+                placeOfLoadings.District = "";
+                if ($("#cboMultiDistrictPlaceOfLoading").val().length !== 0) {
+                    for (var z = 0; z < $("#cboMultiDistrictPlaceOfLoading").val().length; z++) {
+                        if (z == ($("#cboMultiDistrictPlaceOfLoading").val().length - 1)) {
+                            placeOfLoadings.District += $("#cboMultiDistrictPlaceOfLoading").val()[z];
+                        } else {
+                            placeOfLoadings.District += $("#cboMultiDistrictPlaceOfLoading").val()[z] + ",";
+                        }
+                    }
+                }
+                var placeOfDeliveries = {};
+                placeOfDeliveries.PLACELOADING = $("#cboMultiPlaceOfDelivery").val()[0];
+                placeOfDeliveries.District = "";
+                if ($("#cboMultiDistrictPlaceOfDelivery").val().length !== 0) {
+                    for (var z = 0; z < $("#cboMultiDistrictPlaceOfDelivery").val().length; z++) {
+                        if (z == ($("#cboMultiDistrictPlaceOfDelivery").val().length - 1)) {
+                            placeOfDeliveries.District += $("#cboMultiDistrictPlaceOfDelivery").val()[z];
+                        } else {
+                            placeOfDeliveries.District += $("#cboMultiDistrictPlaceOfDelivery").val()[z] + ",";
+                        }
+                    }
+                }
+                var objHeader = {}
+                objHeader.GROSSWEIGHT = $("#txtGrossWeight").val();
+                objHeader.NETWEIGHT = $("#txtNetWeight").val();
+                objHeader.TOTALPACKAGE = $("#txtTotalPackage").val();
+                objHeader.GOODSDESCRIPTION = $("#txtGoodsDescription").val();
+                objHeader.LOLOYARDORUNLOADINGRemark = $("#rdoLCLOrFCL").val();
+                objHeader.LOLOYARDORUNLOADING = $('input[name="LOLOYARD/UNLOADING"]:checked').val();
+                objHeader.LCLORFLC = $('input[name="lcl/fcl"]:checked').val();
+                objHeader.CYORCFS = $('input[name="CY/CFS"]:checked').val();
+                $.ajax({
+                    url: url,
+                    type: "PUT",
+                    data: {
+                        CreateUser: $("#UserID").attr("data-id"),
+                        docEntry: @ViewBag.BookingID,
+                        commodities: invoiceList,
+                        headerCommodityUpdate: objHeader,
+                        overseaTrucker: overseaTransportList,
+                        thaiForwarders: thaiforwarderList,
+                        overForwarders: OverseaForwarderList,
+                        thaiBorders: thaiBordersList,
+                        placeOfLoadings: placeOfLoadings,
+                        placeOfDeliveries: placeOfDeliveries,
+                    },
+                    dataType: "JSON",
+                    beforeSend: function () {
+                        $('#Modalloder').modal('show');
+                    },
+                    success: function (data) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html("Success");
+                        window.location.href = urlPDF + "?docEntry=" + data.docEntry;
+                    },
+                    error: function (erro) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html(erro.responseText);
+                    }
+                });
+            }
+        }
+        //Oversea Trucker
+        $("#cboMultiOverseaTrucker").select2({
+            placeholder: "Select Oversea Trucker",
+            maximumSelectionLength: 9999999,
+            width: '100%'
+        });
+        //Place Of Loading
+        $("#cboMultiPlaceOfLoading").select2({
+            placeholder: "Select Place Of Loading",
+            maximumSelectionLength: 1,
+            width: '100%'
+        });
+        //Place Of Delivery
+        $("#cboMultiPlaceOfDelivery").select2({
+            placeholder: "Select Place Of Delivery",
+            maximumSelectionLength: 1,
+            width: '100%'
+        });
+        //Thai Forwarder
+        $("#cboThaiForwarder").select2({
+            placeholder: "Select Thai Forwarder",
+            maximumSelectionLength: 9999999,
+            width: '100%'
+        });
+        //Oversea Forwarder
+        $("#cboOverseaForwarder").select2({
+            placeholder: "Select Oversea Forwarder",
+            maximumSelectionLength: 9999999,
+            width: '100%'
+        });
+        //Thai Border
+        $("#cboThaiBorder").select2({
+            placeholder: "Select Thai Border",
+            maximumSelectionLength: 1,
+            width: '100%'
+        });
+        //District Place Of Loading
+        $("#cboMultiDistrictPlaceOfLoading").select2({
+            placeholder: "Select Place Of Loading",
+            maximumSelectionLength: 1,
+            width: '100%'
+        });
+        $("#cboMultiDistrictPlaceOfLoading").change(function () {
+            if ($("#cboMultiDistrictPlaceOfLoading option:selected").attr("data-obj") !== undefined) {
+                var obj = JSON.parse($("#cboMultiDistrictPlaceOfLoading option:selected").attr("data-obj"));
+                $("#cboMultiPlaceOfLoading").val(obj.province).trigger("change");
+            } else {
+                $("#cboMultiPlaceOfLoading").val([]).trigger("change");
+            }
+        });
+
+        //District Place Of Delivery
+        $("#cboMultiDistrictPlaceOfDelivery").select2({
+            placeholder: "Select Place Of Delivery",
+            maximumSelectionLength: 1,
+            width: '100%'
+        });
+        $("#cboMultiDistrictPlaceOfDelivery").change(function () {
+            if ($("#cboMultiDistrictPlaceOfDelivery option:selected").attr("data-obj") !== undefined) {
+                var obj = JSON.parse($("#cboMultiDistrictPlaceOfDelivery option:selected").attr("data-obj"));
+                $("#cboMultiPlaceOfDelivery").val(obj.province).trigger("change");
+            } else {
+                $("#cboMultiPlaceOfDelivery").val([]).trigger("change");
+            }
+        });
+    </script>
+}

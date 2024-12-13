@@ -1,0 +1,736 @@
+﻿@using Client.Connection;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Client.Models.Response.ListMasterBookingSheet
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+<title>@ViewData["Title"] - EWSystem</title>
+<div class="row">
+    <div class="col-6">
+       @*  <button class="btn" id="btnRecoveryData" onclick="onRecoveryData()" style="background-color:#01295C;color:white">Recover Data</button> *@
+    </div>
+    <div class="col-6">
+        <div style="float:right">
+            <h2>@localizer["BOOKING SHEET"]</h2>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 col-md-6 col-lg-6">
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["BOOKING ID"]</div>
+            <div class="col-8">
+                <input type="text" class="form-control" value="---------" readonly>
+                @*@HttpContextAccessor.HttpContext.Session.GetString("Sereis")@Model.GetDocNumBookingSheets.BookingID*@
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 col-md-6 col-lg-6">
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["JOB NO."]<span style="color:red">*</span></div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-5">
+                        <select class="form-select" onchange="onChangeJobNo()" id="cboSelectSeries">
+                            <option selected value="-1">Choose...</option>
+                            <option value="EWTI">EWTI</option>
+                            <option value="EWTE">EWTE</option>
+                            <option value="EWTD">EWTD</option>
+                            <option value="EWTT">EWTT</option>
+                            <option value="EWST">EWST</option>
+                        </select>
+                    </div>
+                    <div class="col-7">
+                        <input type="text" class="form-control" value="----------" readonly>
+                        @* @Model.GetDocNumBookingSheets.JOBNO*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-0 col-md-6 col-lg-6">
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["BOOKING DATE"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <input readonly type="text" id="txtBookingDate" value="@DateTime.Now.ToString("dd-MM-yyyy")" class="form-control"> @*.ToString("dd/MM/yyyy")*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SALE PERSON"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <select class="form-select" id="cboSalePerson1">
+                            <option selected value="-99">@localizer["Choose..."]</option>
+                            @foreach (var a in Model.SaleEmployees)
+                            {
+                                <option value="@a.SlpCode">@a.SlpName</option>
+                            }
+                        </select>
+                        @*<input type="text" class="form-control" id="cboSalePerson" value="" disabled />*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ROUTE"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-5">
+                        <input type="text" class="form-control" id="txtShowOrigin" value="" readonly />
+                    </div>
+                    <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">@localizer["TO"]</div>
+                    <div class="col-5">
+                        <input type="text" class="form-control" id="txtShowDestination" value="" readonly />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["JOB TYPE"]</div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <select class="form-select" id="cboImportType" disabled>
+                            @{
+                                foreach (var a in Model.GetImportTypes)
+                                {
+                                    <option value="@a.Code">@a.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ORIGIN"]<span style="color:red">*</span></div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <select class="form-select" id="cboOrigin">
+                            <option selected value="None">@localizer["Choose..."]</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["SERVICE TYPE"]<span style="color:red">*</span></div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <select class="form-select" id="cboServiceType">
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="row mt-2">
+            <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["DESTINATION"]<span style="color:red">*</span></div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <select class="form-select" id="cboDestination">
+                            <option selected value="None">Choose...</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<hr style="color:black;font-weight:bold" />
+<div class="row">
+    <div class="col-12">
+        <h5>
+            <u>@localizer["CUSTOMER DATA"]</u>
+        </h5>
+    </div>
+</div>
+<div class="row">
+    <div class="col-3" style="margin:auto;">
+        @localizer["SHIPPER"]<span style="color:red">*</span>
+    </div>
+    <div class="col-9">
+        <select class="form-control" multiple="multiple" id="txtShipper">
+            @foreach (var a in Model.GetShippers)
+            {
+                <option value="@a.CardCode">@a.CardName</option>
+            }
+
+        </select>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-3" style="margin:auto;">
+        @localizer["CONSIGNEE"]<span style="color:red">*</span>
+    </div>
+    <div class="col-9">
+        <select class="form-control" multiple="multiple" id="txtConsignee">
+            @foreach (var a in Model.GetConsignees)
+            {
+                <option value="@a.CardCode">@a.CardName</option>
+            }
+        </select>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-12">
+        <h5>
+            <u>@localizer["SALES QUOTATION"]</u>
+        </h5>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-3" style="margin:auto;">
+        @localizer["LIST OF SALESQUOTATION"]<span style="color:red">*</span>
+    </div>
+    <div class="col-9">
+        <select class="form-control" multiple="multiple" id="txtSaleQuotations">
+            @* @foreach (var a in Model.GetListSaleQuotations)
+            {
+            <option value="@a.DocEntry" data-CardName="@a.CustomerName" data-CardCode="@a.CustomerCode" data-slpCode="@a.SlpCode" data-slpName="@a.SlpName">@a.CustomerRefNo - @a.CustomerName</option>
+            }*@
+        </select>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-12">
+        <h5>
+            <u>@localizer["COMMODITY"]</u>
+        </h5>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-3" style="margin:auto;">
+        @localizer["INVOICE NO#"]<span style="color:red">*</span>:
+    </div>
+    <div class="col-9">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Invoice Number" id="txtInvoiceNumber">
+            <button class="input-group-text" id="btnAddInvoiceNumber" style="background-color:#01295C;color:white;">
+                @localizer["Add Invoice"]
+            </button>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-6" id="odd">
+    </div>
+    <div class="col-6" id="event">
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-3" style="margin:auto;">
+        @localizer["GOODS DESCRIPTION"]:
+    </div>
+    <div class="col-9">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="@localizer["GOODS DESCRIPTION"]" id="txtGoodsDescription">
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-3" style="margin:auto;">
+        @localizer["TOTAL PACKAGE"]:
+    </div>
+    <div class="col-9">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="@localizer["TOTAL PACKAGE"]" id="txtTotalPackage">
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="row">
+            <div class="col-5" style="margin:auto;">
+                @localizer["NET WEIGHT(KGS)"]<span style="color:red">*</span>:
+            </div>
+            <div class="col-7">
+                <div class="input-group">
+                    <input type="number" class="form-control" placeholder="@localizer["NET WEIGHT(KGS)"]" id="txtNetWeight">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <div class="row">
+            <div class="col-5" style="margin:auto;">
+                @localizer["GROSS WEIGHT(KGS)"]<span style="color:red">*</span>:
+            </div>
+            <div class="col-7">
+                <div class="input-group">
+                    <input type="number" class="form-control" placeholder="@localizer["GROSS WEIGHT(KGS)"]" id="txtGrossWeight">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <u style="font-weight:bold">@localizer["SHIPMENT DETAILS"] <span class="d-md-none d-lg-none">@localizer["& TRANSPORTER AND FORWARDER"]</span></u>
+    </div>
+    <div class="col-12 d-none d-md-block d-lg-block col-md-6 col-lg-6">
+        <u style="font-weight:bold">@localizer["TRANSPORTER AND FORWARDER"]</u>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <div class="row">
+            <div class="col-5" style="margin:auto;">
+                @localizer["LOADING DATE"]:
+            </div>
+            <div class="col-7">
+                <div class="input-group">
+                    <input type="date" min="@DateTime.Now.AddDays(-15).ToString("yyyy-MM-dd")" class="form-control" id="txtLoadingDate">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <div class="row">
+            <div class="col-5" style="margin:auto;">
+                @localizer["CROSS BORDER DATE"]:
+            </div>
+            <div class="col-7">
+                <div class="input-group">
+                    <input type="date" min="" class="form-control" id="txtCrossBorderDate" disabled>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <div class="row">
+            <div class="col-5" style="margin:auto;">
+                @localizer["ETA REQUIREMENT"]:
+            </div>
+            <div class="col-7">
+                <div class="input-group">
+                    <input type="date" class="form-control" id="txtEtaRequirement" disabled>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <div class="row">
+            <div class="col-5" style="margin:auto;">
+                @localizer["OVERSEA TRANSPORT"]:
+            </div>
+            <div class="col-7">
+                <select class="form-control" multiple="multiple" id="cboMultiOverseaTrucker">
+                    @foreach (var a in Model.GetOverseaTruckers)
+                    {
+                        <option value="@a.Code">@a.Name</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <div class="row">
+            <div class="col-5" style="margin:auto;">
+                @localizer["PLACE OF LOADING"]<span style="color:red">*</span>:
+            </div>
+            <div class="col-7">
+                <!--selectpicker-->
+                <select class="form-control" multiple="multiple" id="cboMultiPlaceOfLoading">
+                    @*@foreach (var a in Model.GetPlaceOfLoadings)
+                    {
+                    <option value="@a.Code">@a.Name</option>
+                    }*@
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <div class="row" style="margin-top:10px;">
+            @*<textarea id="documentRequirement" rows="4" class="form-control"></textarea>*@
+            <div class="col-4">
+                <input type="text" class="form-control" id="txtLoloYardRemark" placeholder="LOLO/Yard">
+            </div>
+            @foreach (var a in Model.GetLOLOYARDORUNLOADINGs)
+            {
+                <div class="col-4" style="margin:auto;">
+                    <div class="form-check">
+                        <input class="form-check-input" value="@a.Code" type="radio" name="typeloloyard/unloading" id="rdoLoloYardOrUnloading">
+                        <label class="form-check-label" for="loloyard">
+                            @a.Name<span style="color:red">*</span>
+                        </label>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <div id="plDistrictLoading" style="display:none;">
+            <div class="row">
+                <div class="col-5" style="margin:auto;">
+                    @localizer["DISTRICT OF LOADING"]<span style="color:red">*</span>:
+                </div>
+                <div class="col-7">
+                    <!--selectpicker-->
+                    <select class="form-control" id="cboMultiDistrictPlaceOfLoading" multiple="multiple">
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <div class="row">
+            <div class="col-5">
+                <div id="plLoloOther" style="display:none;">
+                    @localizer["Other Remarks"]<span style="color:red">*</span>:
+                </div>
+            </div>
+            <div class="col-7">
+                <div id="plLoloOtherTxt" style="display:none;">
+                    <textarea id="txtLoloOtherRemark" rows="4" class="form-control"></textarea>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <div class="row">
+            <div class="col-5" style="margin:auto;">
+                @localizer["PLACE OF DELIVERY"]<span style="color:red">*</span>:
+            </div>
+            <div class="col-7">
+                <!--selectpicker-->
+                <select class="form-control" id="cboMultiPlaceOfDelivery" multiple="multiple">
+                    @* @foreach (var a in Model.GetPlaceOfDeliveries)
+                    {
+                    <option value="@a.Code">@a.Name</option>
+                    }*@
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <div class="row">
+            <div class="col-5" style="margin:auto;">
+                @localizer["THAI FORWARDER"]:
+            </div>
+            <div class="col-7">
+                <select class="form-control" multiple="multiple" id="cboThaiForwarder">
+                    @foreach (var a in Model.GetThaiForwarders)
+                    {
+                        <option value="@a.Code">@a.Name</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="plDistrictDelivery" style="display:none;">
+    <div class="row mt-3">
+        <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+            <div class="row">
+                <div class="col-5" style="margin:auto;">
+                    @localizer["DISTRICT OF DELIVERY"]<span style="color:red">*</span>:
+                </div>
+                <div class="col-7">
+                    <!--selectpicker-->
+                    <select class="form-control" id="cboMultiDistrictPlaceOfDelivery" multiple="multiple">
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <div class="row">
+            <div class="col-3" style="margin:auto;">
+                @localizer["TRUCK TYPE"]:
+            </div>
+            <div class="col-9">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="row">
+                            <div class="col-4">
+                                <input type="number" class="form-control" id="txtTruckTypeQty">
+                            </div>
+                            <div class="col-8">
+                                <select class="form-select" id="cboTruckType">
+                                    @foreach (var a in Model.GetTruckTypes)
+                                    {
+                                        <option value="@a.Code">@a.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <button class="btn" id="btnAddTruckType" style="background-color:#01295C;color:white">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <div class="row">
+            <div class="col-5" style="margin:auto;">
+                @localizer["OVERSEA FORWARDER"]:
+            </div>
+            <div class="col-7">
+                <select class="form-control" multiple="multiple" id="cboOverseaForwarder">
+                    @foreach (var a in Model.GetOverseaForwarders)
+                    {
+                        <option value="@a.Code">@a.Name</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-11">
+        <div class="row">
+            <div class="col-12" id="rowTruckType">
+            </div>
+        </div>
+    </div>
+    <div class="col-1"></div>
+</div>
+<div class="row mt-2">
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <div class="row">
+            <div class="col-4" style="margin:auto;">
+                @localizer["CONTAINER TYPE"]:
+            </div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="row">
+                            <div class="col-4">
+                                <input type="number" class="form-control" id="txtVolumeQty">
+                            </div>
+                            <div class="col-8">
+                                <select class="form-select" id="cboVolume">
+                                    @foreach (var a in Model.GetVolumes)
+                                    {
+                                        <option value="@a.Code">@a.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-2 p-0 p-md-2 p-lg-2">
+                        <button class="btn" id="btnAddVolumn" style="background-color:#01295C;color:white">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*<div class="col-6">
+    <div class="row" style="margin-top:10px">
+    <div class="col-5" style="margin:auto;">
+    @localizer["TRUCK TYPE"]:
+    </div>
+    <div class="col-7">
+    <select class="form-select" id="cboTruckType">
+    <option value="-9999">NONE SELECT</option>
+    @foreach (var a in Model.GetTruckTypes)
+    {
+    <option value="@a.Code">@a.Name</option>
+    }
+    </select>
+    </div>
+    </div>
+    </div>*@
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <div class="row" style="margin-top:10px">
+            <div class="col-5" style="margin:auto;">
+                @localizer["THAI BORDER"]:
+            </div>
+            <div class="col-7">
+                <select class="form-control" multiple="multiple" id="cboThaiBorder">
+                    @foreach (var a in Model.GetThaiBorders)
+                    {
+                        <option value="@a.Code">@a.Name</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-12" id="rowVolume">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <div class="row" style="margin-top:10px;">
+            @foreach (var a in Model.GetLCLORFCLs)
+            {
+                <div class="col-6" style="margin:auto;">
+                    <div class="form-check">
+                        <input class="form-check-input" value="@a.Code" type="radio" name="lcl/fcl" id="rdoLCLOrFCL">
+                        <label class="form-check-label" for="loloyard">
+                            @a.Name<span style="color:red">*</span>
+                        </label>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <div class="row" style="margin-top:10px">
+            <div class="col-5" style="margin:auto;">
+                @localizer["Dangerous Goods"]:
+            </div>
+            <div class="col-7">
+                <select class="form-control" id="cboDamageGood">
+                    <option selected value="">@localizer["Select"]</option>
+                    <option value="NON-DG">NON-DG</option>
+                    <option value="DG">DG</option>
+                    <option value="DG and NON-DG">DG and NON-DG</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <div class="row" style="margin-top:10px;">
+            @foreach (var a in Model.GetCYORCFSs)
+            {
+                <div class="col-6" style="margin:auto;">
+                    <div class="form-check">
+                        <input class="form-check-input" value="@a.Code" type="radio" name="cy/cfs" id="rdoCYOrCFS">
+                        <label class="form-check-label" for="loloyard">
+                            @a.Name<span style="color:red">*</span>
+                        </label>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+    </div>
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <u style="font-weight:bold">@localizer["DOCUMENT REQUIREMENT"]</u>
+    </div>
+    <div class="col-12 d-none d-md-block d-lg-block mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <u style="font-weight:bold">@localizer["SPECIAL REQUEST"]</u>
+    </div>
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <textarea id="documentRequirement" rows="4" class="form-control"></textarea>
+    </div>
+    <div class="col-12 d-md-none d-lg-none">
+        <u style="font-weight:bold">@localizer["SPECIAL REQUEST"]</u>
+    </div>
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <textarea id="specialRequest" rows="4" class="form-control"></textarea>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+    </div>
+    <div class="col-12 mt-2 mt-md-0 mt-lg-0 col-md-6 col-lg-6">
+        <button class="btn" id="btnConfirmTransaction" onclick="onConfirmTransaction('@Url.Action("OnSubmitBookingSheet","BookingSheet")','@Url.Action("ViewDetailBookingSheet","BookingSheet")')" style="float:right;background-color:#01295C;color:white"> Confirm Transaction</button>
+    </div>
+</div>
+
+<!--Import Modal OnSubmitBookingSheet-->
+@*@await Html.PartialAsync("Modal/ModalCO", Model.GetCOs)*@
+@*@await Html.PartialAsync("Modal/ModalConsignee", Model.GetConsignees)*@
+@*@await Html.PartialAsync("Modal/ModalShipper", Model.GetShippers)*@
+@*setterObjectType(@Json.Serialize(Model.GetShippers), 'GetShippers');
+        setterObjectType(@Json.Serialize(Model.GetConsignees), 'GetConsignees');*@
+@section scripts{
+    @*<script src="~/js/bookingsheet/modal/modalconsignee.js"></script>
+    <script src="~/js/bookingsheet/modal/modalshipper.js"></script>
+    <script src="~/js/bookingsheet/modal/modalco.js"></script>*@
+    <script src="~/js/bookingsheet/index.js"></script>
+    <script src="~/js/bookingsheet/onConfirmTransaction.js"></script>
+    @*    <script src="~/js/bookingsheet/autoSave.js"></script>*@
+    <script src="~/js/bookingsheet/onRecoveryData.js"></script>
+    <script>
+        
+        var selectOrigin = '@ViewBag.Origin';
+        setterObjectType(@Json.Serialize(Model.GetServiceTypes), 'Service');
+        setterObjectType(@Json.Serialize(Model.GetPlaceOfLoadings), 'Province');
+        setterObjectType(@Json.Serialize(Model.GetOverseaForwarders), 'OverseaForwarder');
+        setterObjectType(@Json.Serialize(Model.GetOverseaTruckers), 'OverseaTrucker');
+        setterObjectType(@Json.Serialize(Model.GetOrigins), 'GetOrigins');
+        setterObjectType(@Json.Serialize(Model.GetDestinations), 'GetDestinations');
+        setterObjectType(@Json.Serialize(Model.GetDistricts), 'GetDistrict');
+        setterObjectType(@Json.Serialize(Model.GetListSaleQuotations), 'GetSalesQuotation');
+        OnRendercbo(objGetOrigins, "cboOrigin");
+        OnRendercbo(objGetDestinations, "cboDestination");
+        $('input[type=radio][name="typeloloyard/unloading"]').change(function () {
+            if ($('input[name="typeloloyard/unloading"]:checked').val() == '3') {
+                $("#plLoloOther").removeAttr("style");
+                $("#plLoloOtherTxt").removeAttr("style");
+            }
+            else {
+                $("#plLoloOther").attr("style", "display:none;");
+                $("#plLoloOtherTxt").attr("style", "display:none;");
+            }
+        });
+    </script>
+}

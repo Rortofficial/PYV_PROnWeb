@@ -1,0 +1,5851 @@
+
+ALTER PROCEDURE "EW_PRD_TEST20240924"._USP_CALLTRANS_EWTRANSACTION(
+	in DTYPE NVARCHAR(250)
+	,in par1 NVARCHAR(250)
+	,in par2 NVARCHAR(250)
+	,in par3 NVARCHAR(250)
+	,in par4 NVARCHAR(250)
+	,in par5 NVARCHAR(250)
+)
+AS
+BEGIN
+USING SQLSCRIPT_STRING AS LIBRARY;
+	IF :DTYPE = 'GETSALEPERSON' THEN 
+		SELECT 
+			 A."SlpCode" AS "SlpCode"
+			,IFNULL(B."firstName"||' - '||B."lastName",A."SlpName") AS "SlpName" 
+			,IFNULL(B."U_VendorCode",'') AS "VendorCode"
+		FROM EW_PRD_TEST20240924."OSLP" AS A
+		LEFT JOIN EW_PRD_TEST20240924."OHEM" AS B ON B."salesPrson"=A."SlpCode"
+		WHERE A."Active"='Y' AND B."firstName"||' - '||B."lastName" IS NOT NULL
+		ORDER BY A."SlpCode" ASC;
+	ELSE IF :DTYPE='GETCHECKLOGIN' THEN
+		SELECT CASE 
+					WHEN :par1='admin1' and :par2='1234' THEN '1' 
+					WHEN :par1='admin2' and :par2='1234' THEN '1' 
+					WHEN :par1='Parichai' and :par2='1234' THEN '1' 
+					WHEN :par1='Pummarin' and :par2='1234' THEN '1'   
+					WHEN :par1='Surasaek' and :par2='1234' THEN '1' 
+					WHEN :par1='Thitipong' and :par2='1234' THEN '1' 
+					ELSE 0 END FROM dummy;
+	ELSE IF :DTYPE='GETUSERINFO' THEN
+		SELECT 
+			 A."Code" AS USERIDNAME
+			,IFNULL(A."U_EMPLOYEEID",'0') AS EMPID
+			,A."Code" AS ID
+			,IFNULL(B."firstName"||' - '|| B."lastName",'') AS "UserName"
+			,'' AS "Sereis"
+			,IFNULL(C."Name",'') AS "Department"
+			,D."name" AS "Position"
+			,B."CostCenter" AS "CostCenter"
+		FROM EW_PRD_TEST20240924."@TBUSER" AS A
+		LEFT JOIN EW_PRD_TEST20240924."OHEM" AS B ON B."empID"=A."U_EMPLOYEEID"
+		LEFT JOIN EW_PRD_TEST20240924."OUDP" AS C ON C."Code"=B."dept"
+		LEFT JOIN EW_PRD_TEST20240924."OHPS" AS D ON D."posID"=B."position"
+		WHERE A."Code"=:par1 AND A."Name"=:par2 AND "U_IsActive"='Yes' AND "Canceled"='N' AND B."CostCenter" IS NOT NULL; --
+	ELSE IF :DTYPE='GETROUTE' THEN
+		SELECT A."territryID" AS CODE,A."descript" AS NAME FROM EW_PRD_TEST20240924."OTER" AS A;
+	ELSE IF :DTYPE='GETIMPORTTYPE' THEN
+		SELECT A."Code" AS CODE,A."Name" AS NAME FROM EW_PRD_TEST20240924."@TBJOBTYPE" AS A;
+	ELSE IF :DTYPE='GETORIGIN' THEN
+		SELECT DISTINCT A."territryID" AS "Code"
+			  ,A."descript" AS "Name"
+		FROM EW_PRD_TEST20240924."OTER" AS A WHERE "parent"='-1' AND "territryID"!='8';
+		--WHERE A."territryID" IN (SELECT IFNULL("U_TerritoryID",0) FROM EW_PRD_TEST20240924."OWHS" WHERE "Inactive"='N');
+	ELSE IF :DTYPE='GETDESTINATION' THEN
+		SELECT DISTINCT A."territryID" AS "Code"
+			  ,A."descript" AS "Name"
+		FROM EW_PRD_TEST20240924."OTER" AS A WHERE "parent"='-1' AND "territryID"!='8';
+		--WHERE A."territryID" IN (SELECT IFNULL("U_TerritoryID",0) FROM EW_PRD_TEST20240924."OWHS" WHERE "Inactive"='N');
+	
+	ELSE IF :DTYPE='GETSHIPPER' THEN
+		SELECT A."CardCode" AS CUSTOMERCODE
+			  ,A."CardCode"||' - '||A."CardName" AS CUSTOMERNAME
+			  ,A."Balance" AS BALANCE
+			  ,IFNULL(A."LicTradNum",'')AS TAXID
+			  ,(SELECT DISTINCT
+					(SELECT IFNULL("Name",'') FROM EW_PRD_TEST20240924."OCRY" WHERE "Code"="Country") 
+				FROM EW_PRD_TEST20240924."CRD1" WHERE "CardCode"=A."CardCode" AND "AdresType"='S') AS COUNTRY
+		FROM EW_PRD_TEST20240924."OCRD" AS A WHERE A."CardCode"='N-A'
+		UNION ALL
+		SELECT A."CardCode" AS CUSTOMERCODE
+			  ,A."CardCode"||' - '||A."CardName" AS CUSTOMERNAME
+			  ,A."Balance" AS BALANCE
+			  ,IFNULL(A."LicTradNum",'')AS TAXID
+			  ,(SELECT DISTINCT
+					(SELECT IFNULL("Name",'') FROM EW_PRD_TEST20240924."OCRY" WHERE "Code"="Country") 
+				FROM EW_PRD_TEST20240924."CRD1" WHERE "CardCode"=A."CardCode" AND "AdresType"='S') AS COUNTRY
+		FROM EW_PRD_TEST20240924."OCRD" AS A WHERE A."CardType"='C' AND "U_BP_TYPE"IN('SP'); --/*'C',*/
+	ELSE IF :DTYPE='GETSERVICETYPE' THEN
+		SELECT A."Code" AS CODE
+			  ,A."Name" AS NAME 
+			  ,A."U_JOBTYPE" AS IMPORTTYPE 
+		FROM EW_PRD_TEST20240924."@TBSERVICETYPE" AS A;
+	ELSE IF :DTYPE='GETCO' THEN
+		SELECT A."CardCode" AS "CardCode"
+			  ,IFNULL(A."CardName",'') AS "CardName"
+			  ,A."Balance" AS "Balance"
+			  ,IFNULL(A."LicTradNum",'')AS "TaxID"
+		FROM EW_PRD_TEST20240924."OCRD" AS A
+		WHERE A."CardType"='C' AND A."U_BP_TYPE"='C'
+		  --AND A."CardCode"='VEUK00001' 
+		  AND A."validFor"!='N' 
+		  And A."frozenFor"!='Y';
+	ELSE IF :DTYPE='CONSIGNEE' THEN
+		SELECT A."CardCode" AS CUSTOMERCODE
+			  ,A."CardCode"||' - '||A."CardName" AS CUSTOMERNAME
+			  ,A."Balance" AS BALANCE
+			  ,IFNULL(A."LicTradNum",'')AS TAXID 
+			  ,(SELECT
+					MAX((SELECT IFNULL("Name",'') FROM EW_PRD_TEST20240924."OCRY" WHERE "Code"="Country")) 
+						FROM EW_PRD_TEST20240924."CRD1" WHERE "CardCode"=A."CardCode" AND "AdresType"='S') AS COUNTRY
+		FROM EW_PRD_TEST20240924."OCRD" AS A WHERE A."CardType"='C'  AND "U_BP_TYPE"IN(/*'C',*/'CN');
+	ELSE IF :DTYPE='THAITRUCKER' THEN
+		/*SELECT A."Code" AS CODE
+			  ,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBTHAITRUCKER" AS A;*/
+		SELECT A."CardCode" AS CODE
+			  ,A."CardName" AS NAME 
+		FROM EW_PRD_TEST20240924."OCRD" AS A WHERE "CardType"='S';
+	ELSE IF :DTYPE='OVERSEATRUCKER' THEN
+		/*SELECT A."Code" AS CODE
+			  ,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBOVERSEATRUCKER" AS A;*/
+		SELECT A."CardCode" AS CODE
+			  ,A."CardName" AS NAME
+			  ,(SELECT DISTINCT (SELECT TT0."Name" FROM EW_PRD_TEST20240924."OCRY" AS TT0 WHERE TT0."Code"=T0."Country") 
+			  		FROM EW_PRD_TEST20240924."CRD1" AS T0 
+			  	WHERE T0."Address"=A."ShipToDef" 
+			  		  AND T0."AdresType"='S' AND T0."CardCode"=A."CardCode") AS COUNTRY
+		FROM EW_PRD_TEST20240924."OCRD" AS A WHERE "CardType"='S';
+	ELSE IF :DTYPE='LOLOYARDORUNLOADING' THEN
+		SELECT A."FldValue" AS CODE
+			  ,A."Descr" AS NAME 
+		FROM EW_PRD_TEST20240924."UFD1" AS A 
+		WHERE A."FieldID"='18' AND A."TableID"='@BOOKINGSHEET';
+	ELSE IF :DTYPE='THAIFORWARDER' THEN
+		/*SELECT A."Code" AS CODE
+			  ,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBTHAIFORWARDER" AS A;*/
+		SELECT A."CardCode" AS CODE
+			  ,A."CardName" AS NAME 
+			  ,A."ShipToDef"
+		FROM EW_PRD_TEST20240924."OCRD" AS A WHERE "CardType"='S'
+						AND (SELECT STRING_AGG("Country") FROM EW_PRD_TEST20240924."CRD1"  WHERE "Address"=IFNULL(A."ShipToDef",'') AND "AdresType"='S' AND "CardCode"=A."CardCode")='TH';
+	ELSE IF :DTYPE='OVERSEAFORWARDER' THEN
+		/*SELECT A."Code" AS CODE
+			  ,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBOVERSEAFORWARDER" AS A;*/
+		SELECT A."CardCode" AS CODE
+			  ,A."CardName" AS NAME
+			  ,(SELECT DISTINCT (SELECT Distinct TT0."Name" FROM EW_PRD_TEST20240924."OCRY" AS TT0 WHERE TT0."Code"=T0."Country")
+			  		FROM EW_PRD_TEST20240924."CRD1" AS T0 
+			  	WHERE T0."Address"=A."ShipToDef" 
+			  		  AND T0."AdresType"='S' AND T0."CardCode"=A."CardCode") AS COUNTRY
+		FROM EW_PRD_TEST20240924."OCRD" AS A WHERE "CardType"='S';
+	ELSE IF :DTYPE='THAIBORDER' THEN
+		SELECT A."Code" AS CODE
+			  ,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBTHAIBORDER" AS A;
+	ELSE IF :DTYPE='LCLORFCL' THEN
+		SELECT A."FldValue" AS CODE
+			  ,A."Descr"  AS NAME
+		FROM EW_PRD_TEST20240924."UFD1" AS A WHERE A."FieldID"='21' AND A."TableID"='@BOOKINGSHEET';
+	ELSE IF :DTYPE='CYORCFS' THEN
+		SELECT A."FldValue" AS CODE
+			  ,A."Descr"  AS NAME
+		FROM EW_PRD_TEST20240924."UFD1" AS A WHERE A."FieldID"='22' AND A."TableID"='@BOOKINGSHEET';
+	ELSE IF :DTYPE='CONTAINERTYPE' THEN
+		SELECT A."Code" AS CODE
+			  ,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBVOLUME" AS A ORDER BY A."Code" ASC;
+	ELSE IF :DTYPE='PLACEOFLOADING' THEN
+		SELECT A."Code" AS CODE
+			  ,A."Name"||', '||A."U_COUNTRY" AS NAME
+			  ,A."U_COUNTRY" AS COUNTRY
+		FROM EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS A;
+	ELSE IF :DTYPE='PLACEOFDELIVERY' THEN
+		SELECT A."Code" AS CODE
+			  ,A."Name"||', '||A."U_COUNTRY" AS NAME
+		FROM EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS A;
+	ELSE IF :DTYPE='GETDISTRICTS' THEN
+		SELECT A."Code" AS "Code"
+			  ,A."Name" AS "Name"
+			  ,IFNULL(A."U_PROVINCE",'') AS "Province"
+		FROM EW_PRD_TEST20240924."@TBDISTRICT" AS A;
+	ELSE IF :DTYPE='VOLUME' THEN
+		SELECT A."Code" AS CODE
+			  ,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBVOLUME" AS A ORDER BY A."Code" ASC;
+		/*UNION ALL 
+		SELECT 'NONE' AS CODE, 'NONE' AS NAME FROM DUMMY;*/
+	ELSE IF :DTYPE='GETBOOKINGDOCNUMMAX' THEN
+		--totext(Year({Subscriptions.BILL_BEGIN}),0,'','')
+		SELECT IFNULL(MAX(A."DocEntry")+1,1) AS MAXDOCNUM
+			  ,TO_VARCHAR(CURRENT_DATE,'YY')||MONTH(CURRENT_DATE)||CASE WHEN LENGTH(IFNULL(MAX(A."DocEntry"),1))>=4 
+			  					THEN 
+			  						CAST(MAX(A."DocEntry"+1) AS NVARCHAR(100))
+			  					ELSE 
+			  						CASE WHEN LENGTH(IFNULL(MAX(A."DocEntry"),1))=1
+			  						THEN
+			  							'000'||CAST(IFNULL(MAX(A."DocEntry"+1),1) AS NVARCHAR(100))
+			  						WHEN LENGTH(MAX(A."DocEntry"))=2
+			  						THEN
+			  							'00'||CAST(MAX(A."DocEntry"+1) AS NVARCHAR(100))
+			  						WHEN LENGTH(MAX(A."DocEntry"))=3
+			  						THEN
+			  							'0'||CAST(MAX(A."DocEntry"+1) AS NVARCHAR(100))
+			  						END
+			  					END AS JOBNO
+		FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS A;
+	ELSE IF :DTYPE='CONVERTBOOKINGDOCNUMTOJOBNO' THEN
+		--totext(Year({Subscriptions.BILL_BEGIN}),0,'','')
+		SELECT TO_VARCHAR((SELECT "U_LOADINGDATE" FROM EW_PRD_TEST20240924."@BOOKINGSHEET" WHERE "DocEntry"=:par1),'YY')||CASE WHEN LENGTH(MONTH((SELECT "U_LOADINGDATE" FROM EW_PRD_TEST20240924."@BOOKINGSHEET" WHERE "DocEntry"=:par1)))=1 THEN '0'||MONTH((SELECT "U_LOADINGDATE" FROM EW_PRD_TEST20240924."@BOOKINGSHEET" WHERE "DocEntry"=:par1)) ELSE ''||MONTH((SELECT "U_LOADINGDATE" FROM EW_PRD_TEST20240924."@BOOKINGSHEET" WHERE "DocEntry"=:par1)) END||CASE WHEN LENGTH(IFNULL(MAX(:par1),1))>=4 
+			  					THEN 
+			  						CAST(MAX(:par1) AS NVARCHAR(100))
+			  					ELSE 
+			  						CASE WHEN LENGTH(IFNULL(MAX(:par1),1))=1
+			  						THEN
+			  							'000'||CAST(IFNULL(MAX(:par1),1) AS NVARCHAR(100))
+			  						WHEN LENGTH(MAX(:par1))=2
+			  						THEN
+			  							'00'||CAST(MAX(:par1) AS NVARCHAR(100))
+			  						WHEN LENGTH(MAX(:par1))=3
+			  						THEN
+			  							'0'||CAST(MAX(:par1) AS NVARCHAR(100))
+			  						END
+			  					END AS JOBNO
+		FROM dummy;
+	ELSE IF :DTYPE='CONVERTBOOKINGDOCNUMTOJOBNO_1' THEN
+		--totext(Year({Subscriptions.BILL_BEGIN}),0,'','')
+		SELECT 
+			/*CASE WHEN (SELECT "EndStr" FROM EW_PRD_TEST20240924."NNM1" WHERE "Series"=T0."Series")='TMP' THEN  
+				RIGHT(TO_VARCHAR(T0."DocNum"),LENGTH(TO_VARCHAR(T0."DocNum"))-1)
+			ELSE TO_VARCHAR(T0."DocNum") END */
+			TO_VARCHAR(T0."DocNum") AS "JOBNO" 
+		FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS T0 WHERE "DocEntry"=:par1;
+	ELSE IF :DTYPE='ListBookingSheet' THEN
+		IF :par1='BookingSheet' THEN
+			IF:par4='ALL' THEN
+				SELECT
+					  A."DocEntry" AS BOOKINGID
+					 ,A."U_EWSeries"||A."U_JOBNO" AS JOBNO
+					 ,TO_VARCHAR(A."U_BOOKINGDATE",'YYYYMMDD') AS BOOKINGDATE
+					 ,CASE WHEN A."CreateTime"=A."UpdateTime" THEN 
+				     	'' 
+				     	ELSE TO_VARCHAR(A."UpdateDate",'YYYYMMDD') END AS UPDATEDATE
+					 ,LEFT(CASE
+							WHEN LENGTH(A."CreateTime") = 3  THEN CAST('0' || A."CreateTime"AS TIME) 
+							WHEN LENGTH(A."CreateTime") = 2 THEN CAST('00' || A."CreateTime"AS TIME)
+							WHEN LENGTH(A."CreateTime") = 1 THEN CAST('000' || A."CreateTime"AS TIME) 
+							ELSE CAST(A."CreateTime"AS TIME) END
+				     ,5) AS "CREATETIME"
+				     ,CASE WHEN A."CreateTime"=A."UpdateTime" THEN 
+				     	'' 
+				     	ELSE 
+				     	LEFT(CASE
+							WHEN LENGTH(A."UpdateTime") = 3  THEN CAST('0' || A."UpdateTime" AS TIME) 
+							WHEN LENGTH(A."UpdateTime") = 2 THEN CAST('00' || A."UpdateTime" AS TIME)
+							WHEN LENGTH(A."UpdateTime") = 1 THEN CAST('000' || A."UpdateTime" AS TIME) 
+							ELSE CAST(A."UpdateTime" AS TIME) END ,5) 
+						END
+				      AS "UPDATETIME"
+					 ,TO_VARCHAR(A."U_LOADINGDATE",'YYYYMMDD') AS LOADINGDATE
+					 ,TO_VARCHAR(A."U_ETAREQUIREMENT",'YYYYMMDD') AS "ETARequirementDate"
+					 ,B."Name" AS IMPORTYPE
+					 ,C."CardName" AS CO
+					 ,DD."descript"||'-'|| D."descript" AS ROUTE
+					 ,E."Code" AS CREATEBY
+					 ,CASE WHEN A."Status"='C' THEN 
+					 	'Cancel'
+					  WHEN A."Status"='O' THEN
+					  	CASE WHEN (SELECT COUNT(*)
+					  				FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" 
+					  				WHERE "U_CONFIRMBOOKINGID"=(SELECT T0."DocEntry" 
+					  											 FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0 
+					 											 	WHERE T0."U_BOOKINGID"=A."DocEntry" AND T0."Status"='O'))=1 THEN
+					  	'JOB SHEET TRUCKING'
+					  	WHEN (SELECT COUNT(T0."DocEntry") 
+					  			FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0 
+					 				WHERE T0."U_BOOKINGID"=A."DocEntry")=1 THEN
+					 		'CONFIRM BOOKING SHEET'
+					 	ELSE
+					 		'BOOKING SHEET'
+					  	END
+					  END AS DOCSTATUS
+					 ,CASE WHEN A."U_UserCreate" IN (
+										SELECT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_CANCEL" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par5
+									) OR A."U_UserCreate"=:par5 THEN
+					  		CASE WHEN (SELECT COUNT(T0."DocEntry") 
+					  			FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0 
+					 				WHERE T0."U_BOOKINGID"=A."DocEntry" AND T0."Status"='O')=1 THEN
+					  				'C'
+					  		ELSE A."Status" END
+					  ELSE 'C' END AS DOCSTATUSCANCEL
+					 ,CASE WHEN A."Status"='C' THEN 
+					 	'C'
+					  WHEN A."Status"='O' THEN
+					  	CASE WHEN (SELECT COUNT(*)
+					  				FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" 
+					  				WHERE "U_CONFIRMBOOKINGID"=(SELECT T0."DocEntry" 
+					  											 FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0 
+					 											 	WHERE T0."U_BOOKINGID"=A."DocEntry" AND T0."Status"='O') AND "Status"='O')=1 THEN
+					  	'C'
+					  	WHEN (SELECT COUNT(T0."DocEntry") 
+					  			FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0 
+					 				WHERE T0."U_BOOKINGID"=A."DocEntry" AND T0."Status"='O')=1 THEN
+					 		CASE WHEN A."U_UserCreate" IN (
+										SELECT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_UPDATE" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par5
+									) OR A."U_UserCreate"=:par5 THEN
+					  				'I'
+					  		ELSE 'C' END					 		
+					 	ELSE
+					 		CASE WHEN A."U_UserCreate" IN (
+										SELECT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_UPDATE" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par5
+									) OR A."U_UserCreate"=:par5 THEN
+					  				'O'
+					  		ELSE 'C' END					 		
+					  	END
+					  END AS "UPDATESTATUS"
+					 ,A."DocEntry" AS DOCENTRY
+					 ,(SELECT STRING_AGG(T1."CardName",' - ') 
+					 	FROM EW_PRD_TEST20240924."@TBSHIPPER" AS T0 
+					 	LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T1 ON T1."CardCode"=T0."U_SHIPPER"
+					 	WHERE T0."DocEntry"=A."DocEntry") AS "Shipper"
+					 ,(SELECT STRING_AGG(T1."CardName",' - ') 
+					 	FROM EW_PRD_TEST20240924."@TBCONSIGNEE" AS T0 
+					 	LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T1 ON T1."CardCode"=T0."U_CONSIGNEE"
+					 	WHERE T0."DocEntry"=A."DocEntry") AS "Consignee"
+					  ,(SELECT IFNULL(STRING_AGG("QTY"||' X '||"U_VOLUMECODE",','),'') FROM (SELECT Distinct 
+					 	 T0."U_VOLUMECODE"
+					 	,SUM("U_QTY") AS "QTY"
+					 	FROM EW_PRD_TEST20240924."@VOLUME" AS T0 
+					 	WHERE T0."DocEntry"=A."DocEntry" GROUP BY T0."U_VOLUMECODE")) AS "Volumn"
+					 ,(SELECT IFNULL(STRING_AGG(CAST("QTY" AS INT)||' X '||"U_TRUCKTYPE",','),'')  FROM (SELECT DISTINCT T0."U_TRUCKTYPE",SUM("U_QTY") AS "QTY"
+					 	FROM EW_PRD_TEST20240924."@TBTRUCKTYPEROW" AS T0 
+					 	WHERE T0."DocEntry"=A."DocEntry" GROUP BY T0."U_TRUCKTYPE")) AS "ContainerType"
+					 ,A."U_UpdateBy" AS "UpdateBy"
+					 ,(SELECT IFNULL(STRING_AGG(T0."U_INVOICE",','),'') FROM EW_PRD_TEST20240924."@COMMODITY" AS T0 WHERE T0."DocEntry"=A."DocEntry") AS "COMMODITYS"
+					 ,F."SlpName" AS "SaleEmployee"
+				FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS A
+				LEFT JOIN EW_PRD_TEST20240924."@TBJOBTYPE" AS B ON B."Code"=A."U_IMPORTTYPE"
+				LEFT JOIN (
+					SELECT 
+						 STRING_AGG(T2."CardName") AS "CardName"
+						,T0."DocEntry" AS "DocEntry"
+					FROM EW_PRD_TEST20240924."@TBSALESQUOTATION" AS T0
+					LEFT JOIN EW_PRD_TEST20240924."OQUT" AS T1 ON T1."DocEntry"=T0."U_DOCENTRY"
+					LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T2 ON T2."CardCode"=T1."CardCode"
+					GROUP BY T0."DocEntry"
+				)AS C ON C."DocEntry"=A."DocEntry"
+				LEFT JOIN EW_PRD_TEST20240924."OTER" AS D ON D."territryID"=A."U_DESTINATION"
+				LEFT JOIN EW_PRD_TEST20240924."OTER" AS DD ON DD."territryID"=A."U_ORIGIN"
+				LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS E ON E."Code"=A."U_UserCreate"
+				LEFT JOIN EW_PRD_TEST20240924."OSLP" AS F ON F."SlpCode"=A."U_SALEEMPLOYEE"
+				WHERE A."U_LOADINGDATE" BETWEEN :par2 AND :par3 
+				--A."U_BOOKINGDATE" BETWEEN :par2 AND :par3 
+				AND (A."U_UserCreate"=:par5
+				OR A."U_UserCreate" IN (
+							SELECT "U_User" 
+							FROM EW_PRD_TEST20240924."@TB_P_READ" AS T0
+							LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+							WHERE T1."Code"=:par5
+						))
+				ORDER BY A."DocEntry" DESC;--:par1='-1'
+			ELSE IF :par4='DEFAULT' THEN
+				SELECT TOP 1000
+					  A."DocEntry" AS BOOKINGID
+					 ,A."U_EWSeries"||A."U_JOBNO" AS JOBNO
+					 ,TO_VARCHAR(A."U_BOOKINGDATE",'YYYYMMDD') AS BOOKINGDATE
+					 ,CASE WHEN A."CreateTime"=A."UpdateTime" THEN 
+				     	'' 
+				     	ELSE TO_VARCHAR(A."UpdateDate",'YYYYMMDD') END AS UPDATEDATE
+					 ,LEFT(CASE
+							WHEN LENGTH(A."CreateTime") = 3  THEN CAST('0' || A."CreateTime"AS TIME) 
+							WHEN LENGTH(A."CreateTime") = 2 THEN CAST('00' || A."CreateTime"AS TIME)
+							WHEN LENGTH(A."CreateTime") = 1 THEN CAST('000' || A."CreateTime"AS TIME) 
+							ELSE CAST(A."CreateTime"AS TIME) END
+				     ,5) AS "CREATETIME"
+				     ,CASE WHEN A."CreateTime"=A."UpdateTime" THEN 
+				     	'' 
+				     	ELSE 
+				     	LEFT(CASE
+							WHEN LENGTH(A."UpdateTime") = 3  THEN CAST('0' || A."UpdateTime" AS TIME) 
+							WHEN LENGTH(A."UpdateTime") = 2 THEN CAST('00' || A."UpdateTime" AS TIME)
+							WHEN LENGTH(A."UpdateTime") = 1 THEN CAST('000' || A."UpdateTime" AS TIME) 
+							ELSE CAST(A."UpdateTime" AS TIME) END ,5) 
+						END
+				      AS "UPDATETIME"
+					 ,TO_VARCHAR(A."U_LOADINGDATE",'YYYYMMDD') AS LOADINGDATE
+					 ,TO_VARCHAR(A."U_ETAREQUIREMENT",'YYYYMMDD') AS "ETARequirementDate"
+					 ,B."Name" AS IMPORTYPE
+					 ,C."CardName" AS CO
+					 ,DD."descript"||'-'|| D."descript" AS ROUTE
+					 ,E."Code" AS CREATEBY
+					 ,CASE WHEN A."Status"='C' THEN 
+					 	'Cancel'
+					  WHEN A."Status"='O' THEN
+					  	CASE WHEN (SELECT COUNT(*)
+					  				FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" 
+					  				WHERE "U_CONFIRMBOOKINGID"=(SELECT T0."DocEntry" 
+					  											 FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0 
+					 											 	WHERE T0."U_BOOKINGID"=A."DocEntry" AND T0."Status"='O'))=1 THEN
+					  	'JOB SHEET TRUCKING'
+					  	WHEN (SELECT COUNT(T0."DocEntry") 
+					  			FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0 
+					 				WHERE T0."U_BOOKINGID"=A."DocEntry")=1 THEN
+					 		'CONFIRM BOOKING SHEET'
+					 	ELSE
+					 		'BOOKING SHEET'
+					  	END
+					  END AS DOCSTATUS
+					 ,CASE WHEN A."U_UserCreate" IN (
+										SELECT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_CANCEL" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par5
+									) OR A."U_UserCreate"=:par5 THEN
+					  		CASE WHEN (SELECT COUNT(T0."DocEntry") 
+					  			FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0 
+					 				WHERE T0."U_BOOKINGID"=A."DocEntry" AND T0."Status"='O')=1 THEN
+					  				'C'
+					  		ELSE A."Status" END
+					  ELSE 'C' END AS DOCSTATUSCANCEL
+					 ,CASE WHEN A."Status"='C' THEN 
+					 	'C'
+					  WHEN A."Status"='O' THEN
+					  	CASE WHEN (SELECT COUNT(*)
+					  				FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" 
+					  				WHERE "U_CONFIRMBOOKINGID"=(SELECT T0."DocEntry" 
+					  											 FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0 
+					 											 	WHERE T0."U_BOOKINGID"=A."DocEntry" AND T0."Status"='O') AND "Status"='O')=1 THEN
+					  	'C'
+					  	WHEN (SELECT COUNT(T0."DocEntry") 
+					  			FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0 
+					 				WHERE T0."U_BOOKINGID"=A."DocEntry" AND T0."Status"='O')=1 THEN
+					 		CASE WHEN A."U_UserCreate" IN (
+										SELECT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_UPDATE" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par5
+									) OR A."U_UserCreate"=:par5 THEN
+					  				'I'
+					  		ELSE 'C' END					 		
+					 	ELSE
+					 		CASE WHEN A."U_UserCreate" IN (
+										SELECT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_UPDATE" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par5
+									) OR A."U_UserCreate"=:par5 THEN
+					  				'O'
+					  		ELSE 'C' END					 		
+					  	END
+					  END AS "UPDATESTATUS"
+					 ,A."DocEntry" AS DOCENTRY
+					 ,(SELECT STRING_AGG(T1."CardName",' - ') 
+					 	FROM EW_PRD_TEST20240924."@TBSHIPPER" AS T0 
+					 	LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T1 ON T1."CardCode"=T0."U_SHIPPER"
+					 	WHERE T0."DocEntry"=A."DocEntry") AS "Shipper"
+					 ,(SELECT STRING_AGG(T1."CardName",' - ') 
+					 	FROM EW_PRD_TEST20240924."@TBCONSIGNEE" AS T0 
+					 	LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T1 ON T1."CardCode"=T0."U_CONSIGNEE"
+					 	WHERE T0."DocEntry"=A."DocEntry") AS "Consignee"
+					  ,(SELECT IFNULL(STRING_AGG("QTY"||' X '||"U_VOLUMECODE",','),'') FROM (SELECT Distinct 
+					 	 T0."U_VOLUMECODE"
+					 	,SUM("U_QTY") AS "QTY"
+					 	FROM EW_PRD_TEST20240924."@VOLUME" AS T0 
+					 	WHERE T0."DocEntry"=A."DocEntry" GROUP BY T0."U_VOLUMECODE")) AS "Volumn"
+					 ,(SELECT IFNULL(STRING_AGG(CAST("QTY" AS INT)||' X '||"U_TRUCKTYPE",','),'')  FROM (SELECT DISTINCT T0."U_TRUCKTYPE",SUM("U_QTY") AS "QTY"
+					 	FROM EW_PRD_TEST20240924."@TBTRUCKTYPEROW" AS T0 
+					 	WHERE T0."DocEntry"=A."DocEntry" GROUP BY T0."U_TRUCKTYPE")) AS "ContainerType"
+					 ,A."U_UpdateBy" AS "UpdateBy"
+					 ,(SELECT IFNULL(STRING_AGG(T0."U_INVOICE",','),'') FROM EW_PRD_TEST20240924."@COMMODITY" AS T0 WHERE T0."DocEntry"=A."DocEntry") AS "COMMODITYS"
+					 ,F."SlpName" AS "SaleEmployee"
+				FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS A
+				LEFT JOIN EW_PRD_TEST20240924."@TBJOBTYPE" AS B ON B."Code"=A."U_IMPORTTYPE"
+				LEFT JOIN (
+					SELECT 
+						 STRING_AGG(T2."CardName") AS "CardName"
+						,T0."DocEntry" AS "DocEntry"
+					FROM EW_PRD_TEST20240924."@TBSALESQUOTATION" AS T0
+					LEFT JOIN EW_PRD_TEST20240924."OQUT" AS T1 ON T1."DocEntry"=T0."U_DOCENTRY"
+					LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T2 ON T2."CardCode"=T1."CardCode"
+					GROUP BY T0."DocEntry"
+				)AS C ON C."DocEntry"=A."DocEntry"
+				LEFT JOIN EW_PRD_TEST20240924."OTER" AS D ON D."territryID"=A."U_DESTINATION"
+				LEFT JOIN EW_PRD_TEST20240924."OTER" AS DD ON DD."territryID"=A."U_ORIGIN"
+				LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS E ON E."Code"=A."U_UserCreate"
+				LEFT JOIN EW_PRD_TEST20240924."OSLP" AS F ON F."SlpCode"=A."U_SALEEMPLOYEE"
+				WHERE A."U_BOOKINGDATE" BETWEEN :par2 AND :par3 
+				--A."U_LOADINGDATE" BETWEEN :par2 AND :par3 
+				AND (A."U_UserCreate"=:par5
+				OR A."U_UserCreate" IN (
+							SELECT "U_User" 
+							FROM EW_PRD_TEST20240924."@TB_P_READ" AS T0
+							LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+							WHERE T1."Code"=:par5
+						))
+				ORDER BY A."DocEntry" DESC;--:par1='-1'
+			END IF;
+			END IF;
+		ELSE IF :par1='ConfirmBookingSheet' THEN
+			SELECT 
+				  A."DocEntry" AS BOOKINGID
+				 ,A."U_EWSeries"||A."U_JOBNO" AS JOBNO
+				 ,TO_VARCHAR(A."U_LOADINGDATE",'DD/MM/YYYY') AS LOADINGDATE
+				 ,TO_VARCHAR(A."U_BOOKINGDATE",'DD/MM/YYYY') AS BOOKINGDATE
+				 ,TO_VARCHAR(A."U_CROSSBORDERDATE",'DD/MM/YYYY') AS "CrossBorderDate"
+				 ,TO_VARCHAR(A."U_ETAREQUIREMENT",'DD/MM/YYYY') AS "ETARequirementDate"
+				 ,B."Name" AS IMPORTYPE
+				 ,C."CardName" AS CO
+				 ,C."CardCode" AS COCODE
+				 ,DD."descript"||'-'|| D."descript" AS ROUTE
+				 ,(SELECT T0."WhsCode" FROM EW_PRD_TEST20240924."OWHS" AS T0 WHERE  T0."U_TerritoryID"=D."territryID") AS "DESTINATION"
+				 ,(SELECT T0."WhsCode" FROM EW_PRD_TEST20240924."OWHS" AS T0 WHERE  T0."U_TerritoryID"=DD."territryID") AS "ORIGIN"
+				 ,F."SlpName" AS SALENAME
+				 ,A."U_SALEEMPLOYEE" AS "SlpCode"
+				 ,E."Code" AS CREATEBY
+				 ,(SELECT STRING_AGG(T1."CardName",' - ') 
+				 	FROM EW_PRD_TEST20240924."@TBSHIPPER" AS T0 
+				 	LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T1 ON T1."CardCode"=T0."U_SHIPPER"
+				 	WHERE T0."DocEntry"=A."DocEntry") AS "Shipper"
+				 ,(SELECT STRING_AGG(REPLACE_REGEXPR('''' IN T1."CardName" WITH ',' OCCURRENCE ALL),' - ')
+				 	FROM EW_PRD_TEST20240924."@TBCONSIGNEE" AS T0 
+				 	LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T1 ON T1."CardCode"=T0."U_CONSIGNEE"
+				 	WHERE T0."DocEntry"=A."DocEntry") AS "Consignee"
+				 ,A."U_SPECIALREQUEST" AS "SpecialRequest"
+				 ,(SELECT STRING_AGG(T0."U_INVOICE",',') FROM EW_PRD_TEST20240924."@COMMODITY" AS T0 WHERE T0."DocEntry"=A."DocEntry") AS "Commodity"
+			FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS A
+			LEFT JOIN EW_PRD_TEST20240924."@TBJOBTYPE" AS B ON B."Code"=A."U_IMPORTTYPE"
+			LEFT JOIN (
+					SELECT 
+						 STRING_AGG(T2."CardName") AS "CardName"
+						,STRING_AGG(T2."CardCode") AS "CardCode"
+						,T0."DocEntry" AS "DocEntry"
+					FROM EW_PRD_TEST20240924."@TBSALESQUOTATION" AS T0
+					LEFT JOIN EW_PRD_TEST20240924."OQUT" AS T1 ON T1."DocEntry"=T0."U_DOCENTRY"
+					LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T2 ON T2."CardCode"=T1."CardCode"
+					GROUP BY T0."DocEntry"
+				)AS C ON C."DocEntry"=A."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS D ON D."territryID"=A."U_DESTINATION"
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS DD ON DD."territryID"=A."U_ORIGIN"
+			LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS E ON E."Code"=A."U_UserCreate"
+			LEFT JOIN EW_PRD_TEST20240924."OSLP" AS F ON F."SlpCode"=A."U_SALEEMPLOYEE"
+			WHERE   A."U_UserCreate"=CASE WHEN '-1'='-1' THEN A."U_UserCreate" ELSE A."U_UserCreate" END 
+					AND A."DocEntry" NOT IN (SELECT IFNULL(AA."U_BOOKINGID",0) FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS AA WHERE AA."Status"='O')
+					AND A."Status"!='C' 
+					AND (SELECT COUNT(*) 
+								FROM EW_PRD_TEST20240924."@TBSALESQUOTATION" T0 
+								WHERE T0."DocEntry"=A."DocEntry")!=0
+			ORDER BY A."DocEntry" DESC;				 
+		ELSE IF :par1='ConfirmBookingSheetJobSheet' THEN
+			SELECT 
+				  AA."DocEntry" AS BOOKINGID
+				 ,A."U_EWSeries"||A."U_JOBNO" AS JOBNO
+				 ,TO_VARCHAR(A."U_BOOKINGDATE",'DD/MM/YYYY') AS BOOKINGDATE
+				 ,B."Name" AS IMPORTYPE
+				 ,C."CardName" AS CO
+				 ,D."descript" AS ROUTE
+				 ,E."Code" AS CREATEBY
+			FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS A
+			LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS AA ON A."DocEntry"=AA."U_BOOKINGID"
+			LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS BB ON BB."U_BOOKINGID"=A."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."@TBJOBTYPE" AS B ON B."Code"=A."U_IMPORTTYPE"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=A."U_CO"
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS D ON D."territryID"=A."U_DESTINATION"
+			LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS E ON E."Code"=A."U_UserCreate"
+			LEFT JOIN EW_PRD_TEST20240924."OPMG" AS F ON F."AbsEntry"=AA."U_PROJECTMANAGEMENTID"
+			WHERE   A."U_UserCreate"=CASE WHEN '-1'='-1' THEN A."U_UserCreate" ELSE A."U_UserCreate" END 
+					AND A."DocEntry" IN (SELECT IFNULL(AA."U_BOOKINGID",0) FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS AA WHERE AA."Status"='O')
+					AND A."Status"!='C'
+					AND BB."Status"!='C'
+					AND F."STATUS"!='N'
+					--AND A."DocEntry"='170'
+					/*AND (SELECT COUNT(T0."U_DOCENTRY") FROM EW_PRD_TEST20240924."@TBSALESQUOTATION" AS T0 
+								LEFT JOIN EW_PRD_TEST20240924."@JOBSHEETRUCKING" AS T1 ON T1."U_CONFIRMBOOKINGID"=AA."DocEntry"
+								WHERE T0."DocEntry"=A."DocEntry" AND T1."DocEntry" IS NULL)
+							!=0*/
+					AND (SELECT COUNT(T0."U_DOCENTRY")
+							FROM EW_PRD_TEST20240924."@TBSALESQUOTATION" AS T0 
+							WHERE T0."DocEntry"=A."DocEntry" AND T0."U_DOCENTRY" NOT IN 
+							(SELECT T1."U_SALEQUOTATIONDOCNUM" 
+								FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" AS T1 
+								WHERE T1."U_CONFIRMBOOKINGID"=AA."DocEntry" AND T1."Status"!='C'))
+							!=0
+					ORDER BY AA."DocEntry" DESC;
+		END IF;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GetDetailBookingSheet' THEN
+		SELECT 
+			  A."DocEntry" AS BOOKINGID
+			 ,F."SlpName" AS SALEEMPLOYEE
+			 ,F."SlpCode" AS "SlpCode"
+			 ,D."descript" AS ROUTE
+			 ,A."U_EWSeries"||A."U_JOBNO" AS JOBNO
+			 ,DD."descript" AS ORIGIN
+			 ,DDD."descript" AS DESTINATION
+			 ,CC."CardName" AS SHIPPER
+			 ,CCC."CardName" AS CONSIGNEE
+			 ,C."CardName" AS CO
+			 ,B."Name" AS IMPORTYPE
+			 ,A."U_LOLOYARDRemark" AS LOLOYARDREMARK
+			 ,CASE WHEN A."U_LOLOYARDORUNLOADING"=1 THEN 'LOLOYARD' ELSE 'UNLOADING' END AS LOLOUNLOADING
+			 ,CASE WHEN A."U_LCLORFCL"=1 THEN 'LCL' ELSE 'FCL' END AS LCLORFCL
+		FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS A
+		--LEFT JOIN EW_PRD_TEST20240924."UFD1" AS B ON B."FldValue"=A."U_IMPORTTYPE" AND B."FieldID"='1' AND B."TableID"='@BOOKINGSHEET'
+		LEFT JOIN EW_PRD_TEST20240924."@TBJOBTYPE" AS B ON B."Code"=A."U_IMPORTTYPE"
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=A."U_CO"
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS CC ON CC."CardCode"=A."U_SHIPPER"
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS CCC ON CCC."CardCode"=A."U_CONSIGNEE"
+		LEFT JOIN EW_PRD_TEST20240924."OTER" AS D ON D."territryID"=A."U_DESTINATION"
+		LEFT JOIN EW_PRD_TEST20240924."OTER" AS DD ON DD."territryID"=A."U_ORIGIN"
+		LEFT JOIN EW_PRD_TEST20240924."OTER" AS DDD ON DDD."territryID"=A."U_DESTINATION"
+		LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS E ON E."Code"=A."U_UserCreate"
+		LEFT JOIN EW_PRD_TEST20240924."OSLP" AS F ON F."SlpCode"=A."U_SALEEMPLOYEE"
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GetPlaceOfLoadingBookingSheet' THEN
+		DECLARE OUTPUT_SPLITSTRING NVARCHAR(255);
+		--LIBRARY:SPLIT_TO_TABLE(A."U_District",',')
+		SELECT 
+			 STRING_AGG(A."U_District",',') INTO OUTPUT_SPLITSTRING
+		FROM EW_PRD_TEST20240924."@PLACEOFLOADING" AS A
+		WHERE A."DocEntry"=:par1 AND A."U_District" IS NOT NULL;
+		SELECT 
+			 B."Name" AS PLACEOFLOADING
+			,IFNULL((SELECT STRING_AGG("Name",',') 
+				FROM EW_PRD_TEST20240924."@TBDISTRICT" 
+				WHERE "Code" IN 
+					(SELECT * FROM LIBRARY:SPLIT_TO_TABLE(OUTPUT_SPLITSTRING,','))),'') AS "District"
+		FROM EW_PRD_TEST20240924."@PLACEOFLOADING" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS B ON B."Code"=A."U_PLACELOADING"
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GetPlaceOfLoadingBookingSheetSeaAndAir' THEN
+		SELECT 
+			 B."Name" AS PLACEOFLOADING
+		FROM EW_PRD_TEST20240924."@TB_POL_SEA_AIR" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS B ON B."Code"=A."U_PLACEOFLOADING"
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GetPlaceOfDeliveryBookingSheet' THEN
+		DECLARE OUTPUT_SPLITSTRING NVARCHAR(255);
+		SELECT 
+			 STRING_AGG(A."U_District",',') INTO OUTPUT_SPLITSTRING
+		FROM EW_PRD_TEST20240924."@PLACEOFDELIVERY" AS A
+		WHERE A."DocEntry"=:par1 AND A."U_District" IS NOT NULL;
+		SELECT 
+			 B."Name" AS PLACEOFDELIVERY
+			,IFNULL((SELECT STRING_AGG("Name",',') 
+				FROM EW_PRD_TEST20240924."@TBDISTRICT" 
+				WHERE "Code" IN 
+					(SELECT * FROM LIBRARY:SPLIT_TO_TABLE(OUTPUT_SPLITSTRING,','))),'') AS "District"
+		FROM EW_PRD_TEST20240924."@PLACEOFDELIVERY" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS B ON B."Code"=A."U_PLACEDELIVERY"
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GetPlaceOfDeliveryBookingSheetSeaAndAir' THEN
+		SELECT 
+			 B."Name" AS PLACEOFDELIVERY
+		FROM EW_PRD_TEST20240924."@TB_POD_SEA_AIR" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS B ON B."Code"=A."U_PLACEOFDELIVERY"
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GetVolumeBookingSheet' THEN
+		SELECT 
+			 A."U_QTY" AS QTY--A."U_QTY"
+			,B."Code" AS VOLUMECODE
+			,B."Name" AS VOLUME
+			,B."U_CONTAINERNUMBER" AS CONTAINERNUMBER
+			,B."DocEntry" AS DOCENTRY
+			,A."U_GROSSWEIGHT" AS GROSSWEIGHT
+			,'C' AS TYPEOFCONTAINER
+			,A."U_InvoiceList" AS INVOICELIST
+			,A."LineId" AS "LineId"
+		FROM EW_PRD_TEST20240924."@VOLUME" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TBVOLUME" AS B ON B."Code"=A."U_VOLUMECODE"
+		WHERE A."DocEntry"=:par1--;
+		UNION ALL
+		SELECT 
+			 CAST(A."U_QTY" AS INT) AS QTY
+			,A."U_TRUCKTYPE" AS VOLUMECODE
+			,A."U_TRUCKTYPE" AS VOLUME
+			,1 AS CONTAINERNUMBER
+			,A."DocEntry" AS DOCENTRY
+			,A."U_GROSSWEIGHT" AS GROSSWEIGHT
+			,'T' AS TYPEOFCONTAINER
+			,A."U_InvoiceList" AS INVOICELIST
+			,A."LineId" AS "LineId"
+		FROM EW_PRD_TEST20240924."@TBTRUCKTYPEROW" AS A
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GetVolumeBookingSheetConfirmBookingEdit' THEN
+		SELECT * FROM (
+			SELECT 
+					 A."U_QTY" AS QTY
+					,B."Code" AS VOLUMECODE
+					,B."Name" AS VOLUME
+					,1 AS CONTAINERNUMBER --B."U_CONTAINERNUMBER"
+					,B."DocEntry" AS DOCENTRY
+					,A."U_GROSSWEIGHT" AS GROSSWEIGHT
+					,'C' AS TYPEOFCONTAINER
+					,IFNULL(A."U_InvoiceList",'') AS INVOICELIST
+					,A."LineId" AS "LineId"
+					,IFNULL(C."LineId",0) AS "ConfirmBookingID"
+				FROM EW_PRD_TEST20240924."@VOLUME" AS A
+				LEFT JOIN EW_PRD_TEST20240924."@TBVOLUME" AS B ON B."Code"=A."U_VOLUMECODE"
+				LEFT JOIN (
+					SELECT 
+						 T0."U_BOOKINGID" AS "DocEntry"
+						,T1."LineId" AS "LineId"
+						,T1."U_BookingLineId" AS "BookingLineId"
+						,T0."DocEntry" AS "ConfirmBookingID"
+					FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0
+					LEFT JOIN EW_PRD_TEST20240924."@TRUCKINFORMATION" AS T1 ON T1."DocEntry"=T0."DocEntry"
+					WHERE IFNULL(T1."U_CONTAINERNO",'')!=''
+				)AS C ON C."DocEntry"=A."DocEntry" AND C."BookingLineId"=A."LineId"
+				WHERE A."DocEntry"=:par1
+				UNION ALL
+				SELECT 
+					 CAST(A."U_QTY" AS INT) AS QTY
+					,A."U_TRUCKTYPE" AS VOLUMECODE
+					,A."U_TRUCKTYPE" AS VOLUME
+					,1 AS CONTAINERNUMBER
+					,A."DocEntry" AS DOCENTRY
+					,A."U_GROSSWEIGHT" AS GROSSWEIGHT
+					,'T' AS TYPEOFCONTAINER
+					,IFNULL(A."U_InvoiceList",'') AS INVOICELIST
+					,A."LineId" AS "LineId"
+					,IFNULL(B."LineId",0) AS "ConfirmBookingID"
+				FROM EW_PRD_TEST20240924."@TBTRUCKTYPEROW" AS A 
+				LEFT JOIN (
+					SELECT 
+						 T0."U_BOOKINGID" AS "DocEntry"
+						,T1."LineId" AS "LineId"
+						,T1."U_BookingLineId" AS "BookingLineId"
+						,T0."DocEntry" AS "ConfirmBookingID"
+					FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0
+					LEFT JOIN EW_PRD_TEST20240924."@TRUCKINFORMATION" AS T1 ON T1."DocEntry"=T0."DocEntry"
+					WHERE IFNULL(T1."U_CONTAINERNO",'')=''
+				)AS B ON B."DocEntry"=A."DocEntry" AND B."BookingLineId"=A."LineId"
+				WHERE A."DocEntry"=:par1
+			UNION ALL
+			SELECT 
+					 A."U_QTY" AS QTY
+					,B."Code" AS VOLUMECODE
+					,B."Name" AS VOLUME
+					,1 AS CONTAINERNUMBER --B."U_CONTAINERNUMBER"
+					,B."DocEntry" AS DOCENTRY
+					,A."U_GROSSWEIGHT" AS GROSSWEIGHT
+					,'C' AS TYPEOFCONTAINER
+					,IFNULL(A."U_InvoiceList",'') AS INVOICELIST
+					,A."LineId" AS "LineId"
+					,IFNULL(C."LineId",0) AS "ConfirmBookingID"
+				FROM EW_PRD_TEST20240924."@VOLUME" AS A
+				LEFT JOIN EW_PRD_TEST20240924."@TBVOLUME" AS B ON B."Code"=A."U_VOLUMECODE"
+				LEFT JOIN (
+					SELECT 
+						 T0."U_BOOKINGID" AS "DocEntry"
+						,T1."LineId" AS "LineId"
+						,T1."U_BookingLineId" AS "BookingLineId"
+						,T0."DocEntry" AS "ConfirmBookingID"
+					FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0
+					LEFT JOIN EW_PRD_TEST20240924."@TRUCKINFORMATION" AS T1 ON T1."DocEntry"=T0."DocEntry"
+					WHERE IFNULL(T1."U_CONTAINERNO",'')=''
+				)AS C ON C."DocEntry"=A."DocEntry" AND C."BookingLineId"=A."LineId"
+				WHERE A."DocEntry"=:par1 AND C."LineId" IS NOT NULL
+		)AS A ORDER BY A."ConfirmBookingID";
+	ELSE IF :DTYPE='GetContianerList' THEN
+		SELECT 
+			 A."ItemCode" AS ITEMCODE
+			,A."ItemCode" AS ITEMNAME  --A."ItemName"
+			,IFNULL(A."DeprGroup",'') AS ITEMTYPE
+			,IFNULL(B."Price",0) AS PRICE 
+			,IFNULL(A."CardCode",'') AS VENDORCODE
+			,IFNULL(C."CardName",'') AS VENDORNAME
+			,IFNULL(A."AssetGroup",'') AS OWNER
+			,IFNULL(A."U_YARD",'') AS YARD
+			,IFNULL(A."U_FCL",'') AS LCLORFLC
+			,IFNULL(A."U_LOLO",'') AS LOLOORUNLOADING
+		FROM EW_PRD_TEST20240924."OITM" AS A 
+		LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=A."CardCode"
+		WHERE  A."ItmsGrpCod"IN ('130','127');
+	ELSE IF :DTYPE='GetEmployee' THEN
+		SELECT 
+			 A."empID" AS DriverCode
+			,A."firstName"||'-'||A."lastName" AS DriverName
+			,IFNULL(A."mobile",'')||IFNULL('/'|| A."homeTel",'') AS "HP"
+			,A."U_LICENSE_CLASS" AS DriverID
+			,A."govID" AS CARDID
+			,TO_VARCHAR (TO_DATE(A."U_LicenseExp"), 'YYYY/MM/DD') AS LICENSEEXPDATE 
+		FROM EW_PRD_TEST20240924."OHEM" AS A; --WHERE A."position"=1;
+	ELSE IF :DTYPE='GetTruckNo' THEN
+		IF :par1='InformationTruck' THEN
+			SELECT 
+				 A."ItemCode" AS ITEMCODE
+				,A."ItemName" AS ITEMNAME
+				,A."CardCode" AS VENDORCODE
+				,C."CardName" AS VENDORNAME
+				,'Truck' AS ITEMTYPE
+				,B."Price" AS PRICE
+				,D."empID" AS DRIVERID
+				,D."firstName"||'-'||D."lastName" AS DRIVERNAME
+				,IFNULL(D."mobile",'')|| IFNULL('/'||D."homeTel",'') AS "HP"
+				,D."U_DriverID" AS DRIVERCARDID
+				,TO_VARCHAR (TO_DATE(D."U_LicenseExp"), 'YYYY/MM/DD') AS LICENSEEXPDATE 
+				,DD."empID" AS DRIVERID1
+				,DD."firstName"||'-'||DD."lastName" AS DRIVERNAME1
+				,IFNULL(DD."mobile",'')|| IFNULL('/'||DD."homeTel",'') AS "HP1"
+				,DD."U_DriverID" AS DRIVERCARDID1
+				,TO_VARCHAR (TO_DATE(DD."U_LicenseExp"), 'YYYY/MM/DD') AS LICENSEEXPDATE1
+			FROM EW_PRD_TEST20240924."OITM" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=A."CardCode"
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS D ON D."empID"=A."U_DRIVER1"
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS DD ON DD."empID"=A."U_DRIVER2"
+			WHERE A."ItemType"='F' AND A."AssetClass"='1710-007';
+		ELSE IF :par1='Province' THEN
+			SELECT 
+				  A."Code" AS CODE
+				 ,A."Location" AS NAME
+			FROM EW_PRD_TEST20240924."OLCT" AS A;
+		ELSE IF :par1='PLATENO' THEN
+			SELECT 
+				  A."ItemCode" AS CODE
+				 ,A."InventryNo" AS NAME
+				 ,B."AttriTxt5"||' - '||B."AttriTxt6" AS TRUCKTYPE
+				 ,B."AttriTxt3" AS BRAND
+				 ,B."AttriTxt4" AS COLOR
+				 ,B."AttriTxt2" AS TRAILERPROVINCE
+				 ,B."AttriTxt1" AS TRAILERPLATENO
+				 ,B."AttriTxt8"||' - '|| B."AttriTxt9" ||' - '||B."AttriTxt10" AS TRAILERTYPE
+				 ,IFNULL(A."U_TRUCK_OWNER",'') AS OWNERTRUCK
+				 ,IFNULL(D."empID",0) AS "DriverName1"
+				 ,IFNULL(DD."empID",0) AS "DriverName2"
+				 ,A."Location" AS "Location"
+			FROM EW_PRD_TEST20240924."OITM" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."ITM13" AS B ON B."ItemCode"=A."ItemCode" 
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS D ON D."empID"=A."U_DRIVER1" --DriverName 1
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS DD ON DD."empID"=A."U_DRIVER2" --DriverName 2
+			WHERE A."ItemType"='F' AND A."Location"=CASE WHEN :par2='' THEN A."Location" ELSE :par2 END;
+		END IF;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GetVendor' THEN
+		IF :par1='Normal' THEN
+			SELECT A."CardCode" AS CUSTOMERCODE
+				  ,A."CardName" AS CUSTOMERNAME
+				  ,A."Balance" AS BALANCE
+				  ,IFNULL(A."LicTradNum",'')AS TAXID 	
+				  ,A."DflAccount" AS BANKACCOUNT
+				  ,A."DflBranch" AS BRANCH	  
+				  ,(SELECT "OCRY"."Name" FROM EW_PRD_TEST20240924."OCRY" WHERE "OCRY"."Code"=A."BankCountr") AS BANKCOUNTRY
+				  ,(SELECT "ODSC"."BankName" FROM EW_PRD_TEST20240924."ODSC" WHERE "ODSC"."BankCode"=A."BankCode") AS BANKNAME
+				  ,A."DflSwift" AS SWIFTCODE
+				  ,B."ExtraDays" AS "CreditTermDay"
+			FROM EW_PRD_TEST20240924."OCRD" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OCTG" AS B ON B."GroupNum"=A."GroupNum"
+			WHERE A."CardType"='S' AND A."U_BP_TYPE"='E';
+		ELSE IF :par1='Advance' THEN
+			SELECT A."CardCode" AS CUSTOMERCODE
+				  ,A."CardName" AS CUSTOMERNAME
+				  ,A."Balance" AS BALANCE
+				  ,IFNULL(A."LicTradNum",'')AS TAXID 	
+				  ,A."DflAccount" AS BANKACCOUNT
+				  ,A."DflBranch" AS BRANCH	  
+				  ,(SELECT "OCRY"."Name" FROM EW_PRD_TEST20240924."OCRY" WHERE "OCRY"."Code"=A."BankCountr") AS BANKCOUNTRY
+				  ,(SELECT "ODSC"."BankName" FROM EW_PRD_TEST20240924."ODSC" WHERE "ODSC"."BankCode"=A."BankCode") AS BANKNAME
+				  ,A."DflSwift" AS SWIFTCODE
+	  			  ,B."ExtraDays" AS "CreditTermDay"
+			FROM EW_PRD_TEST20240924."OCRD" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OCTG" AS B ON B."GroupNum"=A."GroupNum"
+			WHERE A."CardType"='S' AND A."U_BP_TYPE"='E';
+		ELSE IF :par1='CONFIRMBOOKINGSHEET' THEN
+			SELECT A."CardCode" AS CUSTOMERCODE
+				  ,A."CardName" AS CUSTOMERNAME
+				  ,A."Balance" AS BALANCE
+				  ,IFNULL(A."LicTradNum",'')AS TAXID 	
+				  ,A."DflAccount" AS BANKACCOUNT
+				  ,A."DflBranch" AS BRANCH	  
+				  ,(SELECT "OCRY"."Name" FROM EW_PRD_TEST20240924."OCRY" WHERE "OCRY"."Code"=A."BankCountr") AS BANKCOUNTRY
+				  ,(SELECT "ODSC"."BankName" FROM EW_PRD_TEST20240924."ODSC" WHERE "ODSC"."BankCode"=A."BankCode") AS BANKNAME
+				  ,A."DflSwift" AS SWIFTCODE
+				  ,B."ExtraDays" AS "CreditTermDay"
+			FROM EW_PRD_TEST20240924."OCRD" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OCTG" AS B ON B."GroupNum"=A."GroupNum"
+			WHERE A."CardType"='S';
+		END IF;
+		END IF;
+		END IF;
+			  --AND A."CardCode"='VEUK00001';
+	ELSE IF :DTYPE='GetTrailerNo' THEN
+		SELECT 
+			 IFNULL(B."Location",'') AS "Province"
+			,IFNULL(A."ItemCode",'') AS "TrailerNo"
+			,IFNULL(A."InventryNo",'') AS "TrailerName"
+		FROM EW_PRD_TEST20240924."OITM" AS A
+		LEFT JOIN EW_PRD_TEST20240924."OLCT" AS B ON B."Code"=A."Location"
+		WHERE "ItmsGrpCod"='131' ORDER BY A."Location";
+	ELSE IF :DTYPE='GetInvoice' THEN
+		SELECT 
+			A."U_INVOICE" AS INVOICE
+		FROM EW_PRD_TEST20240924."@COMMODITY" AS A WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GetInvoiceSeaAndAir' THEN
+		SELECT 
+			A."U_Invoice" AS INVOICE
+		FROM EW_PRD_TEST20240924."@COMMODITY_SEA_AIR" AS A WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GETJOBNOBYID' THEN
+		SELECT A."U_EWSeries"||A."U_JOBNO" AS EWSeriesNo FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS A WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GETJOBNOBYIDSEAANDAIR' THEN
+		SELECT 
+		CASE WHEN IFNULL(A."U_JOBNO",'')!='' THEN
+						IFNULL(B."U_JOBTYPE",'')||A."U_JOBNO"
+		ELSE 
+			CASE WHEN A."CreateDate"<'2024-03-06' THEN 
+				IFNULL(B."U_JOBTYPE",'')||
+				(SELECT TO_VARCHAR(A."U_BOOKINGDATE",'YYMM')
+					||CASE WHEN LENGTH(IFNULL(A."DocEntry",1))>=4 THEN 
+						CAST(A."DocEntry" AS NVARCHAR(100))
+				  	ELSE 
+				  		CASE WHEN LENGTH(IFNULL(A."DocEntry",1))=1 THEN
+							'000'||CAST(IFNULL(A."DocEntry",1) AS NVARCHAR(100))
+						WHEN LENGTH(A."DocEntry")=2 THEN
+							'00'||CAST(A."DocEntry" AS NVARCHAR(100))
+						WHEN LENGTH(A."DocEntry")=3 THEN
+							'0'||CAST(A."DocEntry" AS NVARCHAR(100))
+					END
+				END FROM dummy)
+			ELSE 
+				IFNULL(B."U_JOBTYPE",'')||A."DocNum"
+			END 
+		END AS EWSeriesNo 
+		FROM EW_PRD_TEST20240924."@BOOKING_SEA_AIR" AS A 
+		LEFT JOIN EW_PRD_TEST20240924."@TBJOBTYPE" AS B ON B."Code"=A."U_IMPORTTYPE"
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GETROUTEBYID' THEN
+		SELECT "U_DESTINATION" AS ROUTE FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS A WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GETROUTEBYIDSEAANDAIR' THEN
+		SELECT IFNULL("U_DESTINATION",0) AS ROUTE FROM EW_PRD_TEST20240924."@BOOKING_SEA_AIR" AS A WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='ListConfirmBookingSheet' THEN
+		IF :par3='ALL' THEN
+			SELECT 
+				 AA."DocEntry" AS CONFIRMBOOKINGID
+				,A."U_EWSeries"||A."U_JOBNO" AS JOBNO
+				,TO_VARCHAR(A."U_BOOKINGDATE",'YYYYMMDD') AS BOOKINGDATE
+				,CASE WHEN A."CreateTime"=A."UpdateTime" THEN 
+				     	'' 
+				     	ELSE  TO_VARCHAR(AA."UpdateDate",'YYYYMMDD') END AS UPDATEDATE
+					 ,LEFT(CASE
+							WHEN LENGTH(AA."CreateTime") = 3  THEN CAST('0' || AA."CreateTime"AS TIME) 
+							WHEN LENGTH(AA."CreateTime") = 2 THEN CAST('00' || AA."CreateTime"AS TIME)
+							WHEN LENGTH(AA."CreateTime") = 1 THEN CAST('000' || AA."CreateTime"AS TIME) 
+							ELSE CAST(AA."CreateTime"AS TIME) END
+				     ,5) AS "CREATETIME"
+				     ,CASE WHEN A."CreateTime"=A."UpdateTime" THEN 
+				     	'' 
+				     	ELSE 
+				     	LEFT(CASE
+							WHEN LENGTH(AA."UpdateTime") = 3  THEN CAST('0' || AA."UpdateTime" AS TIME) 
+							WHEN LENGTH(AA."UpdateTime") = 2 THEN CAST('00' || AA."UpdateTime" AS TIME)
+							WHEN LENGTH(AA."UpdateTime") = 1 THEN CAST('000' || AA."UpdateTime" AS TIME) 
+							ELSE CAST(AA."UpdateTime" AS TIME) END ,5) 
+						END
+				      AS "UPDATETIME"
+				,TO_VARCHAR(A."U_LOADINGDATE",'YYYYMMDD') AS LOADINGDATE
+				,TO_VARCHAR(A."U_CROSSBORDERDATE",'YYYYMMDD') AS "CrossBorderDate"
+				,TO_VARCHAR(A."U_ETAREQUIREMENT",'YYYYMMDD') AS "ETARequirementDate"
+				,B."Name" AS IMPORTYPE
+				,C."CardName" AS CO
+				,D."descript" AS ROUTE
+				,E."Code" AS CREATEBY
+				,AA."DocEntry" AS DOCENTRY
+				,CASE WHEN (SELECT COUNT(*) FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" AS T0 WHERE T0."U_CONFIRMBOOKINGID"=AA."DocEntry" AND T0."Status"!='C')=0 THEN 
+					CASE WHEN AA."U_CreateUser" IN (
+										SELECT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_CANCEL" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									) OR AA."U_CreateUser"=:par4 THEN
+						AA."Status"
+					ELSE 'C' END
+				 ELSE 'C' END  AS DOCSTATUSCANCEL
+				,CASE WHEN (SELECT COUNT(*) FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" AS T0 WHERE T0."U_CONFIRMBOOKINGID"=AA."DocEntry" AND T0."Status"!='C')=0 THEN 
+					CASE WHEN AA."U_CreateUser" IN (
+										SELECT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_UPDATE" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									) OR AA."U_CreateUser"=:par4 THEN
+						AA."Status"
+					ELSE 'C' END
+				 ELSE 'C' END  AS DOCSTATUSUPDATE
+				,AA."U_BOOKINGID" AS BOOKINGDOCENTRY
+				,AA."U_PROJECTMANAGEMENTID" AS PROJECTDOCENTRY
+				,(SELECT STRING_AGG(T1."CardName",' - ') 
+					 	FROM EW_PRD_TEST20240924."@TBSHIPPER" AS T0 
+					 	LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T1 ON T1."CardCode"=T0."U_SHIPPER"
+					 	WHERE T0."DocEntry"=A."DocEntry") AS "Shipper"
+				,(SELECT STRING_AGG(T1."CardName",' - ') 
+					 	FROM EW_PRD_TEST20240924."@TBCONSIGNEE" AS T0 
+					 	LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T1 ON T1."CardCode"=T0."U_CONSIGNEE"
+					 	WHERE T0."DocEntry"=A."DocEntry") AS "Consignee"
+				,AA."U_UpdateBy" AS "UpdateBy"
+				,(SELECT STRING_AGG(T0."U_INVOICE",', ')
+					 	FROM EW_PRD_TEST20240924."@COMMODITY" AS T0 
+					 	WHERE T0."DocEntry"=A."DocEntry") AS "Commodities"
+			FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS AA
+			LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS A ON A."DocEntry"=AA."U_BOOKINGID"
+			LEFT JOIN EW_PRD_TEST20240924."@TBJOBTYPE" AS B ON B."Code"=A."U_IMPORTTYPE"
+			LEFT JOIN (
+					SELECT 
+						 STRING_AGG(T2."CardName") AS "CardName"
+						,T0."DocEntry" AS "DocEntry"
+					FROM EW_PRD_TEST20240924."@TBSALESQUOTATION" AS T0
+					LEFT JOIN EW_PRD_TEST20240924."OQUT" AS T1 ON T1."DocEntry"=T0."U_DOCENTRY"
+					LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T2 ON T2."CardCode"=T1."CardCode"
+					GROUP BY T0."DocEntry"
+				)AS C ON C."DocEntry"=A."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS D ON D."territryID"=A."U_DESTINATION"
+			LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS E ON E."Code"=AA."U_CreateUser"
+			WHERE A."U_UserCreate"=CASE WHEN '-1'='-1' THEN A."U_UserCreate" ELSE A."U_UserCreate" END
+				  AND AA."U_BOOKINGID" IS NOT NULL
+				  AND AA."U_PROJECTMANAGEMENTID" IS NOT NULL 
+				  AND A."U_BOOKINGDATE" BETWEEN :par1 AND :par2 
+				  AND AA."Status"!='C'
+				  AND (AA."U_CreateUser"=:par4
+						OR AA."U_CreateUser" IN (
+							SELECT "U_User" 
+							FROM EW_PRD_TEST20240924."@TB_P_READ" AS T0
+							LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+							WHERE T1."Code"=:par4
+						))
+				  ORDER BY AA."DocEntry" DESC;
+		ELSE IF :par3='DEFAULT' THEN
+			SELECT TOP 1000
+				 AA."DocEntry" AS CONFIRMBOOKINGID
+				,A."U_EWSeries"||A."U_JOBNO" AS JOBNO
+				,TO_VARCHAR(A."U_BOOKINGDATE",'YYYYMMDD') AS BOOKINGDATE
+				,CASE WHEN A."CreateTime"=A."UpdateTime" THEN 
+				     	'' 
+				     	ELSE  TO_VARCHAR(AA."UpdateDate",'YYYYMMDD') END AS UPDATEDATE
+					 ,LEFT(CASE
+							WHEN LENGTH(AA."CreateTime") = 3  THEN CAST('0' || AA."CreateTime"AS TIME) 
+							WHEN LENGTH(AA."CreateTime") = 2 THEN CAST('00' || AA."CreateTime"AS TIME)
+							WHEN LENGTH(AA."CreateTime") = 1 THEN CAST('000' || AA."CreateTime"AS TIME) 
+							ELSE CAST(AA."CreateTime"AS TIME) END
+				     ,5) AS "CREATETIME"
+				     ,CASE WHEN A."CreateTime"=A."UpdateTime" THEN 
+				     	'' 
+				     	ELSE 
+				     	LEFT(CASE
+							WHEN LENGTH(AA."UpdateTime") = 3  THEN CAST('0' || AA."UpdateTime" AS TIME) 
+							WHEN LENGTH(AA."UpdateTime") = 2 THEN CAST('00' || AA."UpdateTime" AS TIME)
+							WHEN LENGTH(AA."UpdateTime") = 1 THEN CAST('000' || AA."UpdateTime" AS TIME) 
+							ELSE CAST(AA."UpdateTime" AS TIME) END ,5) 
+						END
+				      AS "UPDATETIME"
+				,TO_VARCHAR(A."U_LOADINGDATE",'YYYYMMDD') AS LOADINGDATE
+				,TO_VARCHAR(A."U_CROSSBORDERDATE",'YYYYMMDD') AS "CrossBorderDate"
+				,TO_VARCHAR(A."U_ETAREQUIREMENT",'YYYYMMDD') AS "ETARequirementDate"
+				,B."Name" AS IMPORTYPE
+				,C."CardName" AS CO
+				,D."descript" AS ROUTE
+				,E."Code" AS CREATEBY
+				,AA."DocEntry" AS DOCENTRY
+				,CASE WHEN (SELECT COUNT(*) FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" AS T0 WHERE T0."U_CONFIRMBOOKINGID"=AA."DocEntry" AND T0."Status"!='C')=0 THEN 
+					CASE WHEN AA."U_CreateUser" IN (
+										SELECT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_CANCEL" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									) OR AA."U_CreateUser"=:par4 THEN
+						AA."Status"
+					ELSE 'C' END
+				 ELSE 'C' END  AS DOCSTATUSCANCEL
+				,CASE WHEN (SELECT COUNT(*) FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" AS T0 WHERE T0."U_CONFIRMBOOKINGID"=AA."DocEntry" AND T0."Status"!='C')=0 THEN 
+					CASE WHEN AA."U_CreateUser" IN (
+										SELECT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_UPDATE" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									) OR AA."U_CreateUser"=:par4 THEN
+						AA."Status"
+					ELSE 'C' END
+				 ELSE 'C' END  AS DOCSTATUSUPDATE
+				,AA."U_BOOKINGID" AS BOOKINGDOCENTRY
+				,AA."U_PROJECTMANAGEMENTID" AS PROJECTDOCENTRY
+				,(SELECT STRING_AGG(T1."CardName",' - ') 
+					 	FROM EW_PRD_TEST20240924."@TBSHIPPER" AS T0 
+					 	LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T1 ON T1."CardCode"=T0."U_SHIPPER"
+					 	WHERE T0."DocEntry"=A."DocEntry") AS "Shipper"
+				,(SELECT STRING_AGG(T1."CardName",' - ') 
+					 	FROM EW_PRD_TEST20240924."@TBCONSIGNEE" AS T0 
+					 	LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T1 ON T1."CardCode"=T0."U_CONSIGNEE"
+					 	WHERE T0."DocEntry"=A."DocEntry") AS "Consignee"
+				,AA."U_UpdateBy" AS "UpdateBy"
+				,(SELECT STRING_AGG(T0."U_INVOICE",', ')
+					 	FROM EW_PRD_TEST20240924."@COMMODITY" AS T0 
+					 	WHERE T0."DocEntry"=A."DocEntry") AS "Commodities"
+			FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS AA
+			LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS A ON A."DocEntry"=AA."U_BOOKINGID"
+			LEFT JOIN EW_PRD_TEST20240924."@TBJOBTYPE" AS B ON B."Code"=A."U_IMPORTTYPE"
+			LEFT JOIN (
+					SELECT 
+						 STRING_AGG(T2."CardName") AS "CardName"
+						,T0."DocEntry" AS "DocEntry"
+					FROM EW_PRD_TEST20240924."@TBSALESQUOTATION" AS T0
+					LEFT JOIN EW_PRD_TEST20240924."OQUT" AS T1 ON T1."DocEntry"=T0."U_DOCENTRY"
+					LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T2 ON T2."CardCode"=T1."CardCode"
+					GROUP BY T0."DocEntry"
+				)AS C ON C."DocEntry"=A."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS D ON D."territryID"=A."U_DESTINATION"
+			LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS E ON E."Code"=AA."U_CreateUser"
+			WHERE A."U_UserCreate"=CASE WHEN '-1'='-1' THEN A."U_UserCreate" ELSE A."U_UserCreate" END
+				  AND AA."U_BOOKINGID" IS NOT NULL
+				  AND AA."U_PROJECTMANAGEMENTID" IS NOT NULL 
+				  AND A."U_BOOKINGDATE" BETWEEN :par1 AND :par2 
+				  AND AA."Status"!='C'
+				  AND (AA."U_CreateUser"=:par4
+						OR AA."U_CreateUser" IN (
+							SELECT "U_User" 
+							FROM EW_PRD_TEST20240924."@TB_P_READ" AS T0
+							LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+							WHERE T1."Code"=:par4
+						))
+				  ORDER BY AA."DocEntry" DESC;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GetCurrencyByCardCode' THEN
+		IF(SELECT "Currency" FROM EW_PRD_TEST20240924."OCRD" WHERE "CardCode"=:par1)='##' THEN
+			SELECT 
+				 A."CurrCode" AS "CurrencyCode"
+				,B."ChkName" AS "CurrencyName"
+				,IFNULL(C."Rate",0) AS "ExchangeRateSystemCurrency" --USS
+				,IFNULL(CC."Rate",0) AS "ExchangeRateLocalCurrency" --THS
+				,IFNULL(CCC."Rate",0) AS "EXCHANGERATE" --Base Currency
+				,A."Locked" AS "Defualt"
+			FROM EW_PRD_TEST20240924."CRD13" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OCRN" AS B ON A."CurrCode"=B."CurrCode"
+			LEFT JOIN EW_PRD_TEST20240924."ORTT" AS C ON C."Currency"='USS' AND C."RateDate"=CURRENT_DATE --USD
+			LEFT JOIN EW_PRD_TEST20240924."ORTT" AS CC ON CC."Currency"='THB' AND CC."RateDate"=CURRENT_DATE --THB
+			LEFT JOIN EW_PRD_TEST20240924."ORTT" AS CCC ON CCC."Currency"=A."CurrCode" AND CCC."RateDate"=CURRENT_DATE --Currency Base
+			WHERE "CardCode"=CASE WHEN :par1='' THEN "CardCode" ELSE :par1 END;--AND RIGHT(B."CurrCode",1)!='S'
+		ELSE
+			IF :par1='' THEN
+				SELECT
+					 B."CurrCode" AS "CurrencyCode"
+					,B."ChkName" AS "CurrencyName"
+					,IFNULL(C."Rate",0) AS "ExchangeRateSystemCurrency" --USS
+					,IFNULL(CC."Rate",0) AS "ExchangeRateLocalCurrency" --THS
+					,IFNULL(CCC."Rate",0) AS "EXCHANGERATE" --Base Currency
+					,'N' AS "Defualt"
+				FROM EW_PRD_TEST20240924."OCRN" AS B 
+				LEFT JOIN EW_PRD_TEST20240924."ORTT" AS C ON C."Currency"='USS' AND C."RateDate"=CURRENT_DATE --USD
+				LEFT JOIN EW_PRD_TEST20240924."ORTT" AS CC ON CC."Currency"='THB' AND CC."RateDate"=CURRENT_DATE --THB
+				LEFT JOIN EW_PRD_TEST20240924."ORTT" AS CCC ON CCC."Currency"=B."CurrCode" AND CCC."RateDate"=CURRENT_DATE --Currency Base
+				WHERE RIGHT(B."CurrCode",1)!='S'
+				UNION ALL
+				SELECT   '##' AS "CurrencyCode"
+						,'All Currencies' AS "CurrencyName" 
+						,0.00 AS "ExchangeRateSystemCurrency" --USS
+						,0.00 AS "ExchangeRateLocalCurrency" --THS
+						,0.00 AS "EXCHANGERATE"
+						,'Y' AS "Defualt"
+				FROM DUMMY;
+			ELSE
+				SELECT
+					 A."Currency" AS "CurrencyCode"
+					,B."ChkName" AS "CurrencyName"
+					,IFNULL(C."Rate",0) AS "ExchangeRateSystemCurrency" --USS
+					,IFNULL(CC."Rate",0) AS "ExchangeRateLocalCurrency" --THS
+					,IFNULL(CASE WHEN A."Currency"='THS' THEN 1 ELSE CCC."Rate" END,0) AS "EXCHANGERATE"
+					,'Y' AS "Defualt"
+				FROM EW_PRD_TEST20240924."OCRD" AS A
+				LEFT JOIN EW_PRD_TEST20240924."OCRN" AS B ON A."Currency"=B."CurrCode"
+				LEFT JOIN EW_PRD_TEST20240924."ORTT" AS C ON C."Currency"='USS' AND C."RateDate"=CURRENT_DATE --C."Currency"
+				LEFT JOIN EW_PRD_TEST20240924."ORTT" AS CC ON CC."Currency"='THB' AND CC."RateDate"=CURRENT_DATE
+				LEFT JOIN EW_PRD_TEST20240924."ORTT" AS CCC ON CCC."Currency"=A."Currency" AND CCC."RateDate"=CURRENT_DATE --Currency Base
+				WHERE "CardCode"=:par1; --AND RIGHT(B."CurrCode",1)!='S';
+			END IF;
+		END IF;
+	ELSE IF :DTYPE='GetItemDetailByType' THEN
+		IF :par2='CBT' THEN
+			SELECT 
+				 ROW_NUMBER ( ) OVER( ORDER BY A."ItemCode" DESC ) AS ROWNUM
+				,A."ItemCode" AS ITEMCODE
+				,A."ItemName" AS ITEMNAME
+				,IFNULL(E."Price",0) AS SELLINGPRICE
+				,IFNULL(D."Price",0) AS COSTINGPRICE
+				,'I' AS ITEMTYPE
+				,A."UgpEntry" AS "UomEntry"
+			FROM EW_PRD_TEST20240924."OITM" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS B ON B."empID"=:par1
+			LEFT JOIN EW_PRD_TEST20240924."OSLP" AS C ON C."SlpCode"=B."salesPrson"
+			LEFT JOIN EW_PRD_TEST20240924."ITM1" AS D ON D."ItemCode"=A."ItemCode" AND D."PriceList"=C."U_PriceList"
+			LEFT JOIN EW_PRD_TEST20240924."ITM1" AS E ON E."ItemCode"=A."ItemCode" AND E."PriceList"='1'
+			WHERE A."ItmsGrpCod" NOT IN(130) AND A."ItemType" IN('I') AND (A."PrchseItem"='Y' AND A."SellItem"='Y') AND A."U_Dept_item"IN ('CBT','ALL');
+		ELSE IF :par2='S&A' THEN
+			SELECT 
+				 ROW_NUMBER ( ) OVER( ORDER BY A."ItemCode" DESC ) AS ROWNUM
+				,A."ItemCode" AS ITEMCODE
+				,A."ItemName" AS ITEMNAME
+				,IFNULL(E."Price",0) AS SELLINGPRICE
+				,IFNULL(D."Price",0) AS COSTINGPRICE
+				,'I' AS ITEMTYPE
+				,A."UgpEntry" AS "UomEntry"
+			FROM EW_PRD_TEST20240924."OITM" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS B ON B."empID"=:par1
+			LEFT JOIN EW_PRD_TEST20240924."OSLP" AS C ON C."SlpCode"=B."salesPrson"
+			LEFT JOIN EW_PRD_TEST20240924."ITM1" AS D ON D."ItemCode"=A."ItemCode" AND D."PriceList"=C."U_PriceList"
+			LEFT JOIN EW_PRD_TEST20240924."ITM1" AS E ON E."ItemCode"=A."ItemCode" AND E."PriceList"='1'
+			WHERE A."ItmsGrpCod" NOT IN(130) AND A."ItemType" IN('I') AND (A."PrchseItem"='Y' AND A."SellItem"='Y') AND A."U_Dept_item"IN ('SA','SF','ALL');
+		ELSE
+			SELECT 
+				 ROW_NUMBER ( ) OVER( ORDER BY A."ItemCode" DESC ) AS ROWNUM
+				,A."ItemCode" AS ITEMCODE
+				,A."ItemName" AS ITEMNAME
+				,IFNULL(E."Price",0) AS SELLINGPRICE
+				,IFNULL(D."Price",0) AS COSTINGPRICE
+				,'I' AS ITEMTYPE
+				,A."UgpEntry" AS "UomEntry"
+			FROM EW_PRD_TEST20240924."OITM" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS B ON B."empID"=:par1
+			LEFT JOIN EW_PRD_TEST20240924."OSLP" AS C ON C."SlpCode"=B."salesPrson"
+			LEFT JOIN EW_PRD_TEST20240924."ITM1" AS D ON D."ItemCode"=A."ItemCode" AND D."PriceList"=C."U_PriceList"
+			LEFT JOIN EW_PRD_TEST20240924."ITM1" AS E ON E."ItemCode"=A."ItemCode" AND E."PriceList"='1'
+			WHERE A."ItmsGrpCod" NOT IN(130) AND A."ItemType" IN('I') AND (A."PrchseItem"='Y' AND A."SellItem"='Y');
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GetConfirmBookingSheetDetail' THEN
+		SELECT 
+			  AA."DocEntry" AS "BOOKINGID"
+			 ,A."DocEntry" AS "CONFIRMBOOKINGID"
+			 ,AA."U_EWSeries"||AA."U_JOBNO" AS "JOBNO"
+			 ,DD."descript"||'-'||D."descript" AS "ROUTE"
+			 ,TO_VARCHAR (AA."U_BOOKINGDATE", 'YYYY/MM/DD') AS "BOOKINGDATE"
+			 ,F."SlpName" AS "SALEEMPLOYEE"
+			 ,B."Name" AS "IMPORTTYPE"
+			 ,CC."CardName" AS "SHIPPER"
+			 ,AA."U_TOTALPACKAGE" AS "TOTALPACKAGE"
+			 ,(SELECT 
+					STRING_AGG(T3."CardName",',') AS CARDNAME
+				FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS T0
+				LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS TT0 ON TT0."DocEntry"=T0."U_CONFIRMBOOKINGSHEETID"
+				LEFT JOIN EW_PRD_TEST20240924."@TBSALESQUOTATION" AS T1 ON T1."DocEntry"=T0."DocEntry"
+				LEFT JOIN EW_PRD_TEST20240924."OQUT" AS T2 ON T1."U_DOCENTRY"=T2."DocEntry"
+				LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T3 ON T3."CardCode"=T2."CardCode"
+				WHERE T0."U_CONFIRMBOOKINGSHEETID"=A."DocEntry" 
+				AND T2."CardCode" /*NOT*/ IN 
+										(SELECT 
+											Z1."CardCode"
+										FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" AS Z0 
+										LEFT JOIN EW_PRD_TEST20240924."ORDR" AS Z1 ON Z1."DocEntry"=Z0."U_SALESORDERDOCNUM"
+										WHERE Z0."U_CONFIRMBOOKINGID"=A."DocEntry")) AS "CO"
+			 ,''/*C."CardCode"*/ AS "COCODE"
+			 ,AA."U_NETWEIGHT" AS "NETWEIGHT"
+			 ,AA."U_GROSSWEIGHT" AS "GROSSWEIGHT"
+			 ,CCC."CardName" AS "CONSIGNEE"
+			 ,TO_VARCHAR (AA."U_LOADINGDATE", 'YYYY/MM/DD') AS "LOADINGDATE"
+			 ,TO_VARCHAR (AA."U_CROSSBORDERDATE", 'YYYY/MM/DD') AS "CROSSBORDERDATE"
+			 ,TO_VARCHAR (AA."U_ETAREQUIREMENT", 'YYYY/MM/DD') AS "ETAREQUIREMENT"
+			 ,(SELECT 
+			 	STRING_AGG(Z1."Name", ',') 
+			 	FROM EW_PRD_TEST20240924."@PLACEOFLOADING" AS Z0 
+			 	LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS Z1 ON Z0."U_PLACELOADING"=Z1."Code"
+			 	WHERE Z0."DocEntry"=AA."DocEntry") AS "PLACEOFLOADING"
+			 ,(SELECT 
+			 	STRING_AGG(Z1."Name", ',') 
+			 	FROM EW_PRD_TEST20240924."@PLACEOFDELIVERY" AS Z0
+			 	LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS Z1 ON Z1."Code"=Z0."U_PLACEDELIVERY" 
+			 	WHERE Z0."DocEntry"=AA."DocEntry") AS "PLACEOFDELIVERY"
+			 ,AA."U_GOODSDESCRIPTION" AS "GOODSDESCRIPTION"
+			 ,IFNULL((SELECT STRING_AGG(TO_INT(QTY)||'x'||VOLUME, ',') AS VOLUME FROM (
+					SELECT 
+				 	SUM(Z0."U_QTY") AS QTY,Z1."Name" AS VOLUME 
+				 	FROM EW_PRD_TEST20240924."@VOLUME" AS Z0
+				 	LEFT JOIN EW_PRD_TEST20240924."@TBVOLUME" AS Z1 ON Z1."Code"=Z0."U_VOLUMECODE" 
+				 	WHERE Z0."DocEntry"=AA."DocEntry" GROUP BY Z1."Name"))||',','')||
+				  IFNULL((SELECT STRING_AGG(TO_INT("QTY")||'x'||"TRUCKTYPE", ',') FROM (SELECT 
+				 	 SUM(Z0."U_QTY") AS QTY
+				 	,Z0."U_TRUCKTYPE" AS TRUCKTYPE
+				 	FROM EW_PRD_TEST20240924."@TBTRUCKTYPEROW" AS Z0 
+				 	WHERE Z0."DocEntry"=AA."DocEntry"
+				 	GROUP BY Z0."U_TRUCKTYPE")
+				 ),'') AS "VOLUME"
+			 ,'' AS "THAIFORWARDER" --G."Name"
+			 ,'' AS "OVERSEAFORWARDER" --H."Name"
+			 ,(SELECT 
+			 	STRING_AGG(Z1."Name", ',') 
+			 	FROM EW_PRD_TEST20240924."@THAIBORDER" AS Z0
+			 	LEFT JOIN EW_PRD_TEST20240924."@TBTHAIBORDER" AS Z1 ON Z1."Code"=Z0."U_ThaiBorder" 
+			 	WHERE Z0."DocEntry"=AA."DocEntry") AS "THAIBORDER"
+			 ,'' AS "OVERSEATRANSPORT"
+			 ,(SELECT 
+			 	STRING_AGG(Z1."Name", ',') 
+			 	FROM EW_PRD_TEST20240924."@PLACEOFLOADING" AS Z0 
+			 	LEFT JOIN EW_PRD_TEST20240924."@TBDISTRICT" AS Z1 ON Z0."U_District"=Z1."Code"
+			 	WHERE Z0."DocEntry"=AA."DocEntry") AS "DistrictOfLoading"
+			 ,(SELECT 
+			 	STRING_AGG(Z1."Name", ',') 
+			 	FROM EW_PRD_TEST20240924."@PLACEOFDELIVERY" AS Z0
+			 	LEFT JOIN EW_PRD_TEST20240924."@TBDISTRICT" AS Z1 ON Z1."Code"=Z0."U_District" 
+			 	WHERE Z0."DocEntry"=AA."DocEntry") AS "DistrictOfDelivery"
+		FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS AA ON AA."U_CONFIRMBOOKINGSHEETID"=A."DocEntry" AND AA."Status"='O'
+		LEFT JOIN EW_PRD_TEST20240924."@TBJOBTYPE" AS B ON B."Code"=AA."U_IMPORTTYPE"
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=AA."U_CO"
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS CC ON CC."CardCode"=AA."U_SHIPPER"
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS CCC ON CCC."CardCode"=AA."U_CONSIGNEE"
+		LEFT JOIN EW_PRD_TEST20240924."OTER" AS D ON D."territryID"=AA."U_DESTINATION"
+		LEFT JOIN EW_PRD_TEST20240924."OTER" AS DD ON DD."territryID"=AA."U_ORIGIN"
+		--LEFT JOIN EW_PRD_TEST20240924."OTER" AS DDD ON DDD."territryID"=AA."U_DESTINATION"
+		LEFT JOIN EW_PRD_TEST20240924."OUSR" AS E ON E."USERID"=AA."U_UserCreate"
+		LEFT JOIN EW_PRD_TEST20240924."OSLP" AS F ON F."SlpCode"=AA."U_SALEEMPLOYEE"
+		--LEFT JOIN EW_PRD_TEST20240924."@TBTHAIFORWARDER" AS G ON G."Code"=AA."U_THAIFORWARDER"
+		--LEFT JOIN EW_PRD_TEST20240924."@TBOVERSEAFORWARDER" AS H ON H."Code"=AA."U_OVERSEAFORWARDER"
+		--LEFT JOIN EW_PRD_TEST20240924."@TBTHAIBORDER" AS I ON I."Code"=AA."U_THAIBORDER"
+		--LEFT JOIN EW_PRD_TEST20240924."@TBOVERSEATRUCKER" AS J ON J."Code"=AA."U_OVERSEATRUCKER"
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GetConfirmBookingSheetListInvoice' THEN
+		SELECT 
+			B."U_INVOICE" AS CODE
+		FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@COMMODITY" AS B ON A."DocEntry"=B."DocEntry"
+		WHERE A."U_CONFIRMBOOKINGSHEETID"=:par1;
+	ELSE IF :DTYPE='GetConfirmBookingSheetListTruck' THEN
+		SELECT
+			BBB."Location"||' '||IFNULL(BB."InventryNo",'')||' /'||A."U_TRAILERPROVINCE"||' '||A."U_TRAILERPLATE"  AS "TRUCKNO" --A."U_TRUCKCODE"
+			,B."AttriTxt7" AS "TRUCKWEIGHT"
+			,A."U_CONTAINERNO" AS "CONTAINERNO"
+			,TO_VARCHAR(A."U_GROSSWEIGHT",'00 KG') AS "CONTAINERWEIGHT"
+			,IFNULL(C."U_ShortName",C."CardName") AS "TRANSPORTER"
+		FROM EW_PRD_TEST20240924."@TRUCKINFORMATION" AS A 
+		LEFT JOIN EW_PRD_TEST20240924."ITM13" AS B ON A."U_TRUCKCODE"=B."ItemCode"
+		LEFT JOIN EW_PRD_TEST20240924."OITM" AS BB ON A."U_TRUCKCODE"=BB."ItemCode"
+		LEFT JOIN EW_PRD_TEST20240924."OLCT" AS BBB ON BBB."Code"=BB."Location"--Location
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=A."U_VENDORCODE"
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GetCostType' THEN
+		SELECT A."ItemCode" ITEMCODE
+			  ,A."ItemName" AS ITEMNAME
+			  ,IFNULL(B."Price",0) AS PRICE
+		FROM EW_PRD_TEST20240924."OITM" AS A 
+		LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1;
+		--WHERE A."ItmsGrpCod"='102';
+	ELSE IF :DTYPE='GETUSERBYID' THEN
+		SELECT "USER_CODE" AS USERCODE FROM EW_PRD_TEST20240924."OUSR" AS A WHERE A."USERID"=:par1;
+	ELSE IF :DTYPE='GETSTATUSCANCELBOOKINGSHEET' THEN
+		SELECT COUNT(*) AS ValueValid FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS A WHERE A."U_BOOKINGID"=:par1 AND A."Status"='O';
+	ELSE IF :DTYPE='GETSTATUSCANCELBOOKINGSHEETSEA_AND_AIR' THEN
+		SELECT '0' "ValueValid" from dummy;
+	ELSE IF :DTYPE='GETSTATUSCANCELCONFRIMBOOKINGSHEET' THEN
+		SELECT COUNT(*) AS ValueValid FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" AS A WHERE A."U_CONFIRMBOOKINGID"=:par1 AND A."Status"='O';
+	ELSE IF :DTYPE='GETSTATUSPURCHASEREQUESTAPPROVE' THEN
+		SELECT COUNT(*) AS ValueValid FROM EW_PRD_TEST20240924."@ADVANCEPAYMENT" AS A WHERE A."DocEntry"=:par1 AND A."U_ApproveStatus" IN ('A','R');
+	ELSE IF :DTYPE='GETPROJECTNUMBERBYDOCENTRY' THEN
+		SELECT "NAME" AS DOCENTRY FROM EW_PRD_TEST20240924."OPMG" WHERE "AbsEntry"=:par1;
+	ELSE IF :DTYPE='GetPurchaseRequestByDocEntry' THEN
+		SELECT "DocNum" AS "DOCNUM" FROM EW_PRD_TEST20240924."OPRQ" WHERE "DocEntry"=:par1;
+	ELSE IF :DTYPE='GETPROJECTNUMBERBYDOCENTRYAPPROVE' THEN
+		SELECT "AbsEntry" AS DOCENTRY FROM EW_PRD_TEST20240924."OPMG" WHERE "NAME"=:par1;
+	ELSE IF :DTYPE='GETREFTNOSALEQUOTATION' THEN
+			SELECT 
+				YEAR(CURRENT_DATE)||MONTH(CURRENT_DATE)||'-'||IFNULL(B."SlpCode",-1)||'/'||IFNULL((SELECT IFNULL(MAX("DocEntry"),1) FROM EW_PRD_TEST20240924."OQUT"),1) AS "RefNo"
+			FROM EW_PRD_TEST20240924."OHEM" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OSLP" AS B ON A."salesPrson"=B."SlpCode"
+			WHERE A."empID"=:par1;
+	ELSE IF :DTYPE='GETCREDITTERM' THEN
+		SELECT TO_VARCHAR(A."GroupNum") AS "Code",A."PymntGroup" AS "Name" FROM EW_PRD_TEST20240924."OCTG" AS A;
+	ELSE IF :DTYPE='GETSERVICESALESQUOTATION' THEN
+		SELECT A."Code" AS "Code",A."Name" AS "Name" FROM EW_PRD_TEST20240924."@TBSERVICE" AS A;
+	ELSE IF :DTYPE='GETITEMSALESQUOTATION' THEN
+		IF :par1='CBT' THEN
+			SELECT 
+				 A."ItemCode" AS "ItemCode"
+				,IFNULL(A."ItemName",'') AS "ItemName"
+				,TO_DECIMAL(IFNULL(B."Price",0),6,2) AS "Price" 
+			FROM EW_PRD_TEST20240924."OITM" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1
+			WHERE A."U_Dept_item"IN ('CBT','ALL') AND A."validFor"='Y';
+		ELSE IF :par1='S&A' THEN
+			SELECT 
+				 A."ItemCode" AS "ItemCode"
+				,IFNULL(A."ItemName",'') AS "ItemName"
+				,TO_DECIMAL(IFNULL(B."Price",0),6,2) AS "Price" 
+				--,A."U_Dept_item"
+			FROM EW_PRD_TEST20240924."OITM" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1
+			WHERE A."U_Dept_item"IN ('SA','SF','ALL')AND A."validFor"='Y';
+		ELSE 
+			SELECT 
+				 A."ItemCode" AS "ItemCode"
+				,IFNULL(A."ItemName",'') AS "ItemName"
+				,TO_DECIMAL(IFNULL(B."Price",0),6,2) AS "Price" 
+			FROM EW_PRD_TEST20240924."OITM" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1 WHERE A."validFor"='Y';
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GETLISTSALEQUOTATION' THEN
+		IF :par1='SALEQUOTATION' THEN
+			IF :par4='ALL' THEN
+				SELECT A."CardName" AS "CustomerName"
+					  ,A."CardCode" AS "CustomerCode"
+					  ,TO_VARCHAR (A."DocDate", 'YYYYMMDD') AS "QuotationDate"
+					  ,IFNULL(A."U_TEL",'') AS "Tel"
+					  ,IFNULL(A."NumAtCard",'') AS "CustomerRefNo"
+					  ,IFNULL(A."U_EMAIL",'') AS "Email"
+					  ,IFNULL(DD."descript",'NONE')||'-'||IFNULL(D."descript",'NONE') AS "Route"
+					  ,CASE WHEN A."DocTotalFC"=0 THEN TO_DECIMAL(A."DocTotal",16,2) ELSE TO_DECIMAL(A."DocTotalFC",16,2) END AS "DocTotal"
+					  ,CASE WHEN (SELECT COUNT("U_SALESQUOTATION") 
+					  		FROM EW_PRD_TEST20240924."@BOOKINGSHEET" WHERE "U_SALESQUOTATION"=A."DocEntry")<>0
+					  		THEN 
+					  			'C' 
+					  		ELSE 
+					  			CASE WHEN A."U_UserCreate" IN (
+										SELECT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_CANCEL" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par5
+									) OR A."U_UserCreate"=:par5 THEN
+					  				A."DocStatus"
+					  			 ELSE 'C' END
+					  		END AS "DocStatus"
+					  ,TO_VARCHAR(A."DocEntry") AS "DocEntry"
+					  ,TO_VARCHAR(A."DocNum") AS "DocNum"
+					  ,A."DocDueDate"
+					  ,TO_VARCHAR(B."SlpName") AS "SlpCode"
+					  ,B."SlpName" AS "SlpName"
+					  ,A."U_UserCreate" AS "CreateBy"
+					  ,CASE WHEN CAST(IFNULL(DAYS_BETWEEN(CURRENT_DATE,A."DocDueDate"),0) AS INT)<0 THEN 
+					  	'Expire' 
+					   ELSE CAST(IFNULL(DAYS_BETWEEN(CURRENT_DATE,A."DocDueDate"),0) AS VARCHAR(30)) END AS "ValidityCount"
+					   ,CASE WHEN A."CANCELED"='Y' THEN 'Cancel' ELSE CASE WHEN A."DocStatus"='C' THEN 'Close' ELSE 'Open' END END AS "StatusName"
+				FROM EW_PRD_TEST20240924."OQUT" AS A 
+				LEFT JOIN EW_PRD_TEST20240924."OTER" AS D ON D."territryID"=A."U_DESTINATION"
+				LEFT JOIN EW_PRD_TEST20240924."OTER" AS DD ON DD."territryID"=A."U_ORIGIN"
+				LEFT JOIN EW_PRD_TEST20240924."OSLP" AS B ON A."SlpCode"=B."SlpCode"
+				LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=A."CardCode"
+				WHERE IFNULL(A."U_WEBID",'')!='' 
+				AND A."DocDate" BETWEEN :par2 AND :par3
+				AND (A."U_UserCreate"=:par5
+				OR A."U_UserCreate" IN (
+							SELECT "U_User" 
+							FROM EW_PRD_TEST20240924."@TB_P_READ" AS T0
+							LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+							WHERE T1."Code"=:par5
+						));
+			ELSE IF :par4='DEFAULT' THEN
+				SELECT TOP 1000 A."CardName" AS "CustomerName"
+					  ,A."CardCode" AS "CustomerCode"
+					  ,TO_VARCHAR (A."DocDate", 'YYYYMMDD') AS "QuotationDate"
+					  ,IFNULL(A."U_TEL",'') AS "Tel"
+					  ,IFNULL(A."NumAtCard",'') AS "CustomerRefNo"
+					  ,IFNULL(A."U_EMAIL",'') AS "Email"
+					  ,IFNULL(DD."descript",'NONE')||'-'||IFNULL(D."descript",'NONE') AS "Route"
+					  ,CASE WHEN A."DocTotalFC"=0 THEN TO_DECIMAL(A."DocTotal",16,2) ELSE TO_DECIMAL(A."DocTotalFC",16,2) END AS "DocTotal"
+					  ,CASE WHEN (SELECT COUNT("U_SALESQUOTATION") 
+					  		FROM EW_PRD_TEST20240924."@BOOKINGSHEET" WHERE "U_SALESQUOTATION"=A."DocEntry")<>0
+					  		THEN 
+					  			'C' 
+					  		ELSE 
+					  			CASE WHEN A."U_UserCreate" IN (
+										SELECT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_CANCEL" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par5
+									) OR A."U_UserCreate"=:par5 THEN
+					  				A."DocStatus"
+					  			 ELSE 'C' END
+					  		END AS "DocStatus"
+					  ,TO_VARCHAR(A."DocEntry") AS "DocEntry"
+					  ,TO_VARCHAR(A."DocNum") AS "DocNum"
+					  ,A."DocDueDate"
+					  ,TO_VARCHAR(B."SlpName") AS "SlpCode"
+					  ,B."SlpName" AS "SlpName"
+					  ,A."U_UserCreate" AS "CreateBy"
+					  ,CASE WHEN CAST(IFNULL(DAYS_BETWEEN(CURRENT_DATE,A."DocDueDate"),0) AS INT)<0 THEN 
+					  	'Expire' 
+					   ELSE CAST(IFNULL(DAYS_BETWEEN(CURRENT_DATE,A."DocDueDate"),0) AS VARCHAR(30)) END AS "ValidityCount"
+					  ,CASE WHEN A."CANCELED"='Y' THEN 'Cancel' ELSE CASE WHEN A."DocStatus"='C' THEN 'Close' ELSE 'Open' END END AS "StatusName"
+				FROM EW_PRD_TEST20240924."OQUT" AS A 
+				LEFT JOIN EW_PRD_TEST20240924."OTER" AS D ON D."territryID"=A."U_DESTINATION"
+				LEFT JOIN EW_PRD_TEST20240924."OTER" AS DD ON DD."territryID"=A."U_ORIGIN"
+				LEFT JOIN EW_PRD_TEST20240924."OSLP" AS B ON A."SlpCode"=B."SlpCode"
+				LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=A."CardCode"
+				WHERE IFNULL(A."U_WEBID",'')!='' 
+				AND A."DocDate" BETWEEN :par2 AND :par3 
+				AND (A."U_UserCreate"=:par5
+				OR A."U_UserCreate" IN (
+							SELECT "U_User" 
+							FROM EW_PRD_TEST20240924."@TB_P_READ" AS T0
+							LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+							WHERE T1."Code"=:par5
+						))
+				ORDER BY A."DocEntry" DESC;
+			END IF;
+			END IF;
+		ELSE IF :par1='LISTSALEQUOTATIONBOOKING' THEN
+			SELECT A."CardName" AS "CustomerName"
+				  ,A."CardCode" AS "CustomerCode"
+				  ,TO_VARCHAR (A."DocDate", 'dd/MM/YYYY') AS "QuotationDate"
+				  ,A."U_TEL" AS "Tel"
+				  ,A."NumAtCard" AS "CustomerRefNo"
+				  ,A."U_EMAIL" AS "Email"
+				  ,IFNULL(DD."descript",'NONE')||'-'||IFNULL(D."descript",'NONE') AS "Route"
+				  ,CASE WHEN A."DocTotalFC"=0 THEN A."DocTotal" ELSE A."DocTotalFC" END AS "DocTotal"
+				  ,CASE WHEN (SELECT COUNT("U_SALESQUOTATION") 
+				  		FROM EW_PRD_TEST20240924."@BOOKINGSHEET" WHERE "U_SALESQUOTATION"=A."DocEntry")<>0
+				  		THEN 
+				  			'C' 
+				  		ELSE 
+				  			A."DocStatus" 
+				  		END AS "DocStatus"
+				  ,TO_VARCHAR(A."DocEntry") AS "DocEntry"
+				  ,TO_VARCHAR(A."DocNum") AS "DocNum"
+				  ,A."DocDueDate"
+				  ,TO_VARCHAR(A."SlpCode") AS "SlpCode"
+				  ,B."SlpName" AS "SlpName"
+				  ,A."U_UserCreate" AS "CreateBy"
+				  ,CASE WHEN CAST(IFNULL(DAYS_BETWEEN(CURRENT_DATE,A."DocDueDate"),0) AS INT)<0 THEN 
+				  	'Expire' 
+				   ELSE CAST(IFNULL(DAYS_BETWEEN(CURRENT_DATE,A."DocDueDate"),0) AS VARCHAR(30)) END AS "ValidityCount"
+				   ,CASE WHEN A."DocStatus"='C' THEN 'Cancel' ELSE 'Open' END AS "StatusName"
+			FROM EW_PRD_TEST20240924."OQUT" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS D ON D."territryID"=A."U_DESTINATION"
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS DD ON DD."territryID"=A."U_ORIGIN"
+			LEFT JOIN EW_PRD_TEST20240924."OSLP" AS B ON A."SlpCode"=B."SlpCode"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=A."CardCode"
+			WHERE IFNULL(A."U_WEBID",'')!='' AND C."CardType"!='L' AND A."CANCELED"='N'; --AND A."DocDueDate">=CURRENT_DATE;
+		ELSE IF :par1='ADDBOOKINGSHEET' THEN
+			SELECT A."U_CustomerName" AS CUSTOMERNAME 
+				  ,TO_VARCHAR (A."DocDate", 'DD/MM/YYYY') AS QUOTATIONDATE
+				  ,A."U_TEL" AS TEL
+				  ,A."NumAtCard" AS CustomerRefNo
+				  ,A."U_EMAIL" AS EMAIL
+				  ,IFNULL(DD."descript",'NONE')||'-'||IFNULL(D."descript",'NONE') AS ROUTE
+				  ,A."DocTotal" AS TOTAL
+				  ,A."DocStatus" AS DOCSTATUS
+				  ,A."DocEntry" AS DOCENTRY
+			FROM EW_PRD_TEST20240924."OQUT" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS D ON D."territryID"=A."U_DESTINATION"
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS DD ON DD."territryID"=A."U_ORIGIN"
+			WHERE IFNULL(A."U_WEBID",'')!='' 
+			  AND "DocEntry" NOT IN(SELECT "U_SALESQUOTATION" 
+			  							FROM EW_PRD_TEST20240924."@BOOKINGSHEET" WHERE IFNULL("U_SALESQUOTATION",0)<>0)
+			  AND A."DocStatus"<>'C';
+		END IF;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GETSALEQUOTATIONJOBSHEET' THEN
+		SELECT A."CardName" AS CUSTOMERNAME  --U_CustomerName
+			  ,TO_VARCHAR (A."DocDate", 'YYYY/MM/DD') AS QUOTATIONDATE
+			  ,A."U_TEL" AS TEL
+			  ,A."NumAtCard" AS CustomerRefNo
+			  ,A."U_EMAIL" AS EMAIL
+			  ,IFNULL(DD."descript",'NONE')||'-'||IFNULL(D."descript",'NONE') AS ROUTE
+			  ,A."DocTotal" AS TOTAL
+			  ,A."DocNum" AS DOCUMENT
+			  ,A."DocEntry" AS DOCENTRY
+			  ,A."CardCode" AS CARDCODE
+			  ,A."DocCur" AS CURRENCY
+		FROM EW_PRD_TEST20240924."OQUT" AS A 
+		LEFT JOIN EW_PRD_TEST20240924."OTER" AS D ON D."territryID"=A."U_DESTINATION"
+		LEFT JOIN EW_PRD_TEST20240924."OTER" AS DD ON DD."territryID"=A."U_ORIGIN"
+		WHERE IFNULL(A."U_WEBID",'')!='' 
+		AND A."DocEntry" IN (SELECT "U_DOCENTRY" FROM EW_PRD_TEST20240924."@BOOKINGSHEET" T0 
+												 LEFT JOIN EW_PRD_TEST20240924."@TBSALESQUOTATION" T1 ON T0."DocEntry"=T1."DocEntry" 
+												 WHERE T0."DocEntry"=
+		(SELECT "U_BOOKINGID" FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" WHERE "DocEntry"=:par1)
+		AND "U_DOCENTRY" NOT IN (SELECT IFNULL("U_SALEQUOTATIONDOCNUM",0) FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0 
+													  LEFT JOIN EW_PRD_TEST20240924."@JOBSHEETRUCKING" AS T1 ON T0."DocEntry"=T1."U_CONFIRMBOOKINGID" 
+													  WHERE T0."DocEntry"=:par1 AND IFNULL(T1."U_SALESORDERDOCNUM",0)!=0 AND T1."Status"!='C'));
+	ELSE IF :DTYPE='GETITEMSALEQUOTATIONJOBSHEET' THEN
+		SELECT 
+			 A."ItemCode" AS ITEMCODE
+			,A."Dscription" AS ITEMNAME 
+			,IFNULL(CASE WHEN A."TotalFrgn"=0 THEN A."LineTotal" ELSE A."TotalFrgn" END,0) AS PRICESELLING
+			,IFNULL(D."Price",0) AS PRICECOSTING
+			,A."LineNum"+1 AS ROWNUM
+			,'Q' AS ITEMTYPE
+			,DD."UgpEntry" AS "UomEntry"
+			,A."U_Remark" AS "Remarks"
+		FROM EW_PRD_TEST20240924."QUT1" AS A 
+		LEFT JOIN EW_PRD_TEST20240924."OHEM" AS B ON B."empID"=:par2
+		LEFT JOIN EW_PRD_TEST20240924."OSLP" AS C ON C."SlpCode"=B."salesPrson"
+		LEFT JOIN EW_PRD_TEST20240924."OITM" AS DD ON DD."ItemCode"=A."ItemCode"
+		LEFT JOIN EW_PRD_TEST20240924."ITM1" AS D ON D."ItemCode"=A."ItemCode" AND D."PriceList"=C."U_PriceList"
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GetAbsEntryProjectManagement' THEN
+		SELECT 
+			"AbsEntry" AS ABSENTRY
+		FROM EW_PRD_TEST20240924."OPMG" 
+		WHERE "NAME"=:par1;
+	ELSE IF :DTYPE='GETLASTROWSTAGE' THEN
+		SELECT 
+			IFNULL(MAX("POS")+1,1) AS LASTROWSTAGE 
+		FROM EW_PRD_TEST20240924."PMG1" WHERE "AbsEntry"=:par1;
+	ELSE IF :DTYPE='GETSTAGEBYJOBNUMBER' THEN
+		SELECT DISTINCT 
+			"StageID" AS STAGEID
+		FROM EW_PRD_TEST20240924."PMG4" 
+		WHERE "DocEntry"=:par1 AND "TYP"=13;
+	ELSE IF :DTYPE='GetListJobSheet' THEN
+		IF :par3='ALL' THEN
+			SELECT 
+				 T0."DocEntry" AS JOBSHEETID
+				,A."U_EWSeries"||A."U_JOBNO" AS JOBNO
+				,TO_VARCHAR(A."CreateDate",'YYYYMMDD') AS JOBSHEETDATE
+				,CASE WHEN T0."CreateTime"=T0."UpdateTime" THEN 
+				     	'' 
+				     	ELSE TO_VARCHAR(T0."UpdateDate",'YYYYMMDD') END AS UPDATEDATE
+					 ,LEFT(CASE
+							WHEN LENGTH(T0."CreateTime") = 3  THEN CAST('0' || T0."CreateTime"AS TIME) 
+							WHEN LENGTH(T0."CreateTime") = 2 THEN CAST('00' || T0."CreateTime"AS TIME)
+							WHEN LENGTH(T0."CreateTime") = 1 THEN CAST('000' || T0."CreateTime"AS TIME) 
+							ELSE CAST(T0."CreateTime"AS TIME) END
+				     ,5) AS "CREATETIME"
+				     ,CASE WHEN T0."CreateTime"=T0."UpdateTime" THEN 
+				     	'' 
+				     	ELSE 
+				     	LEFT(CASE
+							WHEN LENGTH(T0."UpdateTime") = 3  THEN CAST('0' || T0."UpdateTime" AS TIME) 
+							WHEN LENGTH(T0."UpdateTime") = 2 THEN CAST('00' || T0."UpdateTime" AS TIME)
+							WHEN LENGTH(T0."UpdateTime") = 1 THEN CAST('000' || T0."UpdateTime" AS TIME) 
+							ELSE CAST(T0."UpdateTime" AS TIME) END ,5) 
+						END
+				      AS "UPDATETIME"
+				,TO_VARCHAR(A."U_LOADINGDATE",'YYYYMMDD') AS "LoadingDate"
+				,TO_VARCHAR(A."U_ETAREQUIREMENT",'YYYYMMDD') AS "ETADate"
+				,B."Name" AS IMPORTYPE
+				,C."CardName" AS CO
+				,D."descript" AS ROUTE
+				,E."Code" AS CREATEBY
+				,T0."U_CONFIRMBOOKINGID" AS CONFIRMBOOKINGID
+				,CASE WHEN T0."U_USERCREATE" IN (
+										SELECT DISTINCT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_UPDATE" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									) OR T0."U_USERCREATE"=:par4 THEN
+					CASE WHEN T0."Canceled"!='Y' THEN 
+						CASE WHEN IFNULL(T0."U_SALESORDERDOCNUM",0)=0 THEN 'N' 
+						ELSE T0."U_COSTINGCONFIRM" END 
+					ELSE 'Y' END
+				 ELSE 'Y' END AS COSTINGCONFIRMSTATUS
+				,(SELECT STRING_AGG(K1."CardName",' - ') 
+					 	FROM EW_PRD_TEST20240924."@TBSHIPPER" AS K0 
+					 	LEFT JOIN EW_PRD_TEST20240924."OCRD" AS K1 ON K1."CardCode"=K0."U_SHIPPER"
+					 	WHERE K0."DocEntry"=A."DocEntry") AS "Shipper"
+				,(SELECT STRING_AGG(K1."CardName",' - ') 
+					 	FROM EW_PRD_TEST20240924."@TBCONSIGNEE" AS K0 
+					 	LEFT JOIN EW_PRD_TEST20240924."OCRD" AS K1 ON K1."CardCode"=K0."U_CONSIGNEE"
+					 	WHERE K0."DocEntry"=A."DocEntry") AS "Consignee"
+				,T0."U_UpdateBy" AS "UpdateBy"
+				,CASE WHEN T0."U_USERCREATE" IN (
+										SELECT DISTINCT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_CANCEL" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									) OR T0."U_USERCREATE"=:par4 THEN
+					CASE WHEN T0."U_SALESORDERDOCNUM"='0' THEN 'C' ELSE
+						CASE WHEN (SELECT 
+											CASE WHEN MAX(Z0."CANCELED")='Y' THEN 1 ELSE COUNT(Z1."DocEntry") END
+										FROM EW_PRD_TEST20240924."ORDR" AS Z0
+										LEFT JOIN EW_PRD_TEST20240924."INV1" AS Z1 ON Z0."DocEntry"=Z1."BaseEntry" AND Z1."BaseType"=Z0."ObjType"
+										WHERE Z0."DocEntry"=T0."U_SALESORDERDOCNUM"
+										AND IFNULL((SELECT "CANCELED" FROM EW_PRD_TEST20240924."OINV" WHERE "DocEntry"=Z1."DocEntry"),'N')='N')=0 THEN T0."Status" ELSE 'C' END
+					END
+				 ELSE 'C' END AS "CancelStatus"
+				,T0."U_SALESORDERDOCNUM" AS "DocEntrySO"
+				,(SELECT STRING_AGG(T0."U_INVOICE",', ')
+					 	FROM EW_PRD_TEST20240924."@COMMODITY" AS T0 
+					 	WHERE T0."DocEntry"=A."DocEntry") AS "Commodities"
+				,(SELECT STRING_AGG(Z0."DOCNUM",',') FROM EW_PRD_TEST20240924."PMG4" AS Z0 WHERE Z0."AbsEntry"=AA."U_PROJECTMANAGEMENTID" AND "TYP"='13') AS "InvoiceNumber"
+				,(SELECT STRING_AGG(Z0."DOCNUM",',') FROM EW_PRD_TEST20240924."PMG4" AS Z0 WHERE Z0."AbsEntry"=AA."U_PROJECTMANAGEMENTID" AND "TYP"='203') AS "DownPaymentInvoice"
+			FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" AS T0
+			LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS AA ON AA."DocEntry"=T0."U_CONFIRMBOOKINGID"
+			LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS A ON A."DocEntry"=AA."U_BOOKINGID"
+			LEFT JOIN EW_PRD_TEST20240924."@TBJOBTYPE" AS B ON B."Code"=A."U_IMPORTTYPE"
+			LEFT JOIN EW_PRD_TEST20240924."ORDR" AS CC ON CC."DocEntry"=T0."U_SALESORDERDOCNUM"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=CC."CardCode"
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS D ON D."territryID"=A."U_DESTINATION"
+			LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS E ON E."Code"=T0."U_USERCREATE"
+			WHERE A."U_UserCreate"=CASE WHEN '-1'='-1' THEN A."U_UserCreate" ELSE A."U_UserCreate" END 
+				  AND A."CreateDate" BETWEEN :par1 AND :par2
+				  AND T0."Status"='O'
+				  AND (T0."U_USERCREATE"=:par4
+					OR T0."U_USERCREATE" IN (
+								SELECT "U_User" 
+								FROM EW_PRD_TEST20240924."@TB_P_READ" AS T0
+								LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+								WHERE T1."Code"=:par4
+							))
+			ORDER BY T0."DocEntry" DESC;
+		ELSE IF :par3='DEFAULT' THEN
+			SELECT TOP 1000
+				 T0."DocEntry" AS JOBSHEETID
+				,A."U_EWSeries"||A."U_JOBNO" AS JOBNO
+				,TO_VARCHAR(A."CreateDate",'YYYYMMDD') AS JOBSHEETDATE
+				,CASE WHEN T0."CreateTime"=T0."UpdateTime" THEN 
+				     	'' 
+				     	ELSE TO_VARCHAR(T0."UpdateDate",'YYYYMMDD') END AS UPDATEDATE
+					 ,LEFT(CASE
+							WHEN LENGTH(T0."CreateTime") = 3  THEN CAST('0' || T0."CreateTime"AS TIME) 
+							WHEN LENGTH(T0."CreateTime") = 2 THEN CAST('00' || T0."CreateTime"AS TIME)
+							WHEN LENGTH(T0."CreateTime") = 1 THEN CAST('000' || T0."CreateTime"AS TIME) 
+							ELSE CAST(T0."CreateTime"AS TIME) END
+				     ,5) AS "CREATETIME"
+				     ,CASE WHEN T0."CreateTime"=T0."UpdateTime" THEN 
+				     	'' 
+				     	ELSE 
+				     	LEFT(CASE
+							WHEN LENGTH(T0."UpdateTime") = 3  THEN CAST('0' || T0."UpdateTime" AS TIME) 
+							WHEN LENGTH(T0."UpdateTime") = 2 THEN CAST('00' || T0."UpdateTime" AS TIME)
+							WHEN LENGTH(T0."UpdateTime") = 1 THEN CAST('000' || T0."UpdateTime" AS TIME) 
+							ELSE CAST(T0."UpdateTime" AS TIME) END ,5) 
+						END
+				      AS "UPDATETIME"
+				,TO_VARCHAR(A."U_LOADINGDATE",'YYYYMMDD') AS "LoadingDate"
+				,TO_VARCHAR(A."U_ETAREQUIREMENT",'YYYYMMDD') AS "ETADate"
+				,B."Name" AS IMPORTYPE
+				,C."CardName" AS CO
+				,D."descript" AS ROUTE
+				,E."Code" AS CREATEBY
+				,T0."U_CONFIRMBOOKINGID" AS CONFIRMBOOKINGID
+				,CASE WHEN T0."U_USERCREATE" IN (
+										SELECT DISTINCT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_UPDATE" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									) OR T0."U_USERCREATE"=:par4 THEN
+					CASE WHEN T0."Canceled"!='Y' THEN 
+						CASE WHEN IFNULL(T0."U_SALESORDERDOCNUM",0)=0 THEN 'N' 
+						ELSE T0."U_COSTINGCONFIRM" END 
+					ELSE 'Y' END
+				 ELSE 'Y' END AS COSTINGCONFIRMSTATUS
+				,(SELECT STRING_AGG(K1."CardName",' - ') 
+					 	FROM EW_PRD_TEST20240924."@TBSHIPPER" AS K0 
+					 	LEFT JOIN EW_PRD_TEST20240924."OCRD" AS K1 ON K1."CardCode"=K0."U_SHIPPER"
+					 	WHERE K0."DocEntry"=A."DocEntry") AS "Shipper"
+				,(SELECT STRING_AGG(K1."CardName",' - ') 
+					 	FROM EW_PRD_TEST20240924."@TBCONSIGNEE" AS K0 
+					 	LEFT JOIN EW_PRD_TEST20240924."OCRD" AS K1 ON K1."CardCode"=K0."U_CONSIGNEE"
+					 	WHERE K0."DocEntry"=A."DocEntry") AS "Consignee"
+				,T0."U_UpdateBy" AS "UpdateBy"
+				,CASE WHEN T0."U_USERCREATE" IN (
+										SELECT DISTINCT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_CANCEL" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									) OR T0."U_USERCREATE"=:par4 THEN
+					CASE WHEN T0."U_SALESORDERDOCNUM"='0' THEN 'C' ELSE
+						CASE WHEN (SELECT 
+											CASE WHEN MAX(Z0."CANCELED")='Y' THEN 1 ELSE COUNT(Z1."DocEntry") END
+										FROM EW_PRD_TEST20240924."ORDR" AS Z0
+										LEFT JOIN EW_PRD_TEST20240924."INV1" AS Z1 ON Z0."DocEntry"=Z1."BaseEntry" AND Z1."BaseType"=Z0."ObjType"
+										WHERE Z0."DocEntry"=T0."U_SALESORDERDOCNUM"
+										AND IFNULL((SELECT "CANCELED" FROM EW_PRD_TEST20240924."OINV" WHERE "DocEntry"=Z1."DocEntry"),'N')='N')=0 THEN T0."Status" ELSE 'C' END
+					END
+				 ELSE 'C' END AS "CancelStatus"
+				,T0."U_SALESORDERDOCNUM" AS "DocEntrySO"
+				,(SELECT STRING_AGG(T0."U_INVOICE",', ')
+					 	FROM EW_PRD_TEST20240924."@COMMODITY" AS T0 
+					 	WHERE T0."DocEntry"=A."DocEntry") AS "Commodities"
+				,(SELECT STRING_AGG(Z0."DOCNUM",',') FROM EW_PRD_TEST20240924."PMG4" AS Z0 WHERE Z0."AbsEntry"=AA."U_PROJECTMANAGEMENTID" AND "TYP"='13') AS "InvoiceNumber"
+				,(SELECT STRING_AGG(Z0."DOCNUM",',') FROM EW_PRD_TEST20240924."PMG4" AS Z0 WHERE Z0."AbsEntry"=AA."U_PROJECTMANAGEMENTID" AND "TYP"='203') AS "DownPaymentInvoice"
+			FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" AS T0
+			LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS AA ON AA."DocEntry"=T0."U_CONFIRMBOOKINGID"
+			LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS A ON A."DocEntry"=AA."U_BOOKINGID"
+			LEFT JOIN EW_PRD_TEST20240924."@TBJOBTYPE" AS B ON B."Code"=A."U_IMPORTTYPE"
+			LEFT JOIN EW_PRD_TEST20240924."ORDR" AS CC ON CC."DocEntry"=T0."U_SALESORDERDOCNUM"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=CC."CardCode"
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS D ON D."territryID"=A."U_DESTINATION"
+			LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS E ON E."Code"=T0."U_USERCREATE"
+			WHERE A."U_UserCreate"=CASE WHEN '-1'='-1' THEN A."U_UserCreate" ELSE A."U_UserCreate" END
+				  AND A."CreateDate" BETWEEN :par1 AND :par2
+				  AND T0."Status"='O'
+				  AND (T0."U_USERCREATE"=:par4
+					OR T0."U_USERCREATE" IN (
+								SELECT "U_User" 
+								FROM EW_PRD_TEST20240924."@TB_P_READ" AS T0
+								LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+								WHERE T1."Code"=:par4
+							))
+			ORDER BY T0."DocEntry" DESC;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GetAccountCodePurchaseRequest' THEN
+		SELECT A."AcctCode" AS ACCOUNTCODE
+			  ,A."AcctName" AS ACCOUNTNAME
+			  ,A."CurrTotal" AS ACCOUNTBALANCE
+		FROM EW_PRD_TEST20240924."OACT" AS A 
+		WHERE A."FatherNum" IS NOT NULL AND A."Postable"='Y';
+	ELSE IF :DTYPE='GetItemCodePurchaseRequest' THEN
+		IF :par1='Normal' THEN
+			/*IF :par2='CBT' THEN
+				SELECT A."ItemCode" ITEMCODE
+					  ,A."ItemCode"||' - '||A."ItemName" AS ITEMNAME
+					  ,IFNULL(B."Price",0) AS PRICE --A."UgpEntry"
+					  ,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=A."UgpEntry") AS SERVICETYPE
+				FROM EW_PRD_TEST20240924."OITM" AS A 
+				LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1
+				WHERE A."ItmsGrpCod"NOT IN('130') AND A."ItemType"='I' AND A."U_Dept_item"IN ('CBT','ALL');
+			ELSE IF :par2='S&A' THEN
+				SELECT A."ItemCode" ITEMCODE
+					  ,A."ItemCode"||' - '||A."ItemName" AS ITEMNAME
+					  ,IFNULL(B."Price",0) AS PRICE --A."UgpEntry"
+					  ,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=A."UgpEntry") AS SERVICETYPE
+				FROM EW_PRD_TEST20240924."OITM" AS A 
+				LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1
+				WHERE A."ItmsGrpCod"NOT IN('130') AND A."ItemType"='I' AND A."U_Dept_item"IN ('SA','SF','ALL');
+			ELSE 
+				SELECT A."ItemCode" ITEMCODE
+					  ,A."ItemCode"||' - '||A."ItemName" AS ITEMNAME
+					  ,IFNULL(B."Price",0) AS PRICE --A."UgpEntry"
+					  ,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=A."UgpEntry") AS SERVICETYPE
+				FROM EW_PRD_TEST20240924."OITM" AS A 
+				LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1
+				WHERE A."ItmsGrpCod"NOT IN('130') AND A."ItemType"='I' ;
+			END IF;
+			END IF;*/
+			SELECT A."ItemCode" ITEMCODE
+					  ,A."ItemCode"||' - '||A."ItemName" AS ITEMNAME
+					  ,IFNULL(B."Price",0) AS PRICE --A."UgpEntry"
+					  ,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=A."UgpEntry") AS SERVICETYPE
+				FROM EW_PRD_TEST20240924."OITM" AS A 
+				LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1
+				WHERE A."ItmsGrpCod" IN('102') AND A."ItemType"='I';
+		ELSE IF :par1='AdvanceForCustomer' THEN
+			IF :par2='CBT' THEN
+				SELECT A."ItemCode" ITEMCODE
+					  ,A."ItemCode"||' - '||A."ItemName" AS ITEMNAME
+					  ,IFNULL(B."Price",0) AS PRICE --A."UgpEntry"
+					  ,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=A."UgpEntry") AS SERVICETYPE
+				FROM EW_PRD_TEST20240924."OITM" AS A 
+				LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1
+				WHERE A."ItmsGrpCod" IN ('121','122','125','126','123','124','127','137','136','138','139') AND A."U_Dept_item"IN ('CBT','FWD','ALL');
+			ELSE IF :par2 IN ('S&A','FWD') THEN
+				SELECT A."ItemCode" ITEMCODE
+					  ,A."ItemCode"||' - '||A."ItemName" AS ITEMNAME
+					  ,IFNULL(B."Price",0) AS PRICE --A."UgpEntry"
+					  ,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=A."UgpEntry") AS SERVICETYPE
+				FROM EW_PRD_TEST20240924."OITM" AS A 
+				LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1
+				WHERE A."ItmsGrpCod" IN ('121','122','125','126','123','124','127','137','136','138','139') AND A."U_Dept_item"IN ('SA','SF','FWD','ALL');
+			ELSE 
+				SELECT A."ItemCode" ITEMCODE
+					  ,A."ItemCode"||' - '||A."ItemName" AS ITEMNAME
+					  ,IFNULL(B."Price",0) AS PRICE --A."UgpEntry"
+					  ,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=A."UgpEntry") AS SERVICETYPE
+				FROM EW_PRD_TEST20240924."OITM" AS A 
+				LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1
+				WHERE A."ItmsGrpCod" IN ('121','122','125','126','123','124');
+			END IF;
+			END IF;
+		ELSE IF :par1='ITEM-ALL' THEN
+			IF :par2='CBT' THEN
+				SELECT A."ItemCode" ITEMCODE
+					  ,A."ItemCode"||' - '||A."ItemName" AS ITEMNAME
+					  ,IFNULL(B."Price",0) AS PRICE --A."UgpEntry"
+					  ,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=A."UgpEntry") AS SERVICETYPE
+				FROM EW_PRD_TEST20240924."OITM" AS A 
+				LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1 
+				WHERE A."ItmsGrpCod"NOT IN('130') AND A."U_Dept_item"IN ('CBT','ALL');
+			ELSE IF :par2='S&A' THEN
+				SELECT A."ItemCode" ITEMCODE
+					  ,A."ItemCode"||' - '||A."ItemName" AS ITEMNAME
+					  ,IFNULL(B."Price",0) AS PRICE --A."UgpEntry"
+					  ,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=A."UgpEntry") AS SERVICETYPE
+				FROM EW_PRD_TEST20240924."OITM" AS A 
+				LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1  
+				WHERE A."ItmsGrpCod"NOT IN('130') AND A."U_Dept_item"IN ('CBT','ALL');
+			ELSE
+				SELECT A."ItemCode" ITEMCODE
+					  ,A."ItemCode"||' - '||A."ItemName" AS ITEMNAME
+					  ,IFNULL(B."Price",0) AS PRICE --A."UgpEntry"
+					  ,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=A."UgpEntry") AS SERVICETYPE
+				FROM EW_PRD_TEST20240924."OITM" AS A 
+				LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1
+				WHERE A."ItmsGrpCod"NOT IN('130') AND A."U_Dept_item"IN ('CBT','ALL');
+			END IF;
+			END IF;
+		ELSE IF :par1='PRCOSGConfirmBooking' THEN
+			IF :par2='CBT' THEN
+				SELECT A."ItemCode" ITEMCODE
+					  ,A."ItemCode"||' - '||A."ItemName" AS ITEMNAME
+					  ,IFNULL(B."Price",0) AS PRICE --A."UgpEntry"
+					  ,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=A."UgpEntry") AS SERVICETYPE
+				FROM EW_PRD_TEST20240924."OITM" AS A 
+				LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1
+				WHERE A."ItmsGrpCod"NOT IN('130') AND A."U_Dept_item"IN ('CBT','ALL'); -- AND A."ItemType"='I'
+			ELSE IF :par2='S&A' THEN
+				SELECT A."ItemCode" ITEMCODE
+					  ,A."ItemCode"||' - '||A."ItemName" AS ITEMNAME
+					  ,IFNULL(B."Price",0) AS PRICE --A."UgpEntry"
+					  ,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=A."UgpEntry") AS SERVICETYPE
+				FROM EW_PRD_TEST20240924."OITM" AS A 
+				LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1
+				WHERE A."ItmsGrpCod"NOT IN('130') AND A."U_Dept_item"IN ('SA','SF','ALL'); -- AND A."ItemType"='I'
+			ELSE 
+				SELECT A."ItemCode" ITEMCODE
+					  ,A."ItemCode"||' - '||A."ItemName" AS ITEMNAME
+					  ,IFNULL(B."Price",0) AS PRICE --A."UgpEntry"
+					  ,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=A."UgpEntry") AS SERVICETYPE
+				FROM EW_PRD_TEST20240924."OITM" AS A 
+				LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1
+				WHERE A."ItmsGrpCod"NOT IN('130'); --AND A."ItemType"='I'
+			END IF;
+			END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;	
+	ELSE IF :DTYPE='GetMaxDocNumPurchaseRequest' THEN
+		SELECT 
+			IFNULL("NextNumber","InitialNum") AS MAXDOCNUM
+		FROM EW_PRD_TEST20240924."NNM1" AS A
+		WHERE A."Indicator" IN (SELECT "Indicator" 
+									FROM EW_PRD_TEST20240924."OFPR" AS A 
+								WHERE TO_VARCHAR(A."F_RefDate", 'YYYY/MM')=TO_VARCHAR(CURRENT_DATE, 'YYYY/MM'))
+		AND A."ObjectCode"='1470000113';
+	ELSE IF :DTYPE='GetSeriesDocNumPurchaseRequest' THEN
+		SELECT 
+			 A."Series" AS SERIES
+			,A."SeriesName" AS SERIESNAME
+			,A."NextNumber" AS MAXDOCNUM
+		FROM EW_PRD_TEST20240924."NNM1" AS A
+		WHERE A."Indicator" IN (SELECT "Indicator" 
+									FROM EW_PRD_TEST20240924."OFPR" AS A 
+								WHERE TO_VARCHAR(A."F_RefDate", 'YYYY/MM')=TO_VARCHAR(CURRENT_DATE, 'YYYY/MM'))
+		AND A."ObjectCode"='1470000113' AND A."BeginStr"='PRAM';
+	ELSE IF :DTYPE='GetSeriesDocNumJournalVoucher' THEN
+		SELECT 
+			 A."Series" AS SERIES
+			,A."SeriesName" AS SERIESNAME
+			,A."NextNumber" AS MAXDOCNUM
+		FROM EW_PRD_TEST20240924."NNM1" AS A
+		WHERE A."Indicator" IN (SELECT "Indicator" 
+									FROM EW_PRD_TEST20240924."OFPR" AS A 
+								WHERE TO_VARCHAR(A."F_RefDate", 'YYYY/MM')=TO_VARCHAR(CURRENT_DATE, 'YYYY/MM'))
+		AND A."ObjectCode"='30' AND A."BeginStr"='JV';
+	ELSE IF :DTYPE='GetSeriesDocNumPurchaseRequestCOGS' THEN
+		SELECT 
+			 A."Series" AS SERIES
+			,A."SeriesName" AS SERIESNAME
+			,A."NextNumber" AS MAXDOCNUM
+		FROM EW_PRD_TEST20240924."NNM1" AS A
+		WHERE A."Indicator" IN (SELECT "Indicator" 
+									FROM EW_PRD_TEST20240924."OFPR" AS A 
+								WHERE TO_VARCHAR(A."F_RefDate", 'YYYY/MM')=TO_VARCHAR(CURRENT_DATE, 'YYYY/MM'))
+		AND A."ObjectCode"='1470000113' AND A."BeginStr"='PRCS';
+	ELSE IF :DTYPE='GetSeriesDocNumPurchaseRequestAdvancePayment' THEN
+		SELECT 
+			A."Series" AS SERIES
+			,A."SeriesName" AS SERIESNAME
+			,A."NextNumber" AS MAXDOCNUM
+		FROM EW_PRD_TEST20240924."NNM1" AS A
+		WHERE A."Indicator" IN (SELECT "Indicator" 
+									FROM EW_PRD_TEST20240924."OFPR" AS A 
+								WHERE TO_VARCHAR(A."F_RefDate", 'YYYY/MM')=TO_VARCHAR(CURRENT_DATE, 'YYYY/MM'))
+		AND A."ObjectCode"='1470000113' AND A."BeginStr" IN ('PRDT','PRAD');
+	ELSE IF :DTYPE='GetMaxDocNumIncomingPayment' THEN
+		SELECT 
+			IFNULL("NextNumber","InitialNum") AS MAXDOCNUM
+			,A."Series" AS CODE
+			,A."SeriesName" AS NAME
+		FROM EW_PRD_TEST20240924."NNM1" AS A
+		WHERE A."Indicator" IN (SELECT "Indicator" 
+									FROM EW_PRD_TEST20240924."OFPR" AS A 
+								WHERE TO_VARCHAR(A."F_RefDate", 'YYYY/MM')=TO_VARCHAR(CURRENT_DATE, 'YYYY/MM'))
+		AND A."ObjectCode"='30';
+	ELSE IF :DTYPE='GetListPurchaseRequest' THEN
+		IF :par4='ALL' THEN
+			SELECT 
+				 TO_VARCHAR(A."DocEntry") AS DOCENTRY
+				,TO_VARCHAR(A."U_NumAtCard") AS DOCNUM
+				,CASE WHEN A."Canceled"='Y' THEN 'Canceled' ELSE 
+					CASE 
+					WHEN A."U_ApproveStatus"='P' THEN 'Pending' 
+					WHEN A."U_ApproveStatus"='A' THEN 'Approve' 
+					WHEN A."U_ApproveStatus"='R' THEN 'Reject' END
+				 END AS STATUS
+				,A."U_UserID" AS USERID
+				,A."U_UpdateBy" AS "UpdateBy"
+				,C."firstName"||'-'||C."lastName" AS USERNAME
+				,TO_VARCHAR(A."CreateDate",'DD/MM/YYYY') AS ISSUEDATE
+				,TO_VARCHAR(A."UpdateDate")
+				,TO_VARCHAR(A."U_DueDate",'DD/MM/YYYY') AS REQUIREDATE
+				,A."Remark" AS REMARK
+				,A."U_REASON" AS REASON
+				,TO_DECIMAL(A."U_Amount",3,2) AS DOCTOTAL
+				,D."NAME" AS JOBNUMBER
+				,A."DocNum" AS DOCNUMPR
+				,A."U_VendorCode" AS VENDORCODE
+				,E."CardName" AS VENDORNAME
+				,CASE WHEN TO_VARCHAR(A."U_UserID") IN (
+										SELECT 
+											TO_VARCHAR(T2."U_EMPLOYEEID")
+										FROM EW_PRD_TEST20240924."@TBUSER" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TB_P_UPDATE" AS T1 ON T1."Code"=T0."U_USERROLE"
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T2 ON T2."Code"=T1."U_User"
+										WHERE T0."Code"=:par5
+									) OR A."U_UserID"=(SELECT "U_EMPLOYEEID" FROM EW_PRD_TEST20240924."@TBUSER" WHERE "Code"=:par5) THEN
+					  	CASE WHEN A."U_ApproveStatus"!='P' THEN 'C' ELSE CASE WHEN A."Canceled"='Y' THEN 'C' ELSE 'O' END END
+				 ELSE 'C' END AS "UpdateStatus"
+				,CASE WHEN TO_VARCHAR(A."U_UserID") IN (
+										SELECT 
+											TO_VARCHAR(T2."U_EMPLOYEEID")
+										FROM EW_PRD_TEST20240924."@TBUSER" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TB_P_UPDATE" AS T1 ON T1."Code"=T0."U_USERROLE"
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T2 ON T2."Code"=T1."U_User"
+										WHERE T0."Code"=:par5
+									) OR A."U_UserID"=(SELECT "U_EMPLOYEEID" FROM EW_PRD_TEST20240924."@TBUSER" WHERE "Code"=:par5) THEN
+					  	CASE WHEN A."U_ApproveStatus"!='P' THEN 'C' ELSE CASE WHEN A."Canceled"='Y' THEN 'C' ELSE 'O' END END
+				 ELSE 'C' END AS "CancelStatus"
+				,CASE WHEN A."CreateTime"=A."UpdateTime" THEN 
+					'' 
+				 ELSE 
+					LEFT(CASE
+							WHEN LENGTH(A."UpdateTime") = 3  THEN CAST('0' || A."UpdateTime" AS TIME) 
+							WHEN LENGTH(A."UpdateTime") = 2 THEN CAST('00' || A."UpdateTime" AS TIME)
+							WHEN LENGTH(A."UpdateTime") = 1 THEN CAST('000' || A."UpdateTime" AS TIME) 
+						 	ELSE CAST(A."UpdateTime" AS TIME) END ,5)
+				 END AS "UPDATETIME"
+	  			,LEFT(CASE
+					WHEN LENGTH(A."CreateTime") = 3  THEN CAST('0' || A."CreateTime"AS TIME) 
+					WHEN LENGTH(A."CreateTime") = 2 THEN CAST('00' || A."CreateTime"AS TIME)
+					WHEN LENGTH(A."CreateTime") = 1 THEN CAST('000' || A."CreateTime"AS TIME) 
+				 ELSE CAST(A."CreateTime"AS TIME) END,5) AS "CREATETIME" 
+	  			,TO_VARCHAR(A."CreateDate",'DD/MM/YYYY') AS "CreateDate"
+	  			,TO_VARCHAR(A."UpdateDate",'DD/MM/YYYY') AS "UpdateDate"
+			FROM EW_PRD_TEST20240924."@ADVANCEPAYMENT" AS A
+			--LEFT JOIN EW_PRD_TEST20240924."@ADVANCEPAYMENTROW" AS B ON A."DocEntry"=B."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS C ON C."empID"=A."U_UserID"
+			LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."AbsEntry"=A."U_Project"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS E ON E."CardCode"=A."U_VendorCode"
+			WHERE A."U_AdvanceType"=:par1
+			AND (A."U_IssueDate" BETWEEN :par2 AND :par3
+				OR (A."U_UserID"=(SELECT "U_EMPLOYEEID" FROM EW_PRD_TEST20240924."@TBUSER" WHERE "Code"=:par5)
+						OR TO_VARCHAR(A."U_UserID") IN (
+							SELECT TO_VARCHAR(T2."U_EMPLOYEEID") 
+							FROM EW_PRD_TEST20240924."@TB_P_READ" AS T0
+							LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+							LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T2 ON T0."Code"=T2."U_USERROLE"
+							WHERE T1."Code"=:par5
+						)))
+			ORDER BY A."DocEntry" DESC;
+		ELSE IF :par4='DEFAULT' THEN
+			SELECT TOP 1000
+				 TO_VARCHAR(A."DocEntry") AS DOCENTRY
+				,TO_VARCHAR(A."U_NumAtCard") AS DOCNUM
+				,CASE WHEN A."Canceled"='Y' THEN 'Canceled' ELSE 
+					CASE 
+					WHEN A."U_ApproveStatus"='P' THEN 'Pending' 
+					WHEN A."U_ApproveStatus"='A' THEN 'Approve' 
+					WHEN A."U_ApproveStatus"='R' THEN 'Reject' END
+				 END AS "STATUS"
+				,A."U_UserID" AS USERID
+				,IFNULL(A."U_UpdateBy",'') AS "UpdateBy"
+				,C."firstName"||'-'||C."lastName" AS USERNAME
+				,TO_VARCHAR(A."U_IssueDate",'DD/MM/YYYY') AS ISSUEDATE
+				,TO_VARCHAR(A."U_DueDate",'DD/MM/YYYY') AS REQUIREDATE
+				,IFNULL(A."Remark",'') AS REMARK
+				,IFNULL(A."U_REASON",'') AS REASON
+				,TO_DECIMAL(A."U_Amount",3,2) AS DOCTOTAL
+				,IFNULL(D."NAME",'') AS JOBNUMBER
+				,TO_VARCHAR(A."DocNum") AS DOCNUMPR
+				,A."U_VendorCode" AS VENDORCODE
+				,E."CardName" AS VENDORNAME
+				,CASE WHEN TO_VARCHAR(A."U_UserID") IN (
+										SELECT 
+											TO_VARCHAR(T2."U_EMPLOYEEID")
+										FROM EW_PRD_TEST20240924."@TBUSER" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TB_P_UPDATE" AS T1 ON T1."Code"=T0."U_USERROLE"
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T2 ON T2."Code"=T1."U_User"
+										WHERE T0."Code"=:par5
+									) OR A."U_UserID"=(SELECT "U_EMPLOYEEID" FROM EW_PRD_TEST20240924."@TBUSER" WHERE "Code"=:par5) THEN
+					  	CASE WHEN A."U_ApproveStatus"!='P' THEN 'C' ELSE CASE WHEN A."Canceled"='Y' THEN 'C' ELSE 'O' END END
+				 ELSE 'C' END AS "UpdateStatus"
+				,CASE WHEN TO_VARCHAR(A."U_UserID") IN (
+										SELECT 
+											TO_VARCHAR(T2."U_EMPLOYEEID")
+										FROM EW_PRD_TEST20240924."@TBUSER" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TB_P_UPDATE" AS T1 ON T1."Code"=T0."U_USERROLE"
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T2 ON T2."Code"=T1."U_User"
+										WHERE T0."Code"=:par5
+									) OR A."U_UserID"=(SELECT "U_EMPLOYEEID" FROM EW_PRD_TEST20240924."@TBUSER" WHERE "Code"=:par5) THEN
+					  	CASE WHEN A."U_ApproveStatus"!='P' THEN 'C' ELSE CASE WHEN A."Canceled"='Y' THEN 'C' ELSE 'O' END END
+				 ELSE 'C' END AS "CancelStatus"
+				,CASE WHEN A."CreateTime"=A."UpdateTime" THEN 
+					'' 
+				 ELSE 
+					LEFT(CASE
+							WHEN LENGTH(A."UpdateTime") = 3  THEN CAST('0' || A."UpdateTime" AS TIME) 
+							WHEN LENGTH(A."UpdateTime") = 2 THEN CAST('00' || A."UpdateTime" AS TIME)
+							WHEN LENGTH(A."UpdateTime") = 1 THEN CAST('000' || A."UpdateTime" AS TIME) 
+						 	ELSE CAST(A."UpdateTime" AS TIME) END ,5)
+				 END AS "UPDATETIME"
+	  			,LEFT(CASE
+					WHEN LENGTH(A."CreateTime") = 3  THEN CAST('0' || A."CreateTime"AS TIME) 
+					WHEN LENGTH(A."CreateTime") = 2 THEN CAST('00' || A."CreateTime"AS TIME)
+					WHEN LENGTH(A."CreateTime") = 1 THEN CAST('000' || A."CreateTime"AS TIME) 
+				 ELSE CAST(A."CreateTime"AS TIME) END,5) AS "CREATETIME" 
+	  			,TO_VARCHAR(A."CreateDate",'DD/MM/YYYY') AS "CreateDate"
+	  			,TO_VARCHAR(A."UpdateDate",'DD/MM/YYYY') AS "UpdateDate"
+			FROM EW_PRD_TEST20240924."@ADVANCEPAYMENT" AS A
+			--LEFT JOIN EW_PRD_TEST20240924."@ADVANCEPAYMENTROW" AS B ON A."DocEntry"=B."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS C ON C."empID"=A."U_UserID"
+			LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."AbsEntry"=A."U_Project"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS E ON E."CardCode"=A."U_VendorCode"
+			WHERE A."U_AdvanceType"=:par1
+			AND (A."U_IssueDate" BETWEEN :par2 AND :par3
+			OR (A."U_UserID"=(SELECT "U_EMPLOYEEID" FROM EW_PRD_TEST20240924."@TBUSER" WHERE "Code"=:par5)
+						OR TO_VARCHAR(A."U_UserID") IN (
+							SELECT TO_VARCHAR(T2."U_EMPLOYEEID") 
+							FROM EW_PRD_TEST20240924."@TB_P_READ" AS T0
+							LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+							LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T2 ON T0."Code"=T2."U_USERROLE"
+							WHERE T1."Code"=:par5
+						)))
+			ORDER BY A."DocEntry" DESC;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GetAccountCodeJournalVoucherEntry' THEN
+		SELECT A."AcctCode" AS ACCOUNTCODE
+			  ,A."AcctName" AS ACCOUNTNAME
+			  ,A."CurrTotal" AS ACCOUNTBALANCE
+		FROM EW_PRD_TEST20240924."OACT" AS A 
+		WHERE "FatherNum" IN (SELECT A."AcctCode" AS ACCOUNTCODE
+		FROM EW_PRD_TEST20240924."OACT" AS A 
+		WHERE "FatherNum" IN (SELECT "AcctCode" FROM EW_PRD_TEST20240924."OACT" WHERE "FatherNum"='63000000'));
+	ELSE IF :DTYPE='GetBpCodeJournalVoucherEntry' THEN
+		/*SELECT A."CardCode" AS CUSTOMERCODE
+			  ,A."CardName" AS CUSTOMERNAME
+			  ,CAST(A."Balance" AS double) AS BALANCE
+		FROM EW_PRD_TEST20240924."OCRD" AS A
+		WHERE A."U_BP_TYPE"='E' AND A."CreditLine">0;*/
+		SELECT CAST(A."empID" AS VARCHAR(25)) AS CUSTOMERCODE
+			  ,A."firstName"||'-'||A."lastName" AS CUSTOMERNAME
+			  ,0.00 AS BALANCE
+		FROM EW_PRD_TEST20240924."OHEM" AS A;
+	ELSE IF :DTYPE='GetMaxJournalVoucherNumber' THEN
+		SELECT MAX(IFNULL("BatchNum"+1,1)) AS MAXDOCNUM FROM EW_PRD_TEST20240924."OBTF";
+	ELSE IF :DTYPE='GetBpCodeJournalVoucherEntry' THEN
+		SELECT A."CardCode" AS CUSTOMERCODE
+			  ,A."CardName" AS CUSTOMERNAME
+			  ,A."Balance" AS BALANCE
+		FROM EW_PRD_TEST20240924."OCRD" AS A WHERE A."CardType"='C' AND A."validFor"!='N' And A."frozenFor"!='Y';
+	ELSE IF :DTYPE='GetMaxJournalVoucherNumber' THEN
+		SELECT MAX("BatchNum") AS MAXDOCNUM FROM EW_PRD_TEST20240924."OBTF";
+	ELSE IF :DTYPE='GetSeriesJournalVoucherNumber' THEN
+		SELECT 
+			 A."Series" AS SERIES
+			,A."SeriesName" AS SERIESNAME
+			,A."NextNumber" AS MAXDOCNUM
+		FROM EW_PRD_TEST20240924."NNM1" AS A
+		WHERE A."Indicator" IN (SELECT "Indicator" 
+									FROM EW_PRD_TEST20240924."OFPR" AS A 
+								WHERE TO_VARCHAR(A."F_RefDate", 'YYYY/MM')=TO_VARCHAR(CURRENT_DATE, 'YYYY/MM'))
+		AND A."ObjectCode"='30';
+		--AND A."BeginStr"='JV';
+	ELSE IF :DTYPE='GetSeriesJournalEntryNumber' THEN
+		SELECT 
+			 A."Series" AS SERIES
+			,A."SeriesName" AS SERIESNAME
+			,A."NextNumber" AS MAXDOCNUM
+		FROM EW_PRD_TEST20240924."NNM1" AS A
+		WHERE A."Indicator" IN (SELECT "Indicator" 
+									FROM EW_PRD_TEST20240924."OFPR" AS A 
+								WHERE TO_VARCHAR(A."F_RefDate", 'YYYY/MM')=TO_VARCHAR(CURRENT_DATE, 'YYYY/MM'))
+		AND A."ObjectCode"='30';
+		--AND A."BeginStr"!='JV';
+	ELSE IF :DTYPE='GetVatGroupJournalVoucherNumber' THEN
+		SELECT 
+			 A."Code" AS CODE
+			,A."Code"||'-'||A."Name" AS NAME
+			,A."Rate" AS RATE
+		FROM EW_PRD_TEST20240924."OVTG" AS A WHERE A."Inactive"='N' AND A."Account" IS NOT NULL;
+	ELSE IF :DTYPE='GetListJournalVoucher' THEN
+		IF :par3='ALL' THEN
+			SELECT * FROM (
+				SELECT 
+					 A."TransId" AS "DOCENTRY"
+					,TO_VARCHAR(A."RefDate",'YYYYMMDD') AS "DOCDATE"
+					,A."Memo" AS "REMARKS"
+					,A."Ref1" AS "REF1"
+					,A."LocTotal" AS "TOTAL"
+					,A."U_USERID" AS "CREATEBY"
+					,A."U_UpdateBy" AS "UpdateBy"
+					,'JE' AS "TYPE"
+					,'C' AS "Status"
+					,'C' AS "StatusUpdate"
+				FROM EW_PRD_TEST20240924."OJDT" AS A
+				--LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS B ON A."U_USERID"=B."Code"
+				WHERE A."TransCode"='R002' AND A."RefDate" BETWEEN :par1 AND :par2
+				UNION ALL
+				SELECT 
+					 A."DocEntry" AS "DOCENTRY"
+					,IFNULL(TO_VARCHAR(A."U_PostingDate",'YYYYMMDD'),'') AS "DOCDATE"
+					,IFNULL(A."U_Remarks",'') AS "REMARKS"
+					,IFNULL(A."U_Ref1",'') AS "REF1"
+					,(SELECT 
+						SUM("U_Debit") 
+						FROM EW_PRD_TEST20240924."@TB_DRF_JE_ROW" 
+						WHERE "DocEntry"=A."DocEntry") AS "TOTAL"
+					,IFNULL(A."U_UserID",'') AS "CREATEBY"
+					,A."U_UpdateBy" AS "UpdateBy"
+					,'Draft' AS "TYPE"
+					,CASE WHEN A."U_UserID" IN (
+										SELECT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_CANCEL" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									) OR A."U_UserID"=:par4 THEN
+					 	A."Status"
+					 ELSE 'C' END AS "Status"
+					,CASE WHEN A."U_UserID" IN (
+										SELECT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_UPDATE" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									) OR A."U_UserID"=:par4 THEN
+					 	A."Status"
+					 ELSE 'C' END AS "StatusUpdate"
+				FROM EW_PRD_TEST20240924."@TB_DRF_JE" AS A
+				WHERE A."DocEntry" NOT IN (SELECT 
+												A."U_JEDraftDocEntry" 
+											FROM EW_PRD_TEST20240924."OJDT" AS A 
+											WHERE A."TransCode"='R002' 
+											AND IFNULL(A."U_JEDraftDocEntry",0)!=0)
+					AND A."U_PostingDate" BETWEEN :par1 AND :par2
+			)AS A WHERE  (A."CREATEBY"=:par4
+						OR A."CREATEBY" IN (
+							SELECT "U_User" 
+							FROM EW_PRD_TEST20240924."@TB_P_READ" AS T0
+							LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+							WHERE T1."Code"=:par4
+						))
+			
+			ORDER BY "DOCDATE" DESC;
+		ELSE IF :par3='DEFAULT' THEN
+			SELECT TOP 1000 * FROM (
+				SELECT 
+					 A."TransId" AS "DOCENTRY"
+					,TO_VARCHAR(A."RefDate",'YYYYMMDD') AS "DOCDATE"
+					,A."Memo" AS "REMARKS"
+					,A."Ref1" AS "REF1"
+					,A."LocTotal" AS "TOTAL"
+					,A."U_USERID" AS "CREATEBY"
+					,A."U_UpdateBy" AS "UpdateBy"
+					,'JE' AS "TYPE"
+					,'C' AS "Status"
+					,'C' AS "StatusUpdate"
+				FROM EW_PRD_TEST20240924."OJDT" AS A
+				--LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS B ON A."U_USERID"=B."Code"
+				WHERE A."TransCode"='R002' AND A."RefDate" BETWEEN :par1 AND :par2
+				UNION ALL
+				SELECT 
+					 A."DocEntry" AS "DOCENTRY"
+					,IFNULL(TO_VARCHAR(A."U_PostingDate",'YYYYMMDD'),'') AS "DOCDATE"
+					,IFNULL(A."U_Remarks",'') AS "REMARKS"
+					,IFNULL(A."U_Ref1",'') AS "REF1"
+					,(SELECT 
+						SUM("U_Debit") 
+						FROM EW_PRD_TEST20240924."@TB_DRF_JE_ROW" 
+						WHERE "DocEntry"=A."DocEntry") AS "TOTAL"
+					,IFNULL(A."U_UserID",'') AS "CREATEBY"
+					,A."U_UpdateBy" AS "UpdateBy"
+					,'Draft' AS "TYPE"
+					,CASE WHEN A."U_UserID" IN (
+										SELECT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_CANCEL" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									) OR A."U_UserID"=:par4 THEN
+					 	A."Status"
+					 ELSE 'C' END AS "Status"
+					,CASE WHEN A."U_UserID" IN (
+										SELECT "U_User" 
+										FROM EW_PRD_TEST20240924."@TB_P_UPDATE" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									) OR A."U_UserID"=:par4 THEN
+					 	A."Status"
+					 ELSE 'C' END AS "StatusUpdate"
+				FROM EW_PRD_TEST20240924."@TB_DRF_JE" AS A
+				WHERE A."DocEntry" NOT IN (SELECT 
+												A."U_JEDraftDocEntry" 
+											FROM EW_PRD_TEST20240924."OJDT" AS A 
+											WHERE A."TransCode"='R002' 
+											AND IFNULL(A."U_JEDraftDocEntry",0)!=0)
+					AND A."U_PostingDate" BETWEEN :par1 AND :par2
+			)AS A WHERE  (A."CREATEBY"=:par4
+						OR A."CREATEBY" IN (
+							SELECT "U_User" 
+							FROM EW_PRD_TEST20240924."@TB_P_READ" AS T0
+							LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+							WHERE T1."Code"=:par4
+						))
+			ORDER BY "DOCDATE" DESC;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GetViewDetailPettyCashByDocEntry' THEN
+		IF :par2='Draft' THEN
+			SELECT 
+				 IFNULL(A."U_Series",'') AS "Series"
+				,TO_VARCHAR(A."U_PostingDate",'DD/MM/YYYY') AS "PostingDate"
+				,IFNULL(A."U_Remarks",'') AS "Remarks"
+				,IFNULL(A."U_Ref1",'') AS "Ref1"
+				,IFNULL(A."U_Ref2",'') AS "Ref2"
+				,IFNULL(A."U_Ref3",'') AS "Ref3"
+				,IFNULL(A."U_UserID",'') AS "UserID"
+				,IFNULL(A."U_WebID",'') AS "WebID"
+				,TO_VARCHAR(A."DocEntry") AS "DocEntry"
+			FROM EW_PRD_TEST20240924."@TB_DRF_JE" AS A
+			WHERE A."DocEntry"=:par1;
+		ELSE IF :par2='JE' THEN
+			SELECT 
+				 (SELECT 
+						 T0."SeriesName" AS SERIESNAME
+					FROM EW_PRD_TEST20240924."NNM1" AS T0
+					WHERE T0."ObjectCode"='30' AND T0."Series"=A."Series") AS "Series"
+				,TO_VARCHAR(A."TaxDate",'DD/MM/YYYY') AS "PostingDate"
+				,A."Memo" AS "Remarks"
+				,A."Ref1" AS "Ref1"
+				,A."Ref2" AS "Ref2"
+				,A."Ref3" AS "Ref3"
+				,A."U_USERID" AS "UserID"
+				,A."U_WEBID" AS "WebID"
+				,TO_VARCHAR(A."U_JEDraftDocEntry") AS "DocEntry"
+			FROM EW_PRD_TEST20240924."OJDT" AS A
+			WHERE A."TransId"=:par1;
+		ELSE IF :par2='DraftUpdate' THEN
+			SELECT 
+				 A."U_Series" AS "Series"
+				,TO_VARCHAR(A."U_PostingDate",'YYYY-MM-DD') AS "PostingDate"
+				,IFNULL(A."U_Remarks",'') AS "Remarks"
+				,IFNULL(A."U_Ref1",'') AS "Ref1"
+				,IFNULL(A."U_Ref2",'') AS "Ref2"
+				,IFNULL(A."U_Ref3",'') AS "Ref3"
+				,IFNULL(A."U_UserID",'') AS "UserID"
+				,IFNULL(A."U_WebID",'') AS "WebID"
+			FROM EW_PRD_TEST20240924."@TB_DRF_JE" AS A
+			WHERE A."DocEntry"=:par1;
+		END IF;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GetViewDetailPettyCashByDocEntryLine' THEN
+		IF :par2='Draft' THEN
+			SELECT 
+				 '-1' AS "AccountTypeCode"
+				,IFNULL(A."U_AccountCodeOrBpCode"||' - '||D."AcctName",'') AS "AccountCodeOrBpCode"
+				,IFNULL(C."firstName"||' - '||C."lastName",'') AS "CardCode"
+				,CAST(A."U_Debit" AS Double) AS "Debit"
+				,CAST(A."U_Credit" AS Double) AS "Credit"
+				,IFNULL(A."U_Remarks",'') AS "Remarks"
+				,IFNULL(TO_VARCHAR(A."U_DateLine",'DD/MM/YYYY'),'') AS "DateLine"
+			FROM EW_PRD_TEST20240924."@TB_DRF_JE_ROW" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS C ON CAST(C."empID" AS VARCHAR(255))=A."U_CardCode"
+			LEFT JOIN EW_PRD_TEST20240924."OACT" AS D ON D."AcctCode"=A."U_AccountCodeOrBpCode"
+			WHERE A."DocEntry"=:par1;
+		ELSE IF :par2='JE' THEN
+			SELECT 
+				 CASE WHEN C."CardName" IS NOT NULL THEN 'Employee Data' ELSE 'Account Type' END AS "AccountTypeCode"
+				,IFNULL(A."ShortName"||' - '||IFNULL(C."CardName",D."AcctName"),'') AS "AccountCodeOrBpCode"
+				,IFNULL(E."CardName",'') AS "CardCode"
+				,CAST(A."Debit" AS Double) AS "Debit"
+				,CAST(A."Credit" AS Double) AS "Credit"
+				,IFNULL(A."LineMemo",'') AS "Remarks"
+				,IFNULL(TO_VARCHAR(A."U_TaxDate",'DD/MM/YYYY'),'') AS "DateLine"
+			FROM EW_PRD_TEST20240924."JDT1" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=A."ShortName"
+			LEFT JOIN EW_PRD_TEST20240924."OACT" AS D ON D."AcctCode"=A."ShortName"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS E ON E."CardCode"=A."U_CardCode"
+			WHERE A."TransId"=:par1;
+		ELSE IF :par2='DraftUpdate' THEN
+			SELECT 
+				 '-1' AS "AccountTypeCode"
+				,IFNULL(A."U_AccountCodeOrBpCode"||'-'||D."AcctName",'') AS "AccountCodeOrBpCode"
+				,IFNULL(A."U_CardCode"||'-'||C."firstName"||' '||C."lastName",'') AS "CardCode"
+				,IFNULL(A."U_CardCode"||'-'||C."firstName"||' '||C."lastName",'') AS "CardName"
+				,CAST(A."U_Debit" AS Double) AS "Debit"
+				,CAST(A."U_Credit" AS Double) AS "Credit"
+				,IFNULL(A."U_Remarks",'') AS "Remarks"
+				,IFNULL(TO_VARCHAR(A."U_DateLine",'YYYY-MM-DD'),'') AS "DateLine"
+			FROM EW_PRD_TEST20240924."@TB_DRF_JE_ROW" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS C ON TO_VARCHAR(C."empID")=A."U_CardCode"
+			LEFT JOIN EW_PRD_TEST20240924."OACT" AS D ON D."AcctCode"=A."U_AccountCodeOrBpCode"
+			WHERE A."DocEntry"=:par1;
+		END IF;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GETJOBNUMBERFORPURCHASEREQUEST' THEN
+		SELECT 
+			  "PrjCode" AS CODE
+			 ,"PrjName" AS NAME
+		FROM EW_PRD_TEST20240924."OPRJ" AS A;
+	ELSE IF :DTYPE='GETVIEWDETAILSALESQUOTATIONHEADER' THEN
+		SELECT 	   TO_VARCHAR(A."DocEntry") AS "DocEntry"
+				  ,CASE WHEN C."CardType"='L' THEN 'NEW' ELSE 'EXISTING' END AS "CustomerType" 
+				  ,A."CardName" AS "CustomerName" 
+				  ,A."NumAtCard" AS "ReftNo"
+				  ,A."U_ATTN" AS "ATTN"
+				  ,TO_VARCHAR (A."DocDate", 'DD/MM/YYYY') AS "Date"
+				  ,A."U_EMAIL" AS "Email"
+				  ,TO_VARCHAR (A."DocDueDate", 'DD/MM/YYYY') AS "Validity"
+				  ,A."U_TEL" AS "Tel"
+				  ,(SELECT "PymntGroup" FROM EW_PRD_TEST20240924."OCTG" WHERE "GroupNum"=A."GroupNum") AS "PaymentTerm"				  
+				  ,IFNULL(DD."descript",'NONE') AS "Origin"
+				  ,IFNULL(D."descript",'NONE') AS "Destination"
+				  ,(SELECT IFNULL("Name",'') FROM EW_PRD_TEST20240924."@TBSERVICE" WHERE "Code"=A."U_SERVICE") AS "ServiceType"
+				  ,IFNULL(A."U_Remarks",A."Comments") AS "Remarks"
+				  ,B."SlpName" AS "SalePerson"
+				  ,IFNULL(A."U_DG",'') AS "DG"
+				  ,CASE WHEN CAST(IFNULL(DAYS_BETWEEN(CURRENT_DATE,A."DocDueDate"),0) AS INT)<0 THEN 
+				  	'Expire' 
+				   ELSE CAST(IFNULL(DAYS_BETWEEN(CURRENT_DATE,A."DocDueDate"),0) AS VARCHAR(30)) END AS "ValidityCount"
+			FROM EW_PRD_TEST20240924."OQUT" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS D ON D."territryID"=A."U_DESTINATION"
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS DD ON DD."territryID"=A."U_ORIGIN"
+			LEFT JOIN EW_PRD_TEST20240924."OSLP" AS B ON B."SlpCode"=A."SlpCode"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=A."CardCode"
+			WHERE IFNULL(A."U_WEBID",'')!='' AND A."DocEntry"=:par1; 
+	ELSE IF :DTYPE='GETVIEWDETAILSALESQUOTATIONLINE' THEN
+		SELECT 
+			 A."ItemCode" AS "ItemCode"
+			,A."Dscription" AS "ItemName"
+			,TO_DECIMAL(CASE WHEN A."TotalFrgn"=0 THEN A."LineTotal" ELSE A."TotalFrgn" END,16,2) AS "Price"			
+			,A."U_Remark" AS "Remarks" 
+		FROM EW_PRD_TEST20240924."QUT1" AS A 
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE = 'SALESQUOTATIONLAYOUT' THEN 
+		SELECT 
+			 A."Code" AS "Code"
+			,A."Name" AS "Name"
+		FROM EW_PRD_TEST20240924."@TBREPORT" AS A WHERE A."U_LAYOUTMODULE"='SALES QUOTATION';
+	ELSE IF :DTYPE = 'GETTRUCKTYPEBOOKINGSHEET' THEN 
+		/*SELECT DISTINCT 
+			 A."AttriTxt6" AS CODE
+			,A."AttriTxt6" AS NAME
+		FROM EW_PRD_TEST20240924."ITM13" AS A 
+		WHERE IFNULL(A."AttriTxt6",'')<>'';*/
+		SELECT "Code" AS CODE,"Name" AS NAME FROM EW_PRD_TEST20240924."@TBTRUCKTYPE" ORDER BY "Code" ASC;
+		/*SELECT 'OPEN TRUCK' AS CODE
+			  ,'OPEN TRUCK' AS NAME FROM DUMMY
+		UNION ALL
+		SELECT 'FLATBED' AS CODE
+			  ,'FLATBED' AS NAME FROM DUMMY
+		UNION ALL
+		SELECT 'LOW BED' AS CODE
+			  ,'LOW BED' AS NAME FROM DUMMY
+		UNION ALL
+		SELECT 'REFERR' AS CODE
+			  ,'REFERR' AS NAME FROM DUMMY
+		UNION ALL
+		SELECT '4 W' AS CODE
+			  ,'4 W' AS NAME FROM DUMMY
+		UNION ALL
+		SELECT '6 W' AS CODE
+			  ,'6 W' AS NAME FROM DUMMY
+		UNION ALL
+		SELECT '10 W' AS CODE
+			  ,'10 W' AS NAME FROM DUMMY
+		UNION ALL
+		SELECT '10 WD' AS CODE
+			  ,'10 WD' AS NAME FROM DUMMY
+		UNION ALL
+		SELECT '6W BOX' AS CODE
+			  ,'6W BOX' AS NAME FROM DUMMY
+		UNION ALL
+		SELECT '10W BOX' AS CODE
+			  ,'10W BOX' AS NAME FROM DUMMY
+		UNION ALL
+		SELECT 'Other' AS CODE
+			  ,'Other' AS NAME FROM DUMMY;*/
+	ELSE IF :DTYPE='GETVIEWDETAILSALESQUOTATIONLINE' THEN
+		SELECT 
+				  A."DocEntry" AS BOOKINGENTRY
+				 ,A."DocNum" AS BOOKINGID
+				 ,A."U_EWSeries"||A."U_JOBNO" AS JOBNO
+				 ,TO_VARCHAR(A."U_BOOKINGDATE",'DD/MM/YYYY') AS BOOKINGDATE
+				 ,DD."descript" AS ROUTEFROM
+				 ,D."descript" AS ROUTETO
+				 ,F."SlpName" AS SALEEMPLOYEENAME
+				 ,B."Name" AS JOBTYPE
+				 ,G."Name" AS SERVICETYPE
+				 ,A."U_SHIPPER" AS SHIPPER
+				 ,A."U_CONSIGNEE" AS CONSIGNEE
+				 ,A."U_GOODSDESCRIPTION" AS DESCRIPTION
+				 ,A."U_TOTALPACKAGE" AS TOTALPACKAGE
+				 ,A."U_NETWEIGHT" AS NETWEIGHT
+				 ,A."U_GROSSWEIGHT" AS GROSSWEIGHT
+				 ,A."U_LOADINGDATE" AS LOADINGDATE
+				 ,A."U_CROSSBORDERDATE" AS CROSSBORDERDATE
+				 ,A."U_ETAREQUIREMENT" AS ETAREQUIREMENT
+				 ,A."U_THAIFORWARDER" AS THAIFORWARDER
+				 ,A."U_TRUCKTYPE" AS TRUCKTYPE
+				 ,A."Remark" AS REMARK
+				 ,A."U_SPECIALREQUEST" AS SPECIALREQUEST
+				 --,A."DocEntry" AS DOCENTRY
+			FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS A
+			LEFT JOIN EW_PRD_TEST20240924."@TBJOBTYPE" AS B ON B."Code"=A."U_IMPORTTYPE"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=A."U_CO"
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS D ON D."territryID"=A."U_DESTINATION"
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS DD ON DD."territryID"=A."U_ORIGIN"
+			LEFT JOIN EW_PRD_TEST20240924."OUSR" AS E ON E."USERID"=A."U_UserCreate"
+			LEFT JOIN EW_PRD_TEST20240924."OSLP" AS F ON F."SlpCode"=A."U_SALEEMPLOYEE"
+			LEFT JOIN EW_PRD_TEST20240924."@TBSERVICETYPE" AS G ON G."Code"=A."U_SERVICETYPE"
+			WHERE A."DocNum"=19;--:par1='-1'
+	ELSE IF :DTYPE='PLACEOFLOADINGBYDOCENTRY' THEN
+		SELECT B."Code" AS CODE
+			  ,B."Name"||', '||B."U_COUNTRY" AS NAME
+			  ,B."U_COUNTRY" AS COUNTRY
+		FROM EW_PRD_TEST20240924."@PLACEOFLOADING" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS B ON A."U_PLACELOADING"=B."Code" 
+		WHERE A."DocEntry"=par1;
+	ELSE IF :DTYPE='PLACEOFDELIVERYBYDOCENTRY' THEN
+		SELECT B."Code" AS CODE
+			  ,B."Name"||', '||B."U_COUNTRY" AS NAME
+		FROM EW_PRD_TEST20240924."@PLACEOFDELIVERY" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS B ON A."U_PLACEDELIVERY"=B."Code" 
+		WHERE A."DocEntry"=par1;
+	ELSE IF :DTYPE='VOLUMEBYDOCENTRY' THEN
+		SELECT B."Code" AS CODE
+			  ,B."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@VOLUME" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TBVOLUME" AS B ON B."Code"=A."U_VOLUMECODE"
+		WHERE A."DocEntry"=par1;
+		
+	ELSE IF :DTYPE='THAIBORDERBYDOCENTRY' THEN
+		SELECT B."Code" AS CODE
+			  ,B."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@THAIBORDER" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TBTHAIBORDER" AS B ON A."U_ThaiBorder"=B."Code"
+		WHERE A."DocEntry"=par1;
+	ELSE IF :DTYPE='OverseaTruckersByDocEntry' THEN
+		SELECT 
+			A."U_OVERSEATRUCKERCODE" AS CODE
+		FROM EW_PRD_TEST20240924."@TBOVERSEATRUCKER" AS A
+		WHERE A."DocEntry"=par1;
+	ELSE IF :DTYPE='OverseaForwardersByDocEntry' THEN
+		SELECT 
+			A."U_OVERSEAFORWARDERCODE" AS CODE
+		FROM EW_PRD_TEST20240924."@TBOVERSEAFORWARDER" AS A
+		WHERE A."DocEntry"=par1;
+	ELSE IF :DTYPE='SaleQuotationsByDocEntry' THEN
+		SELECT 
+			 A."U_DOCENTRY"  AS DOCENTRY
+			,B."DocNum" AS DOCNUM
+		FROM EW_PRD_TEST20240924."@TBSALESQUOTATION" AS A
+		lEFT JOIN EW_PRD_TEST20240924."OQUT" AS B ON A."U_DOCENTRY"=B."DocEntry"
+		WHERE A."DocEntry"=par1;
+	ELSE IF :DTYPE='GetAddressByCustomer' THEN
+		SELECT "Address" AS "CustomerAddressCode"
+			   ,"Address" AS "CustomerAddressDetail"
+			  --,"Address2"
+			  --	||IFNULL(','||"Address3",'')
+			  --	||IFNULL("County",'')
+			  --	||(SELECT IFNULL(','||"Name",'') FROM EW_PRD_TEST20240924."OCRY" WHERE "Code"="Country") AS CUSTOMERADRESSDETAIL
+		FROM EW_PRD_TEST20240924."CRD1" WHERE "CardCode"=:par1 AND "AdresType"='S';
+	ELSE IF :DTYPE = 'BOOKINGSHEETLAYOUT' THEN 
+		SELECT 
+			 A."Code" AS CODE
+			,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBREPORT" AS A WHERE A."U_LAYOUTMODULE"='BOOKING-SHEET';
+	ELSE IF :DTYPE = 'CONFIRMBOOKINGSHEETLAYOUT' THEN 
+		SELECT 
+			 A."Code" AS CODE
+			,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBREPORT" AS A WHERE A."U_LAYOUTMODULE"='CONFIRM-BOOKING-SHEET';
+	ELSE IF :DTYPE = 'CONFIRMBOOKINGSHEETLAYOUTSEAANDAIR' THEN 
+		SELECT 
+			 A."Code" AS CODE
+			,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBREPORT" AS A WHERE A."U_LAYOUTMODULE"='CONFIRM-BOOKING-SHEET-SEA-AIR';
+	ELSE IF :DTYPE = 'JOBSHEETRUCKINGLAYOUT' THEN 
+		SELECT 
+			 A."Code" AS CODE
+			,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBREPORT" AS A WHERE A."U_LAYOUTMODULE"='JOB-SHEET-TRUCKING';
+	ELSE IF :DTYPE = 'JOBSHEETRUCKINGSEAAIRLAYOUT' THEN 
+		SELECT 
+			 A."Code" AS CODE
+			,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBREPORT" AS A WHERE A."U_LAYOUTMODULE"='JOB-SHEET-TRUCKING-SEA-AIR';
+	ELSE IF :DTYPE = 'PURCHASEREQUESTLAYOUT' THEN 
+		SELECT 
+			 A."Code" AS CODE
+			,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBREPORT" AS A WHERE A."U_LAYOUTMODULE"='PURCHASEREQUEST';
+	ELSE IF :DTYPE = 'TRUCKWAYBILLLAYOUT' THEN 
+		SELECT 
+			 A."Code" AS CODE
+			,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBREPORT" AS A WHERE A."U_LAYOUTMODULE"='TRUCK-WAY-BILL';
+	ELSE IF :DTYPE = 'PURCHASEREQUESTCOMMISSION' THEN 
+		SELECT 
+			 A."Code" AS CODE
+			,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBREPORT" AS A WHERE A."U_LAYOUTMODULE"='PURCHASE REQUEST COMMISSION';
+	ELSE IF :DTYPE = 'BOOKINGSHEETLAYOUTSEAANDAIR' THEN 
+		SELECT 
+			 A."Code" AS CODE
+			,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBREPORT" AS A WHERE A."U_LAYOUTMODULE"='BOOKING-SHEET-SEA-AIR';
+	ELSE IF :DTYPE = 'PETTYCASHLAYOUT' THEN 
+		SELECT 
+			 A."Code" AS CODE
+			,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBREPORT" AS A WHERE A."U_LAYOUTMODULE"='PETTYCASH';
+	ELSE IF :DTYPE = 'CreditNoteCBT' THEN 
+		SELECT 
+			 A."Code" AS CODE
+			,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBREPORT" AS A WHERE A."U_LAYOUTMODULE"='CreditNoteCBT';
+	ELSE IF :DTYPE = 'DebitNoteCBT' THEN 
+		SELECT 
+			 A."Code" AS CODE
+			,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBREPORT" AS A WHERE A."U_LAYOUTMODULE"='DebitNoteCBT';
+	ELSE IF :DTYPE = 'CreditNoteSA' THEN 
+		SELECT 
+			 A."Code" AS CODE
+			,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBREPORT" AS A WHERE A."U_LAYOUTMODULE"='CreditNoteSA';
+	ELSE IF :DTYPE = 'DebitNoteSA' THEN 
+		SELECT 
+			 A."Code" AS CODE
+			,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBREPORT" AS A WHERE A."U_LAYOUTMODULE"='DebitNoteSA';
+	ELSE IF :DTYPE = 'PRSettlement' THEN 
+		SELECT 
+			 A."Code" AS CODE
+			,A."Name" AS NAME
+		FROM EW_PRD_TEST20240924."@TBREPORT" AS A WHERE A."U_LAYOUTMODULE"='PRSettlement';
+	ELSE IF :DTYPE='GetDetailBookingByDocEntry' THEN
+		IF :par1='Header' THEN
+			SELECT 
+				 A."DocEntry" AS DOCENTRY
+				,A."DocEntry" AS BOOKINGID
+				,A."U_EWSeries"||A."U_JOBNO" AS JOBNO
+				,TO_VARCHAR(A."U_BOOKINGDATE",'DD/MM/YYYY') AS BOOKINGDATE
+				,B."descript"||'-'||BB."descript" AS ROUTE
+				,B."descript" AS ORIGIN
+				,B."descript" AS DESTINATION
+				,IFNULL(C."SlpName",'') AS SALESEMPLOYEE	
+				,D."Name" AS JOBTYPE
+				,E."Name" AS SERVICETYPE
+				,A."U_GOODSDESCRIPTION" AS GOODSDESCRIPTION
+				,A."U_TOTALPACKAGE" AS TOTALPACKAGE
+				,A."U_NETWEIGHT" AS NETWEIGHT
+				,A."U_GROSSWEIGHT" AS GROSSWEIGHT
+				,IFNULL(TO_VARCHAR(A."U_LOADINGDATE",'YYYY/MM/DD'),'') AS LOADINGDATE
+				,IFNULL(TO_VARCHAR(A."U_CROSSBORDERDATE",'YYYY/MM/DD'),'') AS CROSSBORDERDATE
+				,IFNULL(TO_VARCHAR(A."U_ETAREQUIREMENT",'YYYY/MM/DD'),'') AS ETAREQUIREMENT
+				,A."Remark" REMARK
+				,A."U_SPECIALREQUEST" AS SPECIALREQUEST
+				,A."DocNum"
+				,IFNULL(A."U_LOLOYARDORUNLOADING",0) AS LOLOYARD
+				,IFNULL(A."U_LCLORFCL",0) AS LCLFCL
+				,IFNULL(A."U_CYORCFS",0) AS CYCFS
+				,A."U_LOLOYARDRemark" AS LOLOYARDREMARK
+				,A."U_EWSeries" AS SERIES
+				,A."U_SALEEMPLOYEE" AS SlpCode
+				,A."U_IMPORTTYPE" AS IMPORTTYPE
+				,A."U_SERVICETYPE" AS SERVICETYPECODE
+				,A."DocNum" AS "DOCNUM"
+				,A."U_JOBNO" AS JOBNUMBER
+				,A."U_JOBNO" AS U_JONO
+				,A."U_ORIGIN" AS ORIGINCODE
+				,A."U_DESTINATION" AS DESTINATIONCODE
+				,IFNULL(A."U_DG",'') AS "DG"
+				,IFNULL(A."U_OtherRemark",'') AS "OtherRemark"
+			FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS B ON A."U_ORIGIN"=B."territryID" --ORIGIN
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS BB ON BB."territryID"=A."U_DESTINATION" --DESTINATION
+			LEFT JOIN EW_PRD_TEST20240924."OSLP" AS C ON C."SlpCode"=A."U_SALEEMPLOYEE"
+			LEFT JOIN EW_PRD_TEST20240924."@TBJOBTYPE" AS D ON D."Code"=A."U_IMPORTTYPE"
+			LEFT JOIN EW_PRD_TEST20240924."@TBSERVICETYPE"AS E ON E."Code"=A."U_SERVICETYPE"
+			WHERE A."DocEntry"=:par2; --'54';--
+		ELSE IF :par1='SHIPPER' THEN
+			SELECT 
+				 B."CardName" AS SHIPPER
+				,A."U_SHIPPER" AS CARDCODE
+				,A."LineId" AS LINEID 
+			FROM EW_PRD_TEST20240924."@TBSHIPPER" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON B."CardCode"=A."U_SHIPPER"
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='CONSIGNEE' THEN
+			SELECT 
+				 B."CardName" AS CONSIGNEE
+				,A."LineId" AS LINEID 
+				,A."U_CONSIGNEE" AS CARDCODE
+			FROM EW_PRD_TEST20240924."@TBCONSIGNEE" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON B."CardCode"=A."U_CONSIGNEE"
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='SALESQUOTATION' THEN
+			SELECT 
+				 B."NumAtCard" || ' - ' ||B."CardName" AS SALESQUOTATION 
+				,A."U_DOCENTRY" AS DOCENTRY
+				,A."LineId" AS LINEID
+				,B."CardCode" AS CARDCODE
+			FROM EW_PRD_TEST20240924."@TBSALESQUOTATION" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OQUT" AS B ON A."U_DOCENTRY"=B."DocEntry"
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='COMMODITY' THEN
+			SELECT 
+				 A."U_INVOICE" AS INVOICE 
+				,A."LineId" AS LINEID
+			FROM EW_PRD_TEST20240924."@COMMODITY" AS A 
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='OVERSEATRUCKER' THEN
+			SELECT 
+				 B."CardName" AS OVERSEATRUCKERCODE 
+				,A."U_OVERSEATRUCKERCODE" AS CARDCODE
+				,A."LineId" AS LINEID
+			FROM EW_PRD_TEST20240924."@TBOVERSEATRUCKER" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON B."CardCode"=A."U_OVERSEATRUCKERCODE"
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='PLACEOFLOADING' THEN
+			DECLARE TEST_STRING VARCHAR(50);
+			IF(SELECT COUNT("U_District") FROM EW_PRD_TEST20240924."@PLACEOFLOADING" WHERE "DocEntry"=:par2)!=0 THEN
+				SELECT TOP 1 "U_District" INTO TEST_STRING FROM EW_PRD_TEST20240924."@PLACEOFLOADING" WHERE "DocEntry"=:par2;
+			END IF;				
+			SELECT 
+				 B."Name"||', '||B."U_COUNTRY" AS PLACELOADING
+				,A."U_PLACELOADING" AS CODE
+				,A."LineId" AS LINEID
+				,A."U_District" AS "District"
+				,(SELECT STRING_AGG(T0."Name",',') 
+						FROM EW_PRD_TEST20240924."@TBDISTRICT" AS T0 
+						WHERE T0."Code" IN 
+								(SELECT * FROM LIBRARY:SPLIT_TO_TABLE(:TEST_STRING,','))) AS "DistrictName"
+			FROM EW_PRD_TEST20240924."@PLACEOFLOADING" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS B ON B."Code"=A."U_PLACELOADING"
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='PLACEOFDELIVERY' THEN
+			DECLARE TEST_STRING VARCHAR(50);
+			IF(SELECT COUNT("U_District") FROM EW_PRD_TEST20240924."@PLACEOFDELIVERY" WHERE "DocEntry"=:par2)!=0 THEN
+				SELECT TOP 1 IFNULL("U_District",'') INTO TEST_STRING FROM EW_PRD_TEST20240924."@PLACEOFDELIVERY" WHERE "DocEntry"=:par2;
+			END IF;	
+			SELECT 
+				 B."Name"||', '||B."U_COUNTRY" AS PLACEOFDELIVERY 
+				,A."U_PLACEDELIVERY" AS Code
+				,A."LineId" AS LINEID
+				,A."U_District" AS "District"
+				,(SELECT STRING_AGG(T0."Name",',') 
+						FROM EW_PRD_TEST20240924."@TBDISTRICT" AS T0 
+						WHERE T0."Code" IN 
+								(SELECT * FROM LIBRARY:SPLIT_TO_TABLE(:TEST_STRING,','))) AS "DistrictName"
+			FROM EW_PRD_TEST20240924."@PLACEOFDELIVERY" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS B ON B."Code"=A."U_PLACEDELIVERY"
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='THAIFORWARDER' THEN
+			SELECT 
+				 B."CardName" AS THAIFORWARDER 
+				,A."U_THAIFORWARDER" AS CardCode
+				,A."LineId" AS LINEID
+			FROM EW_PRD_TEST20240924."@THAIFORWARDER" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON B."CardCode"=A."U_THAIFORWARDER"
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='VOLUME' THEN
+			SELECT 
+				 IFNULL(SUM(A."U_QTY"),0) AS QTY
+				,STRING_AGG(IFNULL(A."U_VOLUMECODE",''),',') AS VOLUMECODE 
+				,IFNULL(SUM(A."U_GROSSWEIGHT"),0) AS GROSSWEIGHT
+				,STRING_AGG(IFNULL(A."U_InvoiceList"||',','')) AS "InvoiceList"
+			FROM EW_PRD_TEST20240924."@VOLUME" AS A 
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='VolumUpdateBookingSheet' THEN
+			SELECT 
+				 IFNULL(A."U_QTY",0) AS QTY
+				,IFNULL(A."U_VOLUMECODE",'') AS VOLUMECODE 
+				,IFNULL(A."U_GROSSWEIGHT",0) AS GROSSWEIGHT
+				,A."LineId" AS LINEID
+				,IFNULL(A."U_InvoiceList",'') AS "InvoiceList"
+			FROM EW_PRD_TEST20240924."@VOLUME" AS A 
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='TBOVERSEAFORWARDER' THEN
+			SELECT 
+				 B."CardName" AS OVERSEAFORWARDERCODE 
+				,A."U_OVERSEAFORWARDERCODE" AS CARDCODE
+				,A."LineId" AS LINEID
+			FROM EW_PRD_TEST20240924."@TBOVERSEAFORWARDER" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON B."CardCode"=A."U_OVERSEAFORWARDERCODE"
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='TBTRUCKTYPEROW' THEN
+			SELECT 
+				--
+				 IFNULL(TO_VARCHAR(SUM(TO_DECIMAL(A."U_QTY",3,0))),'0') AS QTY 
+				,IFNULL(STRING_AGG(IFNULL(A."U_TRUCKTYPE"||',','')),'') AS TRUCKTYPECODE
+				,IFNULL(SUM(CAST(IFNULL(A."U_GROSSWEIGHT",0) AS double)),0.00) AS GROSSWEIGHT
+				,IFNULL(STRING_AGG(IFNULL(A."U_InvoiceList"||',','')),'') AS "InvoiceList"
+			FROM EW_PRD_TEST20240924."@TBTRUCKTYPEROW" AS A 
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='TBTRUCKTYPEROWUpdateBookingSheet' THEN
+			SELECT 
+				 IFNULL(TO_VARCHAR(TO_DECIMAL(A."U_QTY",3,0)),'0') AS QTY 
+				,IFNULL(A."U_TRUCKTYPE",'') AS TRUCKTYPECODE
+				,CAST(IFNULL(A."U_GROSSWEIGHT",0) AS double) AS GROSSWEIGHT
+				,A."LineId" AS LINEID
+				,IFNULL(A."U_InvoiceList",'') AS "InvoiceList"
+			FROM EW_PRD_TEST20240924."@TBTRUCKTYPEROW" AS A 
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='THAIBORDER' THEN
+			SELECT 
+				 B."Name" AS THAIBORDER 
+				,A."U_ThaiBorder" AS CODE
+				,A."LineId" AS LINEID
+			FROM EW_PRD_TEST20240924."@THAIBORDER" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."@TBTHAIBORDER" AS B ON A."U_ThaiBorder"=B."Code"
+			WHERE A."DocEntry"=:par2;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GetDetailBookingByDocEntrySeaAndAir' THEN
+		IF :par1='Header' THEN
+			SELECT 
+				 A."DocEntry" AS DOCENTRY
+				,A."DocEntry" AS BOOKINGID
+				,A."U_EWSeries"||A."U_JOBNO" AS JOBNO
+				,TO_VARCHAR(A."U_BOOKINGDATE",'YYYY/MM/DD') AS BOOKINGDATE
+				,B."descript"||'-'||BB."descript" AS ROUTE
+				,B."descript" AS ORIGIN
+				,B."descript" AS DESTINATION
+				,IFNULL(C."SlpName",'') AS SALESEMPLOYEE	
+				,D."Name" AS JOBTYPE
+				,E."Name" AS SERVICETYPE
+				,A."U_GOODSDESCRIPTION" AS GOODSDESCRIPTION
+				,A."U_TOTALPACKAGE" AS TOTALPACKAGE
+				,A."U_NETWEIGHT" AS NETWEIGHT
+				,A."U_GROSSWEIGHT" AS GROSSWEIGHT
+				,IFNULL(TO_VARCHAR(A."U_LOADINGDATE",'YYYY/MM/DD'),'') AS LOADINGDATE
+				,IFNULL(TO_VARCHAR(A."U_CROSSBORDERDATE",'YYYY/MM/DD'),'') AS CROSSBORDERDATE
+				,IFNULL(TO_VARCHAR(A."U_ETAREQUIREMENT",'YYYY/MM/DD'),'') AS ETAREQUIREMENT
+				,A."Remark" REMARK
+				,A."U_SPECIALREQUEST" AS SPECIALREQUEST
+				,A."DocNum"
+				,IFNULL(A."U_LOLOYARDORUNLOADING",0) AS LOLOYARD
+				,IFNULL(A."U_LCLORFCL",0) AS LCLFCL
+				,IFNULL(A."U_CYORCFS",0) AS CYCFS
+				,A."U_LOLOYARDRemark" AS LOLOYARDREMARK
+				,A."U_EWSeries" AS SERIES
+				,A."U_SALEEMPLOYEE" AS SlpCode
+				,A."U_IMPORTTYPE" AS IMPORTTYPE
+				,A."U_SERVICETYPE" AS SERVICETYPECODE
+				,A."DocNum" AS "DOCNUM"
+				,A."U_JOBNO" AS JOBNUMBER
+				,A."U_JOBNO" AS U_JONO
+				,A."U_ORIGIN" AS ORIGINCODE
+				,A."U_DESTINATION" AS DESTINATIONCODE
+			FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS B ON A."U_ORIGIN"=B."territryID" --ORIGIN
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS BB ON BB."territryID"=A."U_DESTINATION" --DESTINATION
+			LEFT JOIN EW_PRD_TEST20240924."OSLP" AS C ON C."SlpCode"=A."U_SALEEMPLOYEE"
+			LEFT JOIN EW_PRD_TEST20240924."@TBJOBTYPE" AS D ON D."Code"=A."U_IMPORTTYPE"
+			LEFT JOIN EW_PRD_TEST20240924."@TBSERVICETYPE"AS E ON E."Code"=A."U_SERVICETYPE"
+			WHERE A."DocEntry"=:par2; --'54';--
+		ELSE IF :par1='SHIPPER' THEN
+			SELECT 
+				 B."CardName" AS SHIPPER
+				,A."U_SHIPPER" AS CARDCODE
+				,A."LineId" AS LINEID 
+			FROM EW_PRD_TEST20240924."@TBSHIPPER_SEA_AIR" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON B."CardCode"=A."U_SHIPPER"
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='CONSIGNEE' THEN
+			SELECT 
+				 B."CardName" AS CONSIGNEE
+				,A."LineId" AS LINEID 
+				,A."U_CONSIGNEE" AS CARDCODE
+			FROM EW_PRD_TEST20240924."@TBCONSIGNEE_SEA_AIR" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON B."CardCode"=A."U_CONSIGNEE"
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='SALESQUOTATION' THEN
+			SELECT 
+				 B."NumAtCard" || ' - ' ||B."CardName" AS SALESQUOTATION 
+				,A."U_DOCENTRY" AS DOCENTRY
+				,A."LineId" AS LINEID
+				,B."CardCode" AS CARDCODE
+			FROM EW_PRD_TEST20240924."@TBSALESQUOTATION" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OQUT" AS B ON A."U_DOCENTRY"=B."DocEntry"
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='COMMODITY' THEN
+			SELECT 
+				 A."U_INVOICE" AS INVOICE 
+				,A."LineId" AS LINEID
+			FROM EW_PRD_TEST20240924."@COMMODITY" AS A 
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='OVERSEATRUCKER' THEN
+			SELECT 
+				 B."CardName" AS OVERSEATRUCKERCODE 
+				,A."U_OVERSEATRUCKERCODE" AS CARDCODE
+				,A."LineId" AS LINEID
+			FROM EW_PRD_TEST20240924."@TBOVERSEATRUCKER" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON B."CardCode"=A."U_OVERSEATRUCKERCODE"
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='PLACEOFLOADING' THEN
+			DECLARE TEST_STRING VARCHAR(50);
+			SELECT "U_District" INTO TEST_STRING FROM EW_PRD_TEST20240924."@PLACEOFLOADING" WHERE "DocEntry"=:par2;
+			SELECT 
+				 B."Name"||', '||B."U_COUNTRY" AS PLACELOADING
+				,A."U_PLACELOADING" AS CODE
+				,A."LineId" AS LINEID
+				,A."U_District" AS "District"
+				,(SELECT STRING_AGG(T0."Name",',') 
+						FROM EW_PRD_TEST20240924."@TBDISTRICT" AS T0 
+						WHERE T0."Code" IN 
+								(SELECT * FROM LIBRARY:SPLIT_TO_TABLE(:TEST_STRING,','))) AS "DistrictName"
+			FROM EW_PRD_TEST20240924."@PLACEOFLOADING" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS B ON B."Code"=A."U_PLACELOADING"
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='PLACEOFDELIVERY' THEN
+			DECLARE TEST_STRING VARCHAR(50);
+			SELECT "U_District" INTO TEST_STRING FROM EW_PRD_TEST20240924."@PLACEOFDELIVERY" WHERE "DocEntry"=:par2;
+			SELECT 
+				 B."Name"||', '||B."U_COUNTRY" AS PLACEOFDELIVERY 
+				,A."U_PLACEDELIVERY" AS Code
+				,A."LineId" AS LINEID
+				,A."U_District" AS "District"
+				,(SELECT STRING_AGG(T0."Name",',') 
+						FROM EW_PRD_TEST20240924."@TBDISTRICT" AS T0 
+						WHERE T0."Code" IN 
+								(SELECT * FROM LIBRARY:SPLIT_TO_TABLE(:TEST_STRING,','))) AS "DistrictName"
+			FROM EW_PRD_TEST20240924."@PLACEOFDELIVERY" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS B ON B."Code"=A."U_PLACEDELIVERY"
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='THAIFORWARDER' THEN
+			SELECT 
+				 B."CardName" AS THAIFORWARDER 
+				,A."U_THAIFORWARDER" AS CardCode
+				,A."LineId" AS LINEID
+			FROM EW_PRD_TEST20240924."@THAIFORWARDER" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON B."CardCode"=A."U_THAIFORWARDER"
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='VOLUME' THEN
+			SELECT 
+				 IFNULL(A."U_QTY",0) AS QTY
+				,IFNULL(A."U_VOLUMECODE",'') AS VOLUMECODE 
+				,IFNULL(A."U_GROSSWEIGHT",0) AS GROSSWEIGHT
+				,A."LineId" AS LINEID
+				,IFNULL(A."U_InvoiceList",'') AS "InvoiceList"
+			FROM EW_PRD_TEST20240924."@VOLUME" AS A 
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='TBOVERSEAFORWARDER' THEN
+			SELECT 
+				 B."CardName" AS OVERSEAFORWARDERCODE 
+				,A."U_OVERSEAFORWARDERCODE" AS CARDCODE
+				,A."LineId" AS LINEID
+			FROM EW_PRD_TEST20240924."@TBOVERSEAFORWARDER" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON B."CardCode"=A."U_OVERSEAFORWARDERCODE"
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='TBTRUCKTYPEROW' THEN
+			SELECT 
+				--
+				 IFNULL(TO_VARCHAR(TO_DECIMAL(A."U_QTY",3,0)),'0') AS QTY 
+				,IFNULL(A."U_TRUCKTYPE",'') AS TRUCKTYPECODE
+				,CAST(IFNULL(A."U_GROSSWEIGHT",0) AS double) AS GROSSWEIGHT
+				,A."LineId" AS LINEID
+				,IFNULL(A."U_InvoiceList",'') AS "InvoiceList"
+			FROM EW_PRD_TEST20240924."@TBTRUCKTYPEROW" AS A 
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='THAIBORDER' THEN
+			SELECT 
+				 B."Name" AS THAIBORDER 
+				,A."U_THAIBORDER" AS CODE
+				,A."LineId" AS LINEID
+			FROM EW_PRD_TEST20240924."@TB_THAI_B_SEA_AIR" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."@TBTHAIBORDER" AS B ON A."U_THAIBORDER"=B."Code"
+			WHERE A."DocEntry"=:par2;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE = 'GETPROJECTMANAGEMENTLIST' THEN 
+		SELECT A."PrjCode" AS PROJECTCODE
+			  ,A."PrjName" AS PROJECTNAME
+			  ,A."Active"  AS ACTIVE
+			  ,(SELECT STRING_AGG("DocEntry",',') FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" WHERE "U_JOBNO"=A."PrjName") "DocEntry"
+			  ,(SELECT "AbsEntry" FROM EW_PRD_TEST20240924."OPMG" WHERE "NAME"=A."PrjCode") AS "AbsEntry"
+		FROM EW_PRD_TEST20240924."OPRJ" AS A
+		WHERE A."Active"='Y';
+	ELSE IF :DTYPE = 'GETPRICELISTCONFIRMBOOKING' THEN 
+		SELECT 
+			 A."ListNum" AS PRICELISTCODE
+			,A."ListName" AS PRICELISTNAME
+		FROM EW_PRD_TEST20240924."OPLN" AS A 
+		WHERE A."CreateDate"<>'';
+	ELSE IF :DTYPE = 'GetPriceByItem' THEN 
+		IF (SELECT COUNT(*) AS ISENABLE FROM EW_PRD_TEST20240924."OSPP" AS A 
+					WHERE 	  A."ItemCode"=:par1 
+							  AND A."CardCode"=:par2 
+							  AND TO_VARCHAR(A."ListNum")=:par3)!=0 THEN
+			SELECT A."ItemCode" AS ITEMCODE
+					,A."Price" AS PRICE
+					,'true' AS ISENABLE 
+				FROM EW_PRD_TEST20240924."OSPP" AS A
+				WHERE A."ItemCode"=:par1 
+					AND A."CardCode"=:par2 
+					AND A."ListNum"=:par3;
+			ELSE 
+				SELECT A."ItemCode" ITEMCODE
+				  ,IFNULL(B."Price",0) AS PRICE
+				  ,'false' AS ISENABLE
+				FROM EW_PRD_TEST20240924."OITM" AS A 
+				LEFT JOIN EW_PRD_TEST20240924."ITM1" AS B ON A."ItemCode"=B."ItemCode" AND B."PriceList"=1--:par3
+				WHERE A."U_Dept_item"='CBT'
+					AND A."ItemCode"=:par1 
+					AND A."CardCode"=:par2;
+			END IF;
+	ELSE IF :DTYPE='GETSHIPPERCONFIRMBOOKINGDETAIL' THEN
+		SELECT 
+			C."CardName" AS SHIPPER
+		FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TBSHIPPER" AS B ON A."U_BOOKINGID"=B."DocEntry"
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=B."U_SHIPPER"
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GETCONSIGNEECONFIRMBOOKINGDETAIL' THEN
+		SELECT 
+			C."CardName" AS CONSIGNEE
+		FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TBCONSIGNEE" AS B ON A."U_BOOKINGID"=B."DocEntry"
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=B."U_CONSIGNEE"
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GETTHAIFORWARDERCONFIRMBOOKINGDETAIL' THEN
+		SELECT 
+			C."CardName" AS FORWARDER
+		FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS AA ON AA."DocEntry"=A."U_BOOKINGID"
+		LEFT JOIN EW_PRD_TEST20240924."@THAIFORWARDER" AS CC ON AA."DocEntry"=CC."DocEntry"
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=CC."U_THAIFORWARDER"
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GETOVERSEAFORWARDERCONFIRMBOOKINGDETAIL' THEN
+		SELECT 
+			C."CardName" AS FORWARDER
+		FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS AA ON AA."DocEntry"=A."U_BOOKINGID"
+		LEFT JOIN EW_PRD_TEST20240924."@TBOVERSEAFORWARDER" AS CC ON AA."DocEntry"=CC."DocEntry"
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=CC."U_OVERSEAFORWARDERCODE"
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GETTHAIBORDERCONFIRMBOOKINGDETAIL' THEN
+		SELECT 
+			C."Name" AS ThaiBorder
+		FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS AA ON AA."DocEntry"=A."U_BOOKINGID"
+		LEFT JOIN EW_PRD_TEST20240924."@THAIBORDER" AS CC ON AA."DocEntry"=CC."DocEntry"
+		LEFT JOIN EW_PRD_TEST20240924."@TBTHAIBORDER" AS C ON C."Code"=CC."U_ThaiBorder"
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GETSALESQUOTATIONCONFIRMBOOKINGDETAIL' THEN
+		SELECT 
+			 B."U_DOCENTRY" AS DOCENTRY
+			,C."NumAtCard" AS REFNO
+			,C."CardCode" AS CARDCODE
+			,D."CardName" AS CARDNAME
+		FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TBSALESQUOTATION" AS B ON A."DocEntry"=B."DocEntry"
+		LEFT JOIN EW_PRD_TEST20240924."OQUT" AS C ON B."U_DOCENTRY"=C."DocEntry"
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS D ON D."CardCode"=C."CardCode"
+		WHERE A."U_CONFIRMBOOKINGSHEETID"=:par1;
+	ELSE IF :DTYPE='GetDetailConfirmBookingByDocEntry' THEN
+		IF :par1='BookingSheetInformation' THEN
+			SELECT 
+				 B."Name" AS JOBTYPE
+				,C."descript"||' - '|| CC."descript" AS ROUTE
+				,D."SlpName" AS SALENAME
+				,A."U_EWSeries"||A."U_JOBNO" AS JOBNO
+				,E."ListName" AS PRICELIST
+				,AA."Remark" AS REMARK
+				,AA."DocEntry" AS DOCENTRY
+				,TO_VARCHAR(A."U_LOADINGDATE",'DD/MM/YYYY') AS "LoadingDate"
+				,TO_VARCHAR(A."U_CROSSBORDERDATE",'DD/MM/YYYY') AS "CrossBorderDate"
+				,TO_VARCHAR(A."U_ETAREQUIREMENT",'DD/MM/YYYY') AS "ETARequirementDate"
+				,A."U_UserCreate" AS "CSName"
+			FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS A
+			LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS AA ON AA."DocEntry"=:par2
+			LEFT JOIN EW_PRD_TEST20240924."@TBJOBTYPE" AS B ON A."U_IMPORTTYPE"=B."Code"
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS C ON C."territryID"=A."U_ORIGIN" --ORIGIN
+			LEFT JOIN EW_PRD_TEST20240924."OTER" AS CC ON CC."territryID"=A."U_DESTINATION" --DESTINATION
+			LEFT JOIN EW_PRD_TEST20240924."OSLP" AS D ON D."SlpCode"=A."U_SALEEMPLOYEE"
+			LEFT JOIN EW_PRD_TEST20240924."OPLN" AS E ON E."ListNum"=AA."U_PRICELIST"
+			WHERE A."U_CONFIRMBOOKINGSHEETID"=:par2;
+		ELSE IF :par1='GetBorderBookingSheet' THEN
+			SELECT 
+				 IFNULL(C."Code",0) AS CODE
+				,IFNULL(C."Name",'') AS NAME
+			FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS A
+			LEFT JOIN EW_PRD_TEST20240924."@THAIBORDER" AS B ON A."DocEntry"=B."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."@TBTHAIBORDER" AS C ON C."Code"=B."U_ThaiBorder"
+			WHERE A."U_CONFIRMBOOKINGSHEETID"=:par2;
+		ELSE IF :par1='PLACEOFLOADING' THEN
+			SELECT 
+				B."Name"||', '||B."U_COUNTRY" AS PLACELOADING
+			FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS AA
+			LEFT JOIN EW_PRD_TEST20240924."@PLACEOFLOADING" AS A ON A."DocEntry"=AA."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS B ON B."Code"=A."U_PLACELOADING"			
+			WHERE AA."U_CONFIRMBOOKINGSHEETID"=:par2;
+		ELSE IF :par1='PLACEOFDELIVERY' THEN
+			SELECT 
+				B."Name"||', '||B."U_COUNTRY" AS PLACEOFDELIVERY 
+			FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS AA
+			LEFT JOIN EW_PRD_TEST20240924."@PLACEOFDELIVERY" AS A ON A."DocEntry"=AA."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS B ON B."Code"=A."U_PLACEDELIVERY"
+			WHERE AA."U_CONFIRMBOOKINGSHEETID"=:par2;
+		ELSE IF :par1='SHIPPER' THEN
+			SELECT 
+				B."CardName" AS SHIPPER 
+			FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS AA
+			LEFT JOIN EW_PRD_TEST20240924."@TBSHIPPER" AS A ON A."DocEntry"=AA."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON B."CardCode"=A."U_SHIPPER"
+			WHERE AA."U_CONFIRMBOOKINGSHEETID"=:par2;
+		ELSE IF :par1='CONSIGNEE' THEN
+			SELECT 
+				B."CardName" AS CONSIGNEE 
+			FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS AA
+			LEFT JOIN EW_PRD_TEST20240924."@TBCONSIGNEE" AS A ON A."DocEntry"=AA."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON B."CardCode"=A."U_CONSIGNEE"
+			WHERE AA."U_CONFIRMBOOKINGSHEETID"=:par2;
+		ELSE IF :par1='GetListOfContainerInformation' THEN
+			SELECT 
+				 A."U_TYPE" AS "TYPE"
+				,A."U_CONTAINERTYPE" AS CONTAINERTYPE
+				,A."U_CONTAINERNO" AS CONTAINERNO
+				,A."U_OWNER" AS OWNER
+				,A."U_GROSSWEIGHT" AS GROSSWEIGHT
+				,A."U_YARD" AS YARD
+				,A."U_FCL_LCL" AS FCL_LCL
+				,A."U_LOLO_UNLOADING" AS LOLO_UNLOADING
+				,B."Location" AS TRUCKPROVINCE
+				,E."InventryNo" AS TRUCKPLATENO
+				,A."U_TRUCKTYPE" AS TRUCKTYPE
+				,A."U_BRAND" AS BRAND
+				,A."U_COLOR" AS COLOR
+				,A."U_TRAILERPROVINCE" AS TRAILERPROVINCE
+				,A."U_TRAILERPLATE" AS TRAILERPLATE
+				,A."U_TRAILERTYPE" AS TRAILERTYPE
+				,C."firstName" ||' '|| C."lastName" AS DriverName1
+				,C."mobile" AS TPNO1
+				,C."govID" AS IDCARD1
+				,C."U_DriverID" AS DRIVERLICENSE1
+				,CC."firstName" ||' '|| C."lastName" AS DriverName2
+				,CC."mobile" AS TPNO2
+				,CC."govID" AS IDCARD2
+				,CC."U_DriverID" AS DRIVERLICENSE2
+				,D."CardName" AS VENDOR
+				,A."U_TRUCKCOSTTHB" AS TRUCKCOSTTHB
+				,A."U_SEALNO1" AS SEALNO1
+				,A."U_SEALNO2" AS SEALNO2
+				,A."LineId" AS LINEID
+				,A."U_ContainerOption" AS "ContainerOptionType"
+				,(
+						SELECT
+							  T1."U_InvoiceList" AS "InvoiceList"
+						FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0 
+						LEFT JOIN EW_PRD_TEST20240924."@VOLUME" AS T1 ON T1."DocEntry"=T0."U_BOOKINGID"
+						WHERE 	  T0."DocEntry"=A."DocEntry" 
+							  AND T1."U_VOLUMECODE"=A."U_CONTAINERTYPE" 
+							  AND T1."LineId"=A."U_BookingLineId"
+						UNION 
+						SELECT 
+							  IFNULL(T1."U_InvoiceList",'') AS "InvoiceList"
+						FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0 
+						LEFT JOIN EW_PRD_TEST20240924."@TBTRUCKTYPEROW" AS T1 ON T1."DocEntry"=T0."U_BOOKINGID"
+						WHERE 	  T0."DocEntry"=A."DocEntry" 
+							  AND T1."U_TRUCKTYPE"=A."U_CONTAINERTYPE" 
+							  AND T1."LineId"=A."U_BookingLineId"
+					) AS ListInvoice
+			FROM EW_PRD_TEST20240924."@TRUCKINFORMATION" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OLCT" AS B ON B."Code"=A."U_TRUCKPROVINCE"
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS C ON C."empID"=A."U_DRIVER1"
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS CC ON CC."empID"=A."U_DRIVER2"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS D ON D."CardCode"=A."U_VENDORCODE"
+			LEFT JOIN EW_PRD_TEST20240924."OITM" AS E ON E."ItemCode"=A."U_TRUCKPLATENO"
+			WHERE A."DocEntry"=:par2;
+		/*ELSE IF :par1='ListOfAdvancePayment' THEN
+			SELECT --DISTINCT
+				 A."U_WebID" AS ADVANCEPAYMENTID --A."U_WEBID"
+				,B."SeriesName" AS SERIES
+				,TO_NVARCHAR(A."U_PostingDate",'dd-MM-yyyy') AS POSTINGDATE
+				,IFNULL(A."Remark",'') AS REMARK
+				,A."U_Ref1" AS REF1
+				,A."U_Ref2" AS REF2
+				,A."U_Ref3" AS REF3
+				,D."NAME" AS PROJECTMANAGEMENT
+				,AA."U_DocEntry"
+			FROM EW_PRD_TEST20240924."@ADVANCEPAYMENT" AS A
+			LEFT JOIN EW_PRD_TEST20240924."NNM1" AS B ON B."Series"=A."Series"
+			LEFT JOIN EW_PRD_TEST20240924."@TBADVANCEPAYMENT" AS AA ON AA."U_DocEntry"=A."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS C ON C."DocEntry"=AA."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."AbsEntry"=C."U_PROJECTMANAGEMENTID"
+			WHERE A."DocEntry"=:par2;
+			select 'heng' from dummy;*/
+		/*ELSE IF :par1='ListLineAdvancePayment' THEN
+			SELECT DISTINCT
+				 AA."U_EmployeeCode"||' - '||B."CardName" AS EMPLOYEECODEANDEMPLOYEENAME
+				,AA."U_AccountCode"||' - '||C."AcctName" AS ACCOUNTCODEANDACCOUNTNAME
+				,AA."U_Amount" AS AMOUNT
+			FROM EW_PRD_TEST20240924."@ADVANCEPAYMENT" AS A
+			LEFT JOIN EW_PRD_TEST20240924."@ADVANCEPAYMENTROW" AS AA ON A."DocEntry"=AA."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON B."CardCode"=AA."U_EmployeeCode"
+			LEFT JOIN EW_PRD_TEST20240924."OACT" AS C ON C."AcctCode"=AA."U_AccountCode"
+			WHERE A."DocEntry"=:par2;
+			select 'Heng' from dummy;*/
+		ELSE IF :par1='ListOfPurchaseRequest' THEN
+			SELECT 
+				 A."U_NumAtCard" AS DOCNUM
+				,A."DocEntry" AS DOCENTRY
+				,CASE WHEN TO_VARCHAR(A."U_Project")='0' THEN '' ELSE TO_VARCHAR(A."U_Project") END AS PROJECTNUMBER
+				,TO_VARCHAR(A."U_IssueDate",'dd-mm-YYYY') AS ISSUEDATE
+				,TO_VARCHAR(A."U_DueDate",'dd-mm-YYYY') AS DUEDATE
+				,A."U_VendorCode" AS VENDORCODE
+				,B."CardName" AS VENDORNAME
+				,D."ChkName" AS CURRENCY
+				,A."U_UserID" AS EMPLOYEEID
+				,C."firstName" ||' '|| C."lastName" AS EMPLOYEENAME
+				,TO_DECIMAL(A."U_Amount",3,2) AS AMOUNT
+				,TO_DECIMAL(A."U_AmountTHB",3,2) AS AMOUNTTHB
+				,IFNULL(A."Remark",'') AS REMARKS
+				,IFNULL(B."DflAccount",'') AS BANKACCOUNT
+				,IFNULL(B."DflBranch",'') AS BRANCH	  
+				,(SELECT IFNULL("OCRY"."Name",'') FROM EW_PRD_TEST20240924."OCRY" WHERE "OCRY"."Code"=B."BankCountr") AS BANKCOUNTRY
+				,(SELECT IFNULL("ODSC"."BankName",'') FROM EW_PRD_TEST20240924."ODSC" WHERE "ODSC"."BankCode"=B."BankCode") AS BANKNAME
+				,IFNULL(B."DflSwift",'') AS SWIFTCODE	
+			FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS F
+			LEFT JOIN (
+				SELECT * FROM EW_PRD_TEST20240924."@TBADVANCEPAYMENT"
+				UNION ALL
+				SELECT * FROM EW_PRD_TEST20240924."@TBPURCHASEREQUEST"
+			) AS E ON E."DocEntry"=F."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."@ADVANCEPAYMENT" AS A ON E."U_DocEntry"=A."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON A."U_VendorCode"=B."CardCode"
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS C ON A."U_UserID"=C."empID"
+			LEFT JOIN EW_PRD_TEST20240924."OCRN" AS D ON A."U_CurrencyType"=D."CurrCode"
+			WHERE F."DocEntry"=:par2 AND A."U_AdvanceType"=:par3 AND E."U_CONTAINERLINEID"=:par4;
+		ELSE IF :par1='ListOfPurchaseRequestLine' THEN
+			SELECT 
+				 A."U_ItemCode" AS ITEMCODE
+				,B."ItemName" AS ITEMNAME
+				,A."U_Qty" AS QTY
+				,TO_DECIMAL(A."U_Price",3,2) AS PRICE
+				,A."U_Origin"||'-'|| A."U_Destination" AS ORIGIN
+				,A."U_Origin"||'-'|| A."U_Destination" AS DESTINATION
+				,TO_DECIMAL(A."U_Price",3,2) AS AMOUNT
+				,A."U_Remarks" AS REMARKS
+				,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=B."UgpEntry") AS SERVICETYPE
+			FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS F
+			LEFT JOIN (
+				SELECT * FROM EW_PRD_TEST20240924."@TBADVANCEPAYMENT"
+				UNION ALL
+				SELECT * FROM EW_PRD_TEST20240924."@TBPURCHASEREQUEST"
+			) AS E ON E."DocEntry"=F."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."@ADVANCEPAYMENTROW" AS A ON E."U_DocEntry"=A."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."OITM" AS B ON A."U_ItemCode"=B."ItemCode"
+			WHERE A."DocEntry"=:par2;
+		--END IF;
+		--END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GETADVANCEPAYMENTLIST' THEN
+		SELECT 
+			 A."DocEntry" AS DOCENTRY
+			,A."U_NumAtCard" AS DOCNUM
+			,CASE 
+				WHEN A."U_ApproveStatus"='P' THEN 'Pending' 
+				WHEN A."U_ApproveStatus"='A' THEN 'Approve' 
+				WHEN A."U_ApproveStatus"='R' THEN 'Reject' END AS STATUS
+			,A."U_UserID" AS USERID
+			,C."firstName"||'-'||C."lastName" AS USERNAME
+			,A."U_IssueDate" AS CREATEDATE
+			,A."U_DueDate" AS REQUIREDATE
+			,A."Remark" AS REMARK
+			,TO_DECIMAL(A."U_Amount",10,2) AS DOCTOTAL
+			,D."NAME" AS JOBNUMBER
+			,A."DocNum" AS DOCNUMPR
+			,A."U_VendorCode" AS VENDORCODE
+			,E."CardName" AS VENDORNAME
+		FROM EW_PRD_TEST20240924."@ADVANCEPAYMENT" AS A
+		--LEFT JOIN EW_PRD_TEST20240924."@ADVANCEPAYMENTROW" AS B ON A."DocEntry"=B."DocEntry"
+		LEFT JOIN EW_PRD_TEST20240924."OHEM" AS C ON C."empID"=A."U_UserID"
+		LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."AbsEntry"=A."U_Project"
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS E ON E."CardCode"=A."U_VendorCode"
+		WHERE A."U_AdvanceType"='PRAD' AND (SELECT COUNT("U_Paid") FROM EW_PRD_TEST20240924."@ADVANCEPAYMENTROW" WHERE "DocEntry"=A."DocEntry")<>0;
+	ELSE IF :DTYPE='GETSTATUSCANCELADVANCEPAYMENT' THEN
+		/*IF (SELECT "U_Status" FROM EW_PRD_TEST20240924."@ADVANCEPAYMENT" WHERE "DocEntry"=:par1)='P' THEN
+			SELECT '0' AS "Condition" from dummy;
+		ELSE
+			SELECT '1' AS "Condition" from dummy;
+		END IF;*/
+		select 'heng' from dummy;
+	ELSE IF :DTYPE='GetDetailAdvancePaymentByDocEntry' THEN
+		IF :par1='Header' THEN
+			SELECT 
+			 A."U_NumAtCard" AS DOCNUM
+			,A."DocNum" AS DOCNUMPR
+			,A."DocEntry" AS DOCENTRY
+			,CASE WHEN TO_VARCHAR(A."U_Project")='0' THEN '' ELSE TO_VARCHAR(D."NAME") END AS PROJECTNUMBER
+			,TO_VARCHAR(A."U_IssueDate",'YYYY/MM/DD') AS ISSUEDATE
+			,TO_VARCHAR(A."U_DueDate",'YYYY/MM/DD') AS DUEDATE
+			,A."U_VendorCode" AS VENDORCODE
+			,B."CardName" AS VENDORNAME
+			,A."U_CurrencyType" AS CURRENCY
+			,A."U_UserID" AS EMPLOYEEID
+			,C."firstName" ||' '|| C."lastName" AS EMPLOYEENAME
+			,A."U_Amount" AS AMOUNT
+			,A."U_AmountTHB" AS AMOUNTTHB
+			,CAST(IFNULL(A."Remark",'') AS NVARCHAR(255)) AS REMARKS
+			,B."DflAccount" AS BANKACCOUNT
+			,B."DflBranch" AS BRANCH	  
+			,(SELECT "OCRY"."Name" FROM EW_PRD_TEST20240924."OCRY" WHERE "OCRY"."Code"=B."BankCountr") AS BANKCOUNTRY
+			,(SELECT "ODSC"."BankName" FROM EW_PRD_TEST20240924."ODSC" WHERE "ODSC"."BankCode"=B."BankCode") AS BANKNAME
+			,B."DflSwift" AS SWIFTCODE	
+			,IFNULL(A."U_REASON",'') AS REASON
+			,(SELECT DISTINCT T2."DocNum" AS DOCNUM 
+				FROM EW_PRD_TEST20240924."OPRQ" AS T0 
+				LEFT JOIN EW_PRD_TEST20240924."POR1" AS T1 ON T0."DocEntry"=T1."BaseEntry" AND T1."BaseType"=1470000113  
+				LEFT JOIN EW_PRD_TEST20240924."OPOR" AS T2 ON T2."DocEntry"=T1."DocEntry"
+				WHERE T0."DocEntry"=A."U_PRDocEntry") AS DOCNUMPRAD
+			,(SELECT DISTINCT T1."DocEntry" AS DOCENTRY 
+				FROM EW_PRD_TEST20240924."OPRQ" AS T0 
+				LEFT JOIN EW_PRD_TEST20240924."POR1" AS T1 ON T0."DocEntry"=T1."BaseEntry" AND T1."BaseType"=1470000113  
+				WHERE T0."DocEntry"=A."U_PRDocEntry") AS DOCENTRYPR
+			,IFNULL((SELECT MAX(T0."LineNum") FROM EW_PRD_TEST20240924."POR1" AS T0 WHERE T0."BaseEntry"=A."U_PRDocEntry" AND T0."BaseType"=1470000113),0) AS MAXROWPO
+			,IFNULL(A."U_PRDocEntry",0) AS DOCENTRYPURCHASEREQUEST
+			,A."U_PRSeries" AS "PRSeries"
+			,A."U_AdvanceType" AS "AdvanceType"
+			,CASE 
+					WHEN A."U_ApproveStatus"='R' THEN 'Reject' 
+					WHEN A."U_ApproveStatus"='A' THEN 'Approve' 
+					WHEN A."U_ApproveStatus"='P' THEN 'Pending' END AS DOCUMENTSTATUS
+		FROM EW_PRD_TEST20240924."@ADVANCEPAYMENT" AS A
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON A."U_VendorCode"=B."CardCode"
+		LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."AbsEntry"=A."U_Project"
+		LEFT JOIN EW_PRD_TEST20240924."OHEM" AS C ON A."U_UserID"=C."empID"
+		WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='Lines' THEN
+			SELECT 
+				 IFNULL((SELECT MAX(T1."LineNum") AS LINENUM 
+					FROM EW_PRD_TEST20240924."OPRQ" AS T0 
+					LEFT JOIN EW_PRD_TEST20240924."POR1" AS T1 ON T0."DocEntry"=T1."BaseEntry" AND T1."BaseType"=1470000113  
+					WHERE T0."DocEntry"=A."U_PRDocEntry" AND T1."ItemCode"=A."U_ItemCode"),0) AS LINENUMPO
+				,IFNULL((SELECT MAX(T1."LineNum") AS LINENUM 
+					FROM EW_PRD_TEST20240924."OPRQ" AS T0 
+					LEFT JOIN EW_PRD_TEST20240924."PRQ1" AS T1 ON T0."DocEntry"=T1."DocEntry"  
+					WHERE T0."DocEntry"=A."U_PRDocEntry" AND T1."ItemCode"=A."U_ItemCode"),0) AS LINENUMPR
+				,*
+			FROM (
+						SELECT 
+							 A."U_ItemCode" AS ITEMCODE
+							,(ROW_NUMBER() OVER (PARTITION BY A."U_ItemCode")) AS ROWNUM
+							,B."ItemName" AS ITEMNAME
+							,A."U_Qty" AS QTY
+							,A."U_Price" AS PRICE
+							,A."U_Origin" AS ORIGIN
+							,A."U_Destination" AS DESTINATION
+							,A."U_Remarks" AS REMARKS
+							,IFNULL(F."UomCode",B."BuyUnitMsr") AS SERVICETYPE
+							,CASE WHEN A."U_ContainerType"=''THEN FF."UomEntry" ELSE A."U_ContainerType" END AS SERVICETYPEID
+							,IFNULL(A."VisOrder",0) AS LINENUMAD
+							,A."U_DistributionRule" AS 	DistributionRule
+							,A."U_RefInv" AS "RefInv"
+							,IFNULL(A."U_TaxCode",'') AS "TaxCode"
+							,CASE WHEN IFNULL(A."U_TaxCode",'')='' THEN 0 
+							 ELSE (SELECT "Rate" FROM EW_PRD_TEST20240924."OVTG" WHERE "Code"=A."U_TaxCode") END AS "TaxRate" 
+							,C."U_PRDocEntry"
+							,A."U_ItemCode"
+							,TO_VARCHAR(D."NAME") AS "JobNo"
+							,IFNULL(E."InventryNo"||' / ','')||IFNULL(E0."AttriTxt1",'') AS "TruckNumber"
+							,A."U_TruckNo"  AS "TruckCode"
+							,IFNULL((SELECT 
+								MIN(T0."LineId")
+							  FROM EW_PRD_TEST20240924."@TRUCKINFORMATION" AS T0
+							  LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T1 ON T1."DocEntry"=T0."DocEntry"
+							  WHERE T1."U_PROJECTMANAGEMENTID"=CASE WHEN IFNULL(C."U_Project",0)=0 THEN IFNULL(A."U_JobNumber",0)
+							 								ELSE IFNULL(C."U_Project",0) END
+							 		AND "U_TRUCKCODE"=A."U_TruckNo"),0) AS "BaseLineID"
+							,IFNULL((SELECT STRING_AGG(Z1."Name",',')
+										FROM EW_PRD_TEST20240924."@PLACEOFLOADING" AS Z0
+										LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS Z1 ON Z1."Code"=Z0."U_PLACELOADING"
+										WHERE Z0."DocEntry"=D."U_CONFIRMBOOKINGSHEETID"),'') AS "PlaceOfLoading"
+							,IFNULL((SELECT STRING_AGG(Z1."Name",',')
+										FROM EW_PRD_TEST20240924."@PLACEOFDELIVERY" AS Z0
+										LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS Z1 ON Z1."Code"=Z0."U_PLACEDELIVERY"
+										WHERE Z0."DocEntry"=D."U_CONFIRMBOOKINGSHEETID"),'') AS "PlaceOfDelivery"
+							,IFNULL(E0."AttriTxt8",'') AS "TrailerType"
+							,TO_VARCHAR(D."START",'dd/MM/yyyy') AS "LoadingDate"
+						FROM EW_PRD_TEST20240924."@ADVANCEPAYMENTROW" AS A
+						LEFT JOIN EW_PRD_TEST20240924."OITM" AS B ON A."U_ItemCode"=B."ItemCode"
+						LEFT JOIN EW_PRD_TEST20240924."@ADVANCEPAYMENT" AS C ON C."DocEntry"=A."DocEntry"
+						LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."AbsEntry"=CASE WHEN IFNULL(C."U_Project",0)!=0 THEN C."U_Project" ELSE A."U_JobNumber" END
+						LEFT JOIN EW_PRD_TEST20240924."OITM" AS E ON E."ItemCode"=A."U_TruckNo" --Get Truck Detail Information
+						LEFT JOIN EW_PRD_TEST20240924."ITM13" AS E0 ON E."ItemCode"=E0."ItemCode" --Get Detail of Truck Information
+						LEFT JOIN EW_PRD_TEST20240924."OUOM" AS F ON TO_VARCHAR(F."UomEntry")=A."U_ContainerType"
+						LEFT JOIN EW_PRD_TEST20240924."OUOM" AS FF ON TO_VARCHAR(FF."UomCode")=B."BuyUnitMsr"
+						WHERE A."DocEntry"=:par2
+			) AS A;
+		ELSE IF :par1='GetDocEntryByJobSheetTrucking' THEN
+			SELECT "DocEntry" AS "DocEntry" FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" WHERE "U_JOBNO"=:par2;
+		ELSE IF :par1='GetDocEntryByConfirmBooking' THEN
+			SELECT 
+				A."DocEntry" AS "DocEntry" 
+			FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OPMG" AS B ON B."AbsEntry"=A."U_PROJECTMANAGEMENTID"
+			WHERE B."NAME"=:par2 AND A."Status"='O';
+		END IF;
+		END IF;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GETAPPROVALLISTADVANCEPAYMENT' THEN
+		IF :par3='PRCommission' THEN
+			SELECT 
+				 '' AS DOCNUM
+				,(SELECT STRING_AGG(Z1."NAME", ',') 
+					FROM EW_PRD_TEST20240924."@TBCOMMISSIONROW" AS Z0
+					LEFT JOIN EW_PRD_TEST20240924."OPMG" AS Z1 ON Z1."AbsEntry"=Z0."U_JobNumber" WHERE Z0."DocEntry"=A."DocEntry") AS PROJECTNUMBER
+				,TO_VARCHAR(A."U_IssueDate",'dd/MM/YYYY') AS ISSUEDATE
+				,B."BPLink" AS VENDORCODE
+				,C."CardName" AS VENDORNAME
+				,C."Currency" AS CURRENCY
+				,A."U_UserID" AS EMPLOYEEID
+				,B."firstName" ||' '|| B."lastName" AS EMPLOYEENAME
+				,D."GrandTotalCommission" AS AMOUNT
+				,A."Remark" AS REMARK
+				,A."DocEntry" AS DOCENTRY
+				,CASE 
+					WHEN A."U_ApproveStatus"='R' THEN 'Reject' 
+					WHEN A."U_ApproveStatus"='A' THEN 'Approve' 
+					WHEN A."U_ApproveStatus"='P' THEN 'Pending' END AS DOCUMENTSTATUS
+				,A."DocNum" AS DOCNUMPR
+				,'Commission' AS "Type"
+				,A."U_ApproveBy" AS "ApproveBy"
+			FROM EW_PRD_TEST20240924."@TBCOMMISSION" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS B ON A."U_UserID"=B."empID"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=B."BPLink"
+			LEFT JOIN (
+					SELECT 
+						 T0."DocEntry"
+						,SUM(T0."U_GrandTotalCosting") AS "GrandTotalCosting"
+						,SUM(T0."U_GrandTotalSelling") AS "GrandTotalSelling"
+						,SUM(T0."U_GrossProfit") AS "GrandTotalGrossProfit"
+						,SUM(T0."U_TotalSaleCommission") AS "GrandTotalCommission"
+					FROM EW_PRD_TEST20240924."@TBCOMMISSIONROW" AS T0 GROUP BY T0."DocEntry"
+				)AS D ON D."DocEntry"=A."DocEntry"
+			WHERE A."U_IssueDate" BETWEEN :par1 AND :par2 And A."Status"='O';
+		ELSE
+			SELECT 
+				 A."U_NumAtCard" AS DOCNUM
+				,CASE WHEN A."U_AdvanceType"='PR' THEN 
+						TO_VARCHAR(A."U_DueDate",'dd/MM/YYYY')
+				 ELSE 
+					CASE WHEN TO_VARCHAR(A."U_Project")='0' THEN 
+						'' 
+					ELSE 
+						TO_VARCHAR(D."NAME") 
+					END 
+				 END AS PROJECTNUMBER
+				,TO_VARCHAR(A."U_IssueDate",'dd/MM/YYYY') AS ISSUEDATE
+				,A."U_VendorCode" AS VENDORCODE
+				,B."CardName" AS VENDORNAME
+				,A."U_CurrencyType" AS CURRENCY
+				,A."U_UserID" AS EMPLOYEEID
+				,C."firstName" ||' '|| C."lastName" AS EMPLOYEENAME
+				,A."U_Amount" AS AMOUNT
+				,A."Remark" AS REMARK
+				,A."DocEntry" AS DOCENTRY
+				,CASE 
+					WHEN A."U_ApproveStatus"='R' THEN 'Reject' 
+					WHEN A."U_ApproveStatus"='A' THEN 'Approve' 
+					WHEN A."U_ApproveStatus"='P' THEN 'Pending' END AS DOCUMENTSTATUS
+				,A."DocNum" AS DOCNUMPR
+				,'Normal' AS "Type"
+				,A."U_ApproveBy" AS "ApproveBy"
+			FROM EW_PRD_TEST20240924."@ADVANCEPAYMENT" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON A."U_VendorCode"=B."CardCode"
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS C ON A."U_UserID"=C."empID"
+			LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."AbsEntry"=A."U_Project"
+			WHERE A."U_IssueDate" BETWEEN :par1 AND :par2
+				  And A."U_AdvanceType"=:par3 
+				  AND A."Canceled"='N'
+				  AND A."U_ApproveStatus"='P'
+				  AND CASE WHEN A."U_Project"='0' THEN 'Y' ELSE D."STATUS" END!='N';
+		END IF;
+	ELSE IF :DTYPE='GetListClearingAdvancePayment' THEN
+		SELECT 
+			 ROW_NUMBER ( ) OVER( ORDER BY A."DocNum" DESC ) AS ROWNUM
+			,A."DocEntry" AS DOCENTRY
+			,A."DocNum" AS DOCNUM
+			,A."U_NumAtCard" AS REFNO
+			,B."NAME" AS JOBNUMBER
+			,A."U_VendorCode" AS VENDORCODE
+			,C."CardName" AS VENDORNAME
+			,TO_VARCHAR(A."U_IssueDate",'dd/mm/YYYY') AS ISSUEDATE
+			,A."U_Amount" AS DOCTOTAL
+			,A."Remark" AS REMARKS
+		FROM EW_PRD_TEST20240924."@ADVANCEPAYMENT" AS A
+		LEFT JOIN EW_PRD_TEST20240924."OPMG" AS B ON B."AbsEntry"=A."U_Project"
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=A."U_VendorCode"
+		LEFT JOIN EW_PRD_TEST20240924."OPRQ" AS E ON E."DocEntry"=A."U_PRDocEntry"
+		LEFT JOIN EW_PRD_TEST20240924."OPOR" AS D ON D."DocEntry"=(SELECT DISTINCT "DocEntry" FROM EW_PRD_TEST20240924."POR1" AS T0 WHERE T0."BaseEntry"=E."DocEntry" AND T0."BaseType"='1470000113')
+		WHERE 	  A."U_AdvanceType"='PRAD' 
+			  AND A."U_PRDocEntry" IS NOT NULL 
+			  AND A."U_ApproveStatus"='A'
+			  AND IFNULL(D."U_IsUpdate",'')!='Y'
+			  AND (SELECT COUNT(*) FROM EW_PRD_TEST20240924."@SETTLEMENTHEADER" AS T0 WHERE T0."U_PODocEntry"=D."DocEntry" AND T0."Status"!='C')=0
+			  AND (SELECT T0."STATUS" FROM EW_PRD_TEST20240924."OPMG" AS T0 WHERE T0."AbsEntry"=A."U_Project")!='N'
+			  --AND (SELECT COUNT(*) FROM EW_PRD_TEST20240924."OPMG" AS T0 WHERE T0."AbsEntry"=A."U_Project")=0;
+		UNION ALL
+		SELECT 
+					 ROW_NUMBER ( ) OVER( ORDER BY A."DocNum" DESC ) AS ROWNUM
+					,A."DocEntry" AS DOCENTRY
+					,A."DocNum" AS DOCNUM
+					,A."U_NumAtCard" AS REFNO
+					,B."NAME" AS JOBNUMBER
+					,A."U_VendorCode" AS VENDORCODE
+					,C."CardName" AS VENDORNAME
+					,TO_VARCHAR(A."U_IssueDate",'dd/mm/YYYY') AS ISSUEDATE
+					,A."U_Amount" AS DOCTOTAL
+					,A."Remark" AS REMARKS
+				FROM EW_PRD_TEST20240924."@ADVANCEPAYMENT" AS A
+				LEFT JOIN EW_PRD_TEST20240924."OPMG" AS B ON B."AbsEntry"=A."U_Project"
+				LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=A."U_VendorCode"
+				LEFT JOIN EW_PRD_TEST20240924."OPRQ" AS E ON E."DocEntry"=A."U_PRDocEntry"
+				LEFT JOIN EW_PRD_TEST20240924."OPOR" AS D ON D."DocEntry"=(SELECT DISTINCT "DocEntry" FROM EW_PRD_TEST20240924."POR1" AS T0 WHERE T0."BaseEntry"=E."DocEntry" AND T0."BaseType"='1470000113')
+				WHERE 	  A."U_AdvanceType"='PRAD' 
+			  AND A."U_PRDocEntry" IS NOT NULL 
+			  AND A."U_ApproveStatus"='A'
+			  AND IFNULL(D."U_IsUpdate",'')!='Y'
+			  AND (SELECT COUNT(*) FROM EW_PRD_TEST20240924."@SETTLEMENTHEADER" AS T0 WHERE T0."U_PODocEntry"=D."DocEntry" AND T0."Status"!='C')=0
+			  --AND (SELECT T0."STATUS" FROM EW_PRD_TEST20240924."OPMG" AS T0 WHERE T0."AbsEntry"=A."U_Project")!='N';
+			  AND (SELECT COUNT(*) FROM EW_PRD_TEST20240924."OPMG" AS T0 WHERE T0."AbsEntry"=A."U_Project")=0;
+	ELSE IF :DTYPE='GetListClearingAdvancePaymentByTransId' THEN
+		IF :par1='Header' THEN
+			SELECT 
+			 A."U_NumAtCard" AS DOCNUM
+			,A."DocNum" AS DOCNUMPR
+			,A."DocEntry" AS DOCENTRY
+			,CASE WHEN TO_VARCHAR(A."U_Project")='0' THEN '' ELSE TO_VARCHAR(D."NAME") END AS PROJECTNUMBER
+			,A."U_IssueDate" AS ISSUEDATE
+			,A."U_DueDate" AS DUEDATE
+			,A."U_VendorCode" AS VENDORCODE
+			,B."CardName" AS VENDORNAME
+			,A."U_CurrencyType" AS CURRENCY
+			,A."U_UserID" AS EMPLOYEEID
+			,C."firstName" ||' '|| C."lastName" AS EMPLOYEENAME
+			,A."U_Amount" AS AMOUNT
+			,A."U_AmountTHB" AS AMOUNTTHB
+			,A."Remark" AS REMARKS
+			,B."DflAccount" AS BANKACCOUNT
+			,B."DflBranch" AS BRANCH	  
+			,(SELECT "OCRY"."Name" FROM EW_PRD_TEST20240924."OCRY" WHERE "OCRY"."Code"=B."BankCountr") AS BANKCOUNTRY
+			,(SELECT "ODSC"."BankName" FROM EW_PRD_TEST20240924."ODSC" WHERE "ODSC"."BankCode"=B."BankCode") AS BANKNAME
+			,B."DflSwift" AS SWIFTCODE	
+			,A."U_REASON" AS REASON
+		FROM EW_PRD_TEST20240924."@ADVANCEPAYMENT" AS A
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON A."U_VendorCode"=B."CardCode"
+		LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."AbsEntry"=A."U_Project"
+		LEFT JOIN EW_PRD_TEST20240924."OHEM" AS C ON A."U_UserID"=C."empID"
+		WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='Lines' THEN
+			SELECT 
+				 A."U_ItemCode" AS ITEMCODE
+				,B."ItemName" AS ITEMNAME
+				,A."U_Qty" AS QTY
+				,A."U_Price" AS PRICE
+				,A."U_Origin" AS ORIGIN
+				,A."U_Destination" AS DESTINATION
+				,A."U_Remarks" AS REMARKS
+				,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=B."UgpEntry") AS SERVICETYPE
+			FROM EW_PRD_TEST20240924."@ADVANCEPAYMENTROW" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OITM" AS B ON A."U_ItemCode"=B."ItemCode"
+			WHERE A."DocEntry"=:par2;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GetClearingAdvanceType' THEN
+		SELECT 
+			 A."CreditCard" AS CLEARINGCODE
+			,A."CardName" AS CLEARINGNAME
+			,A."AcctCode" AS ACCOUNTNAME
+		FROM EW_PRD_TEST20240924."OCRC" AS A;
+	ELSE IF :DTYPE='GetDetailJobSheetByDocEntry' THEN
+		SELECT 
+			 T0."DocEntry" AS DOCENTRY
+			,T0."DocNum" AS DOCNUM
+			,T0."U_CONFIRMBOOKINGID" AS CONFIRMBOOKINGID
+			,IFNULL(TO_VARCHAR(T0."U_SALEQUOTATIONDOCNUM"),'') AS SALEQUOTATIONDOCNUM
+			,(SELECT "NumAtCard" FROM EW_PRD_TEST20240924."OQUT" WHERE "DocEntry"=T0."U_SALEQUOTATIONDOCNUM") AS SQREF
+			,T0."U_CURRENCYCOSTING" AS CURRENCYCOSTING
+			,T0."U_CURRENCYSELLING" AS CURRENCYSELLING
+			,IFNULL(TO_VARCHAR(T0."U_REMARKSCOSTING"),'') AS REMARKSCOSTING
+			,IFNULL(TO_VARCHAR(T0."U_REMAKRSSELLING"),'') AS REMARKSSELLING
+			,T0."U_TOTALCOSTING" AS TOTALCOSTING
+			,IFNULL(T0."U_REBATE",0) AS REBATE
+			,TO_DECIMAL(IFNULL(T0."U_TOTALCOSTING",0)+IFNULL(T0."U_REBATE",0),12,2) AS GRANDTOTALCOSTING
+			--,IFNULL(TO_DECIMAL((T0."U_TOTALCOSTING"+T0."U_REBATE")*(SELECT "Rate" FROM EW_PRD_TEST20240924."ORTT" WHERE "RateDate"=T0."CreateDate" AND "Currency"=T0."U_CURRENCYCOSTING"),12,2),0) GRANDTOTALCOSTINGUSD
+			,T0."U_GRANDTOTALCOSTINGUSD" GRANDTOTALCOSTINGUSD
+			,T0."U_TOTALSELLING" AS TOTALSELLING
+			,IFNULL(T0."U_GRANDTOTALSELLING",0) AS GRANDTOTALSELLING
+			,CASE WHEN IFNULL(T0."U_GRANDTOTALSELLINGUSD",0)=0 THEN T0."U_GRANDTOTALSELLING" ELSE IFNULL(T0."U_GRANDTOTALSELLINGUSD",0) END AS GRANDTOTALSELLINGUSD
+			--,CASE WHEN IFNULL(T0."U_GRANDTOTALSELLINGUSD",0)=0 THEN T0."U_GRANDTOTALSELLING" ELSE IFNULL(T0."U_GRANDTOTALSELLINGUSD",0) END -(IFNULL(TO_DECIMAL((T0."U_TOTALCOSTING"+T0."U_REBATE")*(SELECT "Rate" FROM EW_PRD_TEST20240924."ORTT" WHERE "RateDate"=T0."CreateDate" AND "Currency"=T0."U_CURRENCYCOSTING"),12,2),0)) AS TOTALPROFIT
+			,CASE WHEN T0."U_GRANDTOTALSELLINGUSD"=0 THEN IFNULL(T0."U_GRANDTOTALSELLING",0) ELSE T0."U_GRANDTOTALSELLINGUSD" END-T0."U_GRANDTOTALCOSTINGUSD" AS TOTALPROFIT
+			,IFNULL(T0."U_DutyTaxAmountCosting",0) AS "DutyTaxAmountCosting"
+			,IFNULL(T0."U_DutyTaxAmountSelling",0) AS "DutyTaxAmountSelling"
+			,IFNULL(T0."U_AdvanceAmountCosting",0) AS "AdvanceAmountCosting"
+			,IFNULL(T0."U_AdvanceAmountSelling",0) AS "AdvanceAmountSelling"
+			,T0."U_USERCREATE" AS USERCREATE
+			,T0."U_UpdateBy" AS "UpdateBy"
+			,T0."U_CARDCODE" AS CARDCODE
+			,IFNULL((SELECT "CardName" FROM EW_PRD_TEST20240924."ORDR" WHERE "DocEntry"=T0."U_SALESORDERDOCNUM"),'') AS CARDNAME
+			,T0."U_JOBNO" AS JOBNO
+		FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" AS T0
+		WHERE T0."DocEntry"=:par1;
+	ELSE IF :DTYPE='GetDetailJobSheetLineByDocEntry' THEN
+		SELECT * FROM (
+			SELECT
+				 C."ItemName" AS ITEMCODE
+				,IFNULL(A."U_TOTALPRICE",0) AS COSTINGTOTALPRICE
+				,IFNULL(A."U_Qty",0) AS COSTINGQTY
+				,0 AS SELLINGTOTALPRICE
+				,0 AS SELLINGQTY
+				,'' AS "UomName"
+				,'Costing' AS "Type"
+				,A."VisOrder" AS "LineId"
+			FROM EW_PRD_TEST20240924."@JOBTRUCKCOSTING" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OITM" AS C ON C."ItemCode"=A."U_ITEMCODE"
+			WHERE A."DocEntry"=:par1 ORDER BY A."VisOrder" ASC
+		) AS A
+		UNION ALL
+		SELECT * FROM(
+			SELECT
+				 C."ItemName" AS ITEMCODE
+				,0 AS COSTINGTOTALPRICE
+				,0 AS COSTINGQTY
+				,IFNULL(A."U_TOTALPRICE",0) AS SELLINGTOTALPRICE
+				,IFNULL(A."U_Qty",0) AS SELLINGQTY
+				,IFNULL(D."UomName",'') AS "UomName"
+				,'Selling' AS "Type"
+				,A."VisOrder" AS "LineId"
+			FROM EW_PRD_TEST20240924."@JOBTRUCKINGSELLING" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OITM" AS C ON C."ItemCode"=A."U_ITEMCODE"
+			LEFT JOIN EW_PRD_TEST20240924."OUOM" AS D ON D."UomEntry"=A."U_ContainerType"
+			WHERE A."DocEntry"=:par1 ORDER BY A."VisOrder" ASC
+		)AS B ORDER BY "LineId" ASC;
+	ELSE IF :DTYPE='GetContactPersonByCardCode' THEN
+		 SELECT 
+		 	 IFNULL(CAST(A."CntctCode" AS NVARCHAR(250)),'0' ) AS "ContactPersonID"
+		 	,IFNULL(A."FirstName",'') AS "FirstName"
+		 	,IFNULL(A."LastName",'') AS "LastName"
+		 	,IFNULL(A."Tel1",'') AS "Phone"
+		 	,IFNULL(A."E_MailL",'') AS "Email"
+		 FROM EW_PRD_TEST20240924."OCPR" AS A
+		 WHERE A."CardCode"=:par1;
+	ELSE IF :DTYPE='GetARInvoiceWithJobNumber' THEN
+		 IF :par1='CBT' THEN
+		 	SELECT 
+			 	 ROW_NUMBER ( ) OVER( ORDER BY A."DocNum" DESC ) AS ROWNUM
+			 	,A."DocNum" AS DOCNUM
+			 	,A."DocEntry" AS DOCENTRY
+			 	,A."U_WEBID" AS WEBID
+			 	,(SELECT DISTINCT MAX(INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry") AS JOBNUMBER
+			 	,A."CardCode" AS CustomerCode
+			 	,B."CardName" AS CustomerName
+			 	,TO_VARCHAR(A."DocDate",'dd-mm-YYYY') AS ISSUEDATE
+			 	,A."DocTotal" AS DOCTOTAL
+			 	,A."Comments" AS REMARK
+			 FROM EW_PRD_TEST20240924."OINV" AS A 
+			 LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON A."CardCode"=B."CardCode"
+			 LEFT JOIN EW_PRD_TEST20240924."OPMG" AS C ON C."NAME"=(SELECT DISTINCT MAX(INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry")
+			 LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS D ON D."U_PROJECTMANAGEMENTID"=C."AbsEntry"
+			 WHERE  
+			 	   A."PaidToDate"=0
+			 	   AND ((SELECT COUNT(DISTINCT INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry")=1
+			 	    OR (SELECT COUNT(DISTINCT INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry")=0)
+			 	   AND IFNULL((SELECT DISTINCT MAX(INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry"),'')<>''
+			 	   AND (SELECT COUNT(DISTINCT INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry")<2
+			 	   AND D."U_PROJECTMANAGEMENTID" IS NOT NULL
+			 	   AND C."STATUS"!='N';
+		 ELSE IF :par1='sea_and_air' THEN
+		 	SELECT 
+			 	 ROW_NUMBER ( ) OVER( ORDER BY A."DocNum" DESC ) AS ROWNUM
+			 	,A."DocNum" AS DOCNUM
+			 	,A."DocEntry" AS DOCENTRY
+			 	,A."U_WEBID" AS WEBID
+			 	,(SELECT DISTINCT MAX(INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry") AS JOBNUMBER
+			 	,A."CardCode" AS CustomerCode
+			 	,B."CardName" AS CustomerName
+			 	,TO_VARCHAR(A."DocDate",'dd-mm-YYYY') AS ISSUEDATE
+			 	,A."DocTotal" AS DOCTOTAL
+			 	,A."Comments" AS REMARK
+			 FROM EW_PRD_TEST20240924."OINV" AS A 
+			 LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON A."CardCode"=B."CardCode"
+			 LEFT JOIN EW_PRD_TEST20240924."OPMG" AS C ON C."NAME"=(SELECT DISTINCT MAX(INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry")
+			 LEFT JOIN EW_PRD_TEST20240924."@CON_BOOKING_S_A" AS D ON D."U_PROJECTMANAGEMENTID"=C."AbsEntry"
+			 WHERE  
+			 	   A."PaidToDate"=0
+			 	   AND ((SELECT COUNT(DISTINCT INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry")=1
+			 	    OR (SELECT COUNT(DISTINCT INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry")=0)
+			 	   AND IFNULL((SELECT DISTINCT MAX(INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry"),'')<>''
+			 	   AND (SELECT COUNT(DISTINCT INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry")<2
+			 	   AND D."U_PROJECTMANAGEMENTID" IS NOT NULL
+			 	   AND C."STATUS"!='N';
+		 END IF;
+		 END IF;
+	ELSE IF :DTYPE='GetARInvoiceWithJobNumberByDocEntry' THEN
+		IF :par1='Header' THEN
+			SELECT 
+			 	 A."DocEntry" AS DOCENTRY
+			 	,A."DocNum" AS DOCNUM
+			 	,A."NumAtCard" AS CUSTOMERREF
+			 	,(SELECT DISTINCT INV1."Project" FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry" AND INV1."LineStatus"!='C') AS JOBNUMBER
+			 	,A."CardCode" AS CustomerCode
+			 	,B."CardName" AS CustomerName
+			 	,TO_VARCHAR(A."DocDate",'dd-mm-YYYY') AS ISSUEDATE
+			 	,A."DocTotal" AS DOCTOTAL
+			 	,A."Comments" AS REMARK
+			 	,A."DocStatus" AS STATUS
+			 	,IFNULL(TO_VARCHAR(A."CntctCode"),'') AS CONTACTPERSON
+			 	,B."Currency" AS CURRENCY
+			 FROM EW_PRD_TEST20240924."OINV" AS A 
+			 LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON A."CardCode"=B."CardCode"
+			 WHERE 		-- A."U_WEBID" IS NOT NULL AND 
+			 	   --AND (A."DocTotal"-A."PaidToDate")<>0 
+			 	    IFNULL((SELECT DISTINCT INV1."Project" FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry"),'')<>''
+			 	   AND A."DocEntry"=:par2
+			 	   AND A."CANCELED"!='Y';
+		ELSE IF :par1='Lines' THEN
+			SELECT 
+				 ROW_NUMBER ( ) OVER( ORDER BY A."ItemCode" DESC ) AS ROWNUM
+				,A."LineNum" AS LINENUM
+				,A."ItemCode"/*||' - '||A."ItemCode"*/ AS ITEMCODE
+				,A."Dscription" AS ITEMNAME
+				,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=B."UgpEntry") AS SERVICETYPE
+				,A."LineTotal" AS LINETOTAL
+				,IFNULL(A."U_Remark",'') AS REMARK
+			FROM EW_PRD_TEST20240924."INV1" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OITM" AS B ON B."ItemCode"=A."ItemCode"
+			WHERE A."DocEntry"=:par2
+			AND A."LineStatus"!='C';
+		ELSE IF :par1='LinesDebit' THEN
+			IF :par3='CBT' THEN
+				SELECT 
+					 ROW_NUMBER ( ) OVER( ORDER BY B."ItemCode" DESC ) AS ROWNUM
+					,ROW_NUMBER ( ) OVER( ORDER BY B."ItemCode" DESC ) AS LINENUM
+					,B."ItemCode" AS ITEMCODE
+					,B."ItemCode"||' - '||B."ItemName" AS ITEMNAME
+					,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=B."UgpEntry") AS SERVICETYPE
+					,0 AS LINETOTAL --A."LineTotal"
+					,'' AS REMARK --IFNULL(A."U_Remark",'')
+				FROM --EW_PRD_TEST20240924."INV1" AS A LEFT JOIN ON B."ItemCode"=A."ItemCode"			
+				EW_PRD_TEST20240924."OITM" AS B 
+				WHERE B."ItemType"='I' AND B."SellItem"='Y' AND B."ItmsGrpCod"!='130' AND B."U_Dept_item"IN ('CBT','ALL');
+				--WHERE A."DocEntry"=:par2;
+			ELSE IF :par3='S&A' THEN
+				SELECT 
+					 ROW_NUMBER ( ) OVER( ORDER BY B."ItemCode" DESC ) AS ROWNUM
+					,ROW_NUMBER ( ) OVER( ORDER BY B."ItemCode" DESC ) AS LINENUM
+					,B."ItemCode" AS ITEMCODE
+					,B."ItemCode"||' - '||B."ItemName" AS ITEMNAME
+					,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=B."UgpEntry") AS SERVICETYPE
+					,0 AS LINETOTAL --A."LineTotal"
+					,'' AS REMARK --IFNULL(A."U_Remark",'')
+				FROM --EW_PRD_TEST20240924."INV1" AS A LEFT JOIN ON B."ItemCode"=A."ItemCode"			
+				EW_PRD_TEST20240924."OITM" AS B 
+				WHERE B."ItemType"='I' AND B."SellItem"='Y' AND B."ItmsGrpCod"!='130' AND B."U_Dept_item"IN ('SA','SF','ALL');
+				--WHERE A."DocEntry"=:par2;
+			ELSE 
+				SELECT 
+					 ROW_NUMBER ( ) OVER( ORDER BY B."ItemCode" DESC ) AS ROWNUM
+					,ROW_NUMBER ( ) OVER( ORDER BY B."ItemCode" DESC ) AS LINENUM
+					,B."ItemCode" AS ITEMCODE
+					,B."ItemCode"||' - '||B."ItemName" AS ITEMNAME
+					,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=B."UgpEntry") AS SERVICETYPE
+					,0 AS LINETOTAL --A."LineTotal"
+					,'' AS REMARK --IFNULL(A."U_Remark",'')
+				FROM --EW_PRD_TEST20240924."INV1" AS A LEFT JOIN ON B."ItemCode"=A."ItemCode"			
+				EW_PRD_TEST20240924."OITM" AS B WHERE B."ItemType"='I' AND B."ItmsGrpCod"!='130';
+				--WHERE A."DocEntry"=:par2;
+			END IF;
+			END IF;
+		END IF;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GetListCustomerJobSheetTrucking' THEN
+		SELECT DISTINCT
+			 A."U_CARDCODE" AS CUSTOMERCODE
+			,B."CardName" AS CUSTOMERNAME
+		FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" AS A 
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON A."U_CARDCODE"=B."CardCode" 
+		WHERE A."U_JOBNO"=:par1;
+	ELSE IF :DTYPE = 'GETPROJECTMANAGEMENTLISTJOBSHEETTRUCKING' THEN 
+		SELECT A."PrjCode" AS PROJECTCODE
+			  ,A."PrjName" AS PROJECTNAME
+			  ,A."Active"  AS ACTIVE
+			  ,(SELECT STRING_AGG("DocEntry",',') FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" WHERE "U_JOBNO"=A."PrjName") "DocEntry"
+		FROM EW_PRD_TEST20240924."OPRJ" AS A
+		WHERE A."Active"='Y'; /*AND A."PrjName" IN (SELECT "U_JOBNO" FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING")*/
+	ELSE IF :DTYPE = 'GetListInvoiceRefBaseOnCustomerAndJobNumber' THEN 
+		SELECT Distinct
+			 D."DocNum" AS DOCNUM
+			,D."DocEntry" AS DOCENTRY
+		FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" AS A
+		LEFT JOIN EW_PRD_TEST20240924."ORDR" AS B ON B."DocEntry"=A."U_SALESORDERDOCNUM"
+		LEFT JOIN EW_PRD_TEST20240924."RDR1" AS C ON C."DocEntry"=B."DocEntry"
+		LEFT JOIN EW_PRD_TEST20240924."OINV" AS D ON D."DocEntry"=C."TrgetEntry" AND D."ObjType"=C."TargetType"
+		WHERE C."TargetType"<>'-1' AND C."TargetType"=13 
+			  AND A."U_CARDCODE"=:par1 
+			  AND A."U_JOBNO"=:par2 
+			  And A."U_SALESORDERDOCNUM" IS NOT NULL;
+	ELSE IF :DTYPE='GetDetailPurchaseOrderByDocEntry' THEN
+		IF :par1='Header' THEN
+			SELECT 
+				 A."NumAtCard" AS DOCNUM
+				,D."DocNum" AS DOCNUMPR
+				,A."DocEntry" AS DOCENTRY
+				,TO_VARCHAR(A."DocDate",'dd-MM-yyyy') AS ISSUEDATE
+				,TO_VARCHAR(A."TaxDate",'dd-MM-yyyy') AS DUEDATE
+				,A."CardCode" AS VENDORCODE
+				,B."CardName" AS VENDORNAME
+				,A."DocCur" AS CURRENCY
+				,A."UserSign" AS EMPLOYEEID
+				,C."firstName" ||' '|| C."lastName" AS EMPLOYEENAME
+				,TO_DECIMAL(A."DocTotal",10,2) AS AMOUNT
+				,A."Comments" AS REMARKS
+			FROM EW_PRD_TEST20240924."OPOR" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON A."CardCode"=B."CardCode"
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS C ON A."UserSign"=C."userId"
+			LEFT JOIN (
+				SELECT DISTINCT
+					 T1."DocNum"
+					,T0."DocEntry"
+				FROM EW_PRD_TEST20240924."POR1" AS T0 
+				LEFT JOIN EW_PRD_TEST20240924."@ADVANCEPAYMENT" AS T1 ON T1."U_PRDocEntry"=T0."BaseEntry" 
+				WHERE T0."BaseType"='1470000113'
+			) AS D ON D."DocEntry"=A."DocEntry"
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='Lines' THEN
+			SELECT 
+				 A."ItemCode" AS ITEMCODE
+				,B."ItemName" AS ITEMNAME
+				,A."Quantity" AS QTY
+				,TO_DECIMAL(A."LineTotal",10,2) AS PRICE
+				,A."U_Remark" AS REMARKS
+				,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=B."UgpEntry") AS SERVICETYPE				
+			FROM EW_PRD_TEST20240924."POR1" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OITM" AS B ON A."ItemCode"=B."ItemCode"
+			WHERE A."DocEntry"=:par2;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GetPurchaseOrderListSettlement' THEN
+		IF :par3='ALL' THEN
+			SELECT 
+				 ROW_NUMBER ( ) OVER( ORDER BY A."DocNum" DESC ) AS ROWNUM
+				,(SELECT DISTINCT T1."TrgetEntry" FROM EW_PRD_TEST20240924."OPRQ" AS T0 LEFT JOIN EW_PRD_TEST20240924."PRQ1" AS T1 ON T0."DocEntry"=T1."DocEntry" WHERE T0."DocEntry"=A."U_PRDocEntry" AND T1."TargetType"='22') AS DOCENTRY
+				,A."DocNum" AS DOCNUM
+				,A."U_NumAtCard" AS REFNO
+				,B."NAME" AS JOBNUMBER
+				,A."U_VendorCode" AS VENDORCODE
+				,C."CardName" AS VENDORNAME
+				,TO_VARCHAR(A."U_IssueDate",'YYYYMMDD') AS ISSUEDATE
+				,A."U_Amount" AS DOCTOTAL
+				,A."Remark" AS REMARKS
+				,AA."DocEntry" AS PODOCENTRY
+				,AA."Status" AS "Status"/*CASE WHEN A."U_UserID" IN (
+										SELECT DISTINCT T2."U_EMPLOYEEID"  
+										FROM EW_PRD_TEST20240924."@TB_P_CANCEL" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T2 ON T2."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									) OR A."U_UserID"=(SELECT "U_EMPLOYEEID" FROM EW_PRD_TEST20240924."@TBUSER" WHERE "Code"=:par4) THEN
+					CASE WHEN (SELECT COUNT(*) FROM EW_PRD_TEST20240924."POR1" WHERE "DocEntry"=D."DocEntry" AND "DiscPrcnt"=100)=0 THEN 
+						AA."Status" 
+					ELSE 'C' END
+				 ELSE 'C' END */
+				,CASE WHEN A."U_UserID" IN (
+										SELECT DISTINCT T2."U_EMPLOYEEID" 
+										FROM EW_PRD_TEST20240924."@TB_P_CANCEL" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T2 ON T2."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									) OR A."U_UserID"=(SELECT "U_EMPLOYEEID" FROM EW_PRD_TEST20240924."@TBUSER" WHERE "Code"=:par4) THEN
+					CASE WHEN AA."Status"='O' THEN IFNULL(D."U_IsUpdate",'') ELSE 'Y' END
+				 ELSE 'Y' END AS "IsUpdate"
+			FROM EW_PRD_TEST20240924."@ADVANCEPAYMENT" AS A
+			LEFT JOIN EW_PRD_TEST20240924."@SETTLEMENTHEADER" AS AA ON A."U_NumAtCard"=AA."U_RefNo"
+			LEFT JOIN EW_PRD_TEST20240924."OPMG" AS B ON B."AbsEntry"=A."U_Project"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=A."U_VendorCode"
+			LEFT JOIN EW_PRD_TEST20240924."OPRQ" AS E ON E."DocEntry"=A."U_PRDocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."OPOR" AS D ON D."DocEntry"=AA."U_PODocEntry"--(SELECT DISTINCT "DocEntry" FROM EW_PRD_TEST20240924."POR1" AS T0 WHERE T0."BaseEntry"=E."DocEntry" AND T0."BaseType"='1470000113')
+			WHERE A."U_AdvanceType"='PRAD' AND A."U_PRDocEntry" IS NOT NULL
+			AND (SELECT DISTINCT T1."TrgetEntry" 
+						FROM EW_PRD_TEST20240924."OPRQ" AS T0 
+						LEFT JOIN EW_PRD_TEST20240924."PRQ1" AS T1 ON T0."DocEntry"=T1."DocEntry" 
+						WHERE T0."DocEntry"=A."U_PRDocEntry" AND T1."TargetType"='22') IS NOT NULL
+			AND (AA."Status" IS NOT NULL OR IFNULL(D."U_IsUpdate",'')!='') 
+			AND AA."CreateDate" BETWEEN :par1 AND :par2
+			AND (A."U_UserID"=(SELECT "U_EMPLOYEEID" FROM EW_PRD_TEST20240924."@TBUSER" WHERE "Code"=:par4)
+						OR A."U_UserID" IN (
+							SELECT DISTINCT T2."U_EMPLOYEEID"
+							FROM EW_PRD_TEST20240924."@TB_P_READ" AS T0
+							LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+							LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T2 ON T2."U_USERROLE"=T0."Code"
+							WHERE T1."Code"=:par4
+						))
+			ORDER BY A."DocNum" DESC;
+		ELSE IF :par3='DEFAULT' THEN
+			SELECT TOP 1000
+				 ROW_NUMBER ( ) OVER( ORDER BY A."DocNum" DESC ) AS ROWNUM
+				,(SELECT DISTINCT T1."TrgetEntry" FROM EW_PRD_TEST20240924."OPRQ" AS T0 LEFT JOIN EW_PRD_TEST20240924."PRQ1" AS T1 ON T0."DocEntry"=T1."DocEntry" WHERE T0."DocEntry"=A."U_PRDocEntry" AND T1."TargetType"='22') AS DOCENTRY
+				,AA."DocNum" AS DOCNUM
+				,A."U_NumAtCard" AS REFNO
+				,B."NAME" AS JOBNUMBER
+				,A."U_VendorCode" AS VENDORCODE
+				,C."CardName" AS VENDORNAME
+				,TO_VARCHAR(A."U_IssueDate",'YYYYMMDD') AS ISSUEDATE
+				,A."U_Amount" AS DOCTOTAL
+				,A."Remark" AS REMARKS
+				,AA."DocEntry" AS PODOCENTRY
+				/*,CASE WHEN A."U_UserID" IN (
+										SELECT DISTINCT T2."U_EMPLOYEEID"  
+										FROM EW_PRD_TEST20240924."@TB_P_CANCEL" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T2 ON T2."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									) OR A."U_UserID"=(SELECT "U_EMPLOYEEID" FROM EW_PRD_TEST20240924."@TBUSER" WHERE "Code"=:par4) THEN
+					CASE WHEN D."U_IsUpdate"='Y' THEN 'Y' ELSE AA."Status" END
+				 ELSE 'C' END AS "Status"*/
+				,CASE WHEN D."U_IsUpdate"='Y' THEN 'Y' ELSE AA."Status" END AS "Status"
+				/*,CASE WHEN A."U_UserID" IN (
+										SELECT DISTINCT T2."U_EMPLOYEEID" 
+										FROM EW_PRD_TEST20240924."@TB_P_CANCEL" AS T0
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T2 ON T2."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									) OR A."U_UserID"=(SELECT "U_EMPLOYEEID" FROM EW_PRD_TEST20240924."@TBUSER" WHERE "Code"=:par4) THEN
+					CASE WHEN AA."Status"!='C' THEN IFNULL(D."U_IsUpdate",'') ELSE 'Y' END
+				 ELSE 'Y' END AS "IsUpdate"*/
+				,CASE WHEN AA."Status"!='C' THEN IFNULL(D."U_IsUpdate",'') ELSE 'Y' END AS "IsUpdate"
+			FROM EW_PRD_TEST20240924."@ADVANCEPAYMENT" AS A
+			LEFT JOIN EW_PRD_TEST20240924."@SETTLEMENTHEADER" AS AA ON A."U_NumAtCard"=AA."U_RefNo"
+			LEFT JOIN EW_PRD_TEST20240924."OPMG" AS B ON B."AbsEntry"=A."U_Project"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=A."U_VendorCode"
+			LEFT JOIN EW_PRD_TEST20240924."OPRQ" AS E ON E."DocEntry"=A."U_PRDocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."OPOR" AS D ON D."DocEntry"=(SELECT DISTINCT "DocEntry" FROM EW_PRD_TEST20240924."POR1" AS T0 WHERE T0."BaseEntry"=E."DocEntry" AND T0."BaseType"='1470000113')
+			WHERE A."U_AdvanceType"='PRAD' 
+			AND A."U_PRDocEntry" IS NOT NULL
+			AND (SELECT DISTINCT T1."TrgetEntry" 
+						FROM EW_PRD_TEST20240924."OPRQ" AS T0 
+						LEFT JOIN EW_PRD_TEST20240924."PRQ1" AS T1 ON T0."DocEntry"=T1."DocEntry" 
+						WHERE T0."DocEntry"=A."U_PRDocEntry" AND T1."TargetType"='22') IS NOT NULL
+			AND (AA."Status" IS NOT NULL OR IFNULL(D."U_IsUpdate",'')!='')
+			AND AA."CreateDate" BETWEEN :par1 AND :par2
+			/*AND (A."U_UserID"=(SELECT "U_EMPLOYEEID" FROM EW_PRD_TEST20240924."@TBUSER" WHERE "Code"=:par4)
+						OR A."U_UserID" IN (
+							SELECT DISTINCT T2."U_EMPLOYEEID"
+							FROM EW_PRD_TEST20240924."@TB_P_READ" AS T0
+							LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+							LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS T2 ON T2."U_USERROLE"=T0."Code"
+							WHERE T1."Code"=:par4
+						))*/
+			ORDER BY A."DocNum" DESC;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GetARCreditMemoListOnReduceInvoice' THEN
+		IF :par3='ALL' THEN
+		
+			SELECT * FROM (
+			
+				SELECT 
+					 ROW_NUMBER ( ) OVER( ORDER BY A."DocNum" DESC ) AS ROWNUM
+					,A."DocEntry" AS DOCENTRY
+					,A."DocNum" AS DOCNUM
+					,A."NumAtCard" AS REFNO
+					,(SELECT DISTINCT T0."Project" FROM "EW_PRD_TEST20240924"."RIN1" T0 WHERE T0."DocEntry"=A."DocEntry") AS JOBNUMBER
+					,A."CardCode" AS VENDORCODE
+					,C."CardName" AS VENDORNAME
+					,TO_VARCHAR(A."DocDate",'YYYYMMDD') AS ISSUEDATE --'dd/mm/YYYY'
+					,TO_DECIMAL(A."DocTotal"*-1,12,2) AS DOCTOTAL
+					,A."Comments" AS REMARKS
+				FROM "EW_PRD_TEST20240924"."ORIN" AS A
+				LEFT JOIN "EW_PRD_TEST20240924"."OCRD" AS C ON C."CardCode"=A."CardCode"
+				LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."NAME"=(SELECT DISTINCT T0."Project" FROM "EW_PRD_TEST20240924"."RIN1" T0 WHERE T0."DocEntry"=A."DocEntry")
+		 		LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS E ON E."U_PROJECTMANAGEMENTID"=D."AbsEntry"
+				WHERE A."NumAtCard" IS NOT NULL AND IFNULL(A."U_CreditMemoType",'')!='Debit'
+				AND E."U_PROJECTMANAGEMENTID" IS NOT NULL
+		 	    AND D."STATUS"!='N'
+				AND A."DocDate" BETWEEN :par1 AND :par2
+				AND (A."U_UserCreate"=:par4
+						OR A."U_UserCreate" IN (
+							SELECT "U_User" 
+							FROM "EW_PRD_TEST20240924"."@TB_P_READ" AS T0
+							LEFT JOIN "EW_PRD_TEST20240924"."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+							WHERE T1."Code"=:par4
+						))
+				
+				UNION ALL
+				
+				SELECT 
+					 ROW_NUMBER ( ) OVER( ORDER BY A."DocNum" DESC ) AS ROWNUM
+					,A."DocEntry" AS DOCENTRY
+					,A."DocNum" AS DOCNUM
+					,A."NumAtCard" AS REFNO
+					,(SELECT DISTINCT T0."Project" FROM "EW_PRD_TEST20240924"."DRF1" T0 WHERE T0."DocEntry"=A."DocEntry") AS JOBNUMBER
+					,A."CardCode" AS VENDORCODE
+					,C."CardName" AS VENDORNAME
+					,TO_VARCHAR(A."DocDate",'YYYYMMDD') AS ISSUEDATE --'dd/mm/YYYY'
+					,TO_DECIMAL(A."DocTotal"*-1,12,2) AS DOCTOTAL
+					,A."Comments" AS REMARKS
+				FROM "EW_PRD_TEST20240924"."ODRF" AS A
+				LEFT JOIN "EW_PRD_TEST20240924"."OCRD" AS C ON C."CardCode"=A."CardCode"
+				LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."NAME"=(SELECT DISTINCT T0."Project" FROM "EW_PRD_TEST20240924"."DRF1" T0 WHERE T0."DocEntry"=A."DocEntry")
+		 		LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS E ON E."U_PROJECTMANAGEMENTID"=D."AbsEntry"
+				WHERE A."NumAtCard" IS NOT NULL AND IFNULL(A."U_CreditMemoType",'')!='Debit'
+				AND A."DocDate" BETWEEN :par1 AND :par2
+				AND E."U_PROJECTMANAGEMENTID" IS NOT NULL
+		 	    AND D."STATUS"!='N'
+				AND (A."U_UserCreate"=:par4
+						OR A."U_UserCreate" IN (
+							SELECT "U_User" 
+							FROM "EW_PRD_TEST20240924"."@TB_P_READ" AS T0
+							LEFT JOIN "EW_PRD_TEST20240924"."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+							WHERE T1."Code"=:par4
+						)) 
+				AND A."ObjType"=14 
+				AND A."DocEntry" NOT IN (SELECT "draftKey" FROM EW_PRD_TEST20240924."ORIN" WHERE "draftKey" IS NOT NULL)
+			)ORDER BY "DOCENTRY" DESC;
+		 	   
+		ELSE IF :par3='DEFAULT' THEN
+			SELECT TOP 1000 * FROM (
+			
+				SELECT 
+					 ROW_NUMBER ( ) OVER( ORDER BY A."DocNum" DESC ) AS ROWNUM
+					,A."DocEntry" AS DOCENTRY
+					,A."DocNum" AS DOCNUM
+					,A."NumAtCard" AS REFNO
+					,(SELECT DISTINCT T0."Project" FROM "EW_PRD_TEST20240924"."RIN1" T0 WHERE T0."DocEntry"=A."DocEntry") AS JOBNUMBER
+					,A."CardCode" AS VENDORCODE
+					,C."CardName" AS VENDORNAME
+					,TO_VARCHAR(A."DocDate",'YYYYMMDD') AS ISSUEDATE --'dd/mm/YYYY'
+					,TO_DECIMAL(A."DocTotal"*-1,12,2) AS DOCTOTAL
+					,A."Comments" AS REMARKS
+				FROM "EW_PRD_TEST20240924"."ORIN" AS A
+				LEFT JOIN "EW_PRD_TEST20240924"."OCRD" AS C ON C."CardCode"=A."CardCode"
+				LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."NAME"=(SELECT DISTINCT T0."Project" FROM "EW_PRD_TEST20240924"."RIN1" T0 WHERE T0."DocEntry"=A."DocEntry")
+		 		LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS E ON E."U_PROJECTMANAGEMENTID"=D."AbsEntry"
+				WHERE A."NumAtCard" IS NOT NULL AND IFNULL(A."U_CreditMemoType",'')!='Debit'
+				AND E."U_PROJECTMANAGEMENTID" IS NOT NULL
+		 	    AND D."STATUS"!='N'
+				AND A."DocDate" BETWEEN :par1 AND :par2
+				AND (A."U_UserCreate"=:par4
+						OR A."U_UserCreate" IN (
+							SELECT "U_User" 
+							FROM "EW_PRD_TEST20240924"."@TB_P_READ" AS T0
+							LEFT JOIN "EW_PRD_TEST20240924"."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+							WHERE T1."Code"=:par4
+						))
+				
+				UNION ALL
+				
+				SELECT 
+					 ROW_NUMBER ( ) OVER( ORDER BY A."DocNum" DESC ) AS ROWNUM
+					,A."DocEntry" AS DOCENTRY
+					,A."DocNum" AS DOCNUM
+					,A."NumAtCard" AS REFNO
+					,(SELECT DISTINCT T0."Project" FROM "EW_PRD_TEST20240924"."DRF1" T0 WHERE T0."DocEntry"=A."DocEntry") AS JOBNUMBER
+					,A."CardCode" AS VENDORCODE
+					,C."CardName" AS VENDORNAME
+					,TO_VARCHAR(A."DocDate",'YYYYMMDD') AS ISSUEDATE --'dd/mm/YYYY'
+					,TO_DECIMAL(A."DocTotal"*-1,12,2) AS DOCTOTAL
+					,A."Comments" AS REMARKS
+				FROM "EW_PRD_TEST20240924"."ODRF" AS A
+				LEFT JOIN "EW_PRD_TEST20240924"."OCRD" AS C ON C."CardCode"=A."CardCode"
+				LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."NAME"=(SELECT DISTINCT T0."Project" FROM "EW_PRD_TEST20240924"."DRF1" T0 WHERE T0."DocEntry"=A."DocEntry")
+		 		LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS E ON E."U_PROJECTMANAGEMENTID"=D."AbsEntry"
+				WHERE A."NumAtCard" IS NOT NULL AND IFNULL(A."U_CreditMemoType",'')!='Debit'
+				AND A."DocDate" BETWEEN :par1 AND :par2
+				AND E."U_PROJECTMANAGEMENTID" IS NOT NULL
+		 	    AND D."STATUS"!='N'
+				AND (A."U_UserCreate"=:par4
+						OR A."U_UserCreate" IN (
+							SELECT "U_User" 
+							FROM "EW_PRD_TEST20240924"."@TB_P_READ" AS T0
+							LEFT JOIN "EW_PRD_TEST20240924"."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+							WHERE T1."Code"=:par4
+						)) 
+				AND A."ObjType"=14 
+				AND A."DocEntry" NOT IN (SELECT "draftKey" FROM EW_PRD_TEST20240924."ORIN" WHERE "draftKey" IS NOT NULL)
+			)ORDER BY "DOCENTRY" DESC;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GetDetailARCreditMemoByDocEntry' THEN
+		IF :par1='Header' THEN
+			SELECT * FROM 
+			(
+				SELECT 
+					 A."NumAtCard" AS DOCNUM
+					,A."DocNum" AS DOCNUMPR
+					,A."DocEntry" AS DOCENTRY
+					,A."DocDate" AS ISSUEDATE
+					,A."TaxDate" AS DUEDATE
+					,A."CardCode" AS VENDORCODE
+					,B."CardName" AS VENDORNAME
+					,A."DocCur" AS CURRENCY
+					,A."UserSign" AS EMPLOYEEID
+					,C."firstName" ||' '|| C."lastName" AS EMPLOYEENAME
+					,TO_DECIMAL(A."DocTotal"*-1,12,2) AS AMOUNT
+					,A."Comments" AS REMARKS  
+				FROM EW_PRD_TEST20240924."ORIN" AS A
+				LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON A."CardCode"=B."CardCode"
+				LEFT JOIN EW_PRD_TEST20240924."OHEM" AS C ON A."UserSign"=C."userId"
+				UNION ALL
+				SELECT 
+					 A."NumAtCard" AS DOCNUM
+					,A."DocNum" AS DOCNUMPR
+					,A."DocEntry" AS DOCENTRY
+					,A."DocDate" AS ISSUEDATE
+					,A."TaxDate" AS DUEDATE
+					,A."CardCode" AS VENDORCODE
+					,B."CardName" AS VENDORNAME
+					,A."DocCur" AS CURRENCY
+					,A."UserSign" AS EMPLOYEEID
+					,C."firstName" ||' '|| C."lastName" AS EMPLOYEENAME
+					,TO_DECIMAL(A."DocTotal"*-1,12,2) AS AMOUNT
+					,A."Comments" AS REMARKS  
+				FROM EW_PRD_TEST20240924."ODRF" AS A
+				LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON A."CardCode"=B."CardCode"
+				LEFT JOIN EW_PRD_TEST20240924."OHEM" AS C ON A."UserSign"=C."userId"
+				WHERE 
+				A."ObjType"=14
+				AND A."DocEntry" NOT IN (SELECT "draftKey" FROM EW_PRD_TEST20240924."ORIN" WHERE "draftKey" IS NOT NULL)
+				
+			)AS A  WHERE A."DOCENTRY"=:par2;
+		ELSE IF :par1='Lines' THEN
+			SELECT * FROM (
+				SELECT 
+					 A."ItemCode" AS ITEMCODE
+					,A."ItemCode"||' - '||B."ItemName" AS ITEMNAME
+					,A."Quantity" AS QTY
+					,TO_DECIMAL(A."LineTotal"*-1,12,2) AS PRICE
+					,A."U_Remark" AS REMARKS
+					,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=B."UgpEntry") AS SERVICETYPE				
+				FROM EW_PRD_TEST20240924."RIN1" AS A
+				LEFT JOIN EW_PRD_TEST20240924."ORIN" AS C ON C."DocEntry"=A."DocEntry"
+				LEFT JOIN EW_PRD_TEST20240924."OITM" AS B ON A."ItemCode"=B."ItemCode"
+				WHERE
+				A."DocEntry"=:par2
+				AND C."draftKey" NOT IN (SELECT "DocEntry" FROM EW_PRD_TEST20240924."ODRF" WHERE "draftKey" IS NOT NULL)
+				--LEFT JOIN EW_PRD_TEST20240924."ORIN" AS C ON C."DocEntry"=A."DocEntry"
+				UNION ALL
+				SELECT 
+					 A."ItemCode" AS ITEMCODE
+					,A."ItemCode"||' - '||B."ItemName" AS ITEMNAME
+					,A."Quantity" AS QTY
+					,TO_DECIMAL(A."LineTotal"*-1,12,2) AS PRICE
+					,A."U_Remark" AS REMARKS
+					,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=B."UgpEntry") AS SERVICETYPE				
+				FROM EW_PRD_TEST20240924."DRF1" AS A
+				LEFT JOIN EW_PRD_TEST20240924."ODRF" AS AA ON AA."DocEntry"=A."DocEntry"
+				LEFT JOIN EW_PRD_TEST20240924."OITM" AS B ON A."ItemCode"=B."ItemCode"
+				WHERE 
+				AA."ObjType"=14
+				AND A."DocEntry" NOT IN (SELECT "draftKey" FROM EW_PRD_TEST20240924."ORIN" WHERE "draftKey" IS NOT NULL)
+				AND A."DocEntry"=:par2
+				--LEFT JOIN EW_PRD_TEST20240924."ORIN" AS C ON C."DocEntry"=A."DocEntry"
+			)AS A;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GetRecordCountUserDefindTable' THEN
+		execute immediate 'SELECT 
+			CAST(COUNT(*) AS INT) AS "RecordCount" FROM (
+			SELECT DISTINCT "LineId" FROM EW_PRD_TEST20240924."@'|| :par1 ||'" WHERE "DocEntry"='|| :par2 ||') AS A';
+	ELSE IF :DTYPE='GetDetailJobSheetTruckingDetail' THEN
+		Select 
+			 C."SlpName" AS "SalesPerson"
+			,CAST(A."DocEntry" AS INT) AS "DocNum"
+			,CAST(A."DocEntry" AS INT) AS "DocEntry"
+			,A."U_CURRENCYCOSTING" AS "CurrencyCosting"
+			,A."U_CURRENCYSELLING" AS "CurrencySelling"
+			,TO_DECIMAL(A."U_TOTALCOSTING",10,2) AS "TotalCosting"
+			,TO_DECIMAL(A."U_TOTALSELLING",10,2) AS "TotalSelling"
+			,TO_DECIMAL(IFNULL(A."U_REBATE",0),10,2) AS "Rebate"
+			,TO_DECIMAL(IFNULL((A."U_TOTALCOSTING"+IFNULL(A."U_REBATE",0))/(SELECT "Rate" FROM EW_PRD_TEST20240924."ORTT" AS T0 WHERE T0."Currency"='THB' AND T0."RateDate"=A."CreateDate"),0),10,2) AS "GrandTotalCosting"
+			,TO_DECIMAL(A."U_TOTALSELLING"/(SELECT "Rate" FROM EW_PRD_TEST20240924."ORTT" AS T0 WHERE T0."Currency"='THB' AND T0."RateDate"=A."CreateDate"),10,2) AS "GrandTotalSelling"
+			,IFNULL(TO_DECIMAL((A."U_TOTALCOSTING"+A."U_REBATE")*(SELECT "Rate" FROM EW_PRD_TEST20240924."ORTT" WHERE "RateDate"=A."CreateDate" AND "Currency"=A."U_CURRENCYCOSTING"),12,2),0) AS "GrandTotalCostingUSD"
+			,TO_DECIMAL(A."U_GRANDTOTALSELLINGUSD",10,2) AS "GrandTotalSellingUSD"
+			,TO_DECIMAL(A."U_GRANDTOTALSELLINGUSD",10,2)-(IFNULL(TO_DECIMAL((A."U_TOTALCOSTING"+A."U_REBATE")*(SELECT "Rate" FROM EW_PRD_TEST20240924."ORTT" WHERE "RateDate"=A."CreateDate" AND "Currency"=A."U_CURRENCYCOSTING"),12,2),0)) AS "Profit"
+			,IFNULL(TO_VARCHAR(A."U_REMARKSCOSTING"),'') AS "RemarkForCosting"
+			,IFNULL(TO_VARCHAR(A."U_REMAKRSSELLING"),'') AS "RemarkForSelling"
+			,(SELECT "Rate" FROM EW_PRD_TEST20240924."ORTT" AS T0 WHERE T0."Currency"='THB' AND T0."RateDate"=A."CreateDate") AS "ExchangeRate"
+			,IFNULL(A."U_USERCREATE",'') AS "CreateBy"
+			,IFNULL(A."U_UpdateBy",'') AS "UpdateBy"
+		FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" AS A
+		LEFT JOIN EW_PRD_TEST20240924."OQUT" AS B ON A."U_SALEQUOTATIONDOCNUM"=B."DocEntry"
+		LEFT JOIN EW_PRD_TEST20240924."OSLP" AS C ON C."SlpCode"=B."SlpCode"
+		WHERE A."U_CONFIRMBOOKINGID"=:par1 AND A."DocEntry"=:par2;
+	ELSE IF :DTYPE='GetAttachmentJobSheetTruckingEdit' THEN
+		SELECT 
+			 IFNULL(A."U_ATTACHMENTNAME",'') AS "ATTACHMENTNAME"
+			,A."LineId" AS "LineId"
+		FROM EW_PRD_TEST20240924."@ATTACHMENT" AS A 
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GetLineCostingJobSheetTruckingEdit' THEN
+		SELECT 
+			 IFNULL(A."U_ITEMCODE",'') AS "ITEMCODE"
+			,IFNULL(B."ItemName",'') AS "ITEMNAME"
+			,IFNULL(TO_DECIMAL(A."U_TOTALPRICE",10,2),0) AS "TOTALPRICE"
+			,IFNULL(TO_DECIMAL(A."U_Qty",10,0),0) AS "Qty"
+			,CAST(A."LineId" AS int) AS "LineNumber"
+		FROM EW_PRD_TEST20240924."@JOBTRUCKCOSTING" AS A 
+		LEFT JOIN EW_PRD_TEST20240924."OITM" AS B ON A."U_ITEMCODE"=B."ItemCode"
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GetLineSellingJobSheetTruckingEdit' THEN
+		SELECT 
+			 A."U_ITEMCODE" AS "ITEMCODE"
+			,B."ItemName" AS "ITEMNAME"
+			,TO_DECIMAL(A."U_TOTALPRICE",10,2) AS "TOTALPRICE"
+			,TO_DECIMAL(A."U_Qty",10,0) AS "Qty"
+			,IFNULL(C."UomName",'') AS "UomName"
+		FROM EW_PRD_TEST20240924."@JOBTRUCKINGSELLING" AS A 
+		LEFT JOIN EW_PRD_TEST20240924."OITM" AS B ON A."U_ITEMCODE"=B."ItemCode"
+		LEFT JOIN EW_PRD_TEST20240924."OUOM" AS C ON C."UomEntry"=A."U_ContainerType"
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GetDistributionRules' THEN
+		SELECT "OcrCode" AS "Code","OcrName" AS "Name" FROM EW_PRD_TEST20240924."OOCR" WHERE "DimCode"=1;
+	ELSE IF :DTYPE='SETTLEMENTDETAILBYDOCENTRY' THEN
+		IF :par1='Header' THEN
+			SELECT 
+				 TO_VARCHAR(A."U_PODocEntry") AS "PRDocNum"
+				,TO_VARCHAR(A."DocEntry") AS "DocEntry"
+				,A."U_RefNo" AS "RefNo"
+				,TO_VARCHAR(A."DocNum") AS "DocNum"
+				,TO_VARCHAR(B."DocDate",'dd-mm-YYYY') AS "IssueDate"
+				,C."CardCode" AS "VendorCode"
+				,C."CardName" AS "VendorName"
+				,TO_VARCHAR(B."DocDueDate",'dd-mm-YYYY') AS "DueDate"
+				,IFNULL(E."firstName",'') ||' '|| IFNULL(E."lastName",'') AS "IssueByName"
+				,CASE WHEN TO_VARCHAR(D."U_Project")='0' THEN '' ELSE IFNULL(TO_VARCHAR(F."NAME"),'') END AS "JobNo"
+				,D."U_CurrencyType" AS "AmountCurrency"
+				,TO_DECIMAL(B."DocTotal",10,2) AS "GrandTotal"
+				,TO_DECIMAL(A."U_TotalPaid",10,2) AS "TotalPaid"				
+				,IFNULL(C."DflAccount",'') AS "BankAccount"
+				,IFNULL(C."DflBranch",'') AS "BranchName"
+				,IFNULL((SELECT "OCRY"."Name" FROM EW_PRD_TEST20240924."OCRY" WHERE "OCRY"."Code"=C."BankCountr"),'') AS "Country"
+				,IFNULL((SELECT IFNULL("ODSC"."BankName",'') FROM EW_PRD_TEST20240924."ODSC" WHERE "ODSC"."BankCode"=C."BankCode"),'') AS "BankName"
+				,IFNULL(C."DflSwift",'') AS "SwiftCode"	
+				,IFNULL(D."U_REASON",'') AS "Reason"
+				,IFNULL((SELECT MAX(T0."LineNum") FROM EW_PRD_TEST20240924."POR1" AS T0 WHERE T0."DocEntry"=A."U_PODocEntry"),0) AS MaxLineNum
+			FROM EW_PRD_TEST20240924."@SETTLEMENTHEADER" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OPOR" AS B ON A."U_PODocEntry"=B."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=B."CardCode"
+			LEFT JOIN EW_PRD_TEST20240924."@ADVANCEPAYMENT" AS D ON D."U_NumAtCard"=A."U_RefNo"
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS E ON D."U_UserID"=E."empID"
+			LEFT JOIN EW_PRD_TEST20240924."OPMG" AS F ON F."AbsEntry"=D."U_Project"
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='Lines' THEN
+			SELECT DISTINCT
+				 D."U_ItemCode" AS "ItemCode"
+				--,TO_INT(ROW_NUMBER() OVER(ORDER BY D."LineId")) AS ID 
+				,CAST(D."LineId" AS INT) AS ID
+				,B."ItemName" AS "ItemName"
+				,A."U_Qty" AS "Qty"
+				,TO_DECIMAL(D."U_Paid",10,2) AS "Paid"
+				,TO_DECIMAL(D."U_Paid",10,2) AS "Amount"
+				,IFNULL(A."U_Origin",'') AS "Origin"
+				,IFNULL(A."U_Destination",'') AS "Destination"
+				--,IFNULL(A."U_Remarks",'') AS "remark"
+				,D."U_RemarkOrRisk" AS "remark"
+				,IFNULL(D."U_JobNumber",'') AS "JobNo"
+				,IFNULL(E."CardName",'') AS "CustomerName"
+				,D."U_CustomerCode" AS "CustomerCode"
+				,IFNULL(D."U_InvNumber",'') AS "RefInv"
+				,IFNULL(D."U_DeclarationNo",'') AS "TransportationNo"
+				,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=B."UgpEntry") AS "ServiceType"
+				,IFNULL((SELECT MAX(T1."LineNum") AS "LineNum" 
+					FROM EW_PRD_TEST20240924."OPRQ" AS T0 
+					LEFT JOIN EW_PRD_TEST20240924."POR1" AS T1 ON T0."DocEntry"=T1."BaseEntry" AND T1."BaseType"=1470000113  
+					WHERE T0."DocEntry"=C."U_PRDocEntry" AND T1."ItemCode"=A."U_ItemCode"),0) AS "LineNumPO"
+				,IFNULL((SELECT MAX(T1."LineNum") AS "LineNum"
+					FROM EW_PRD_TEST20240924."OPRQ" AS T0 
+					LEFT JOIN EW_PRD_TEST20240924."PRQ1" AS T1 ON T0."DocEntry"=T1."DocEntry"  
+					WHERE T0."DocEntry"=C."U_PRDocEntry" AND T1."ItemCode"=A."U_ItemCode"),0) AS "LineNumPR"
+				--,IFNULL(A."VisOrder",0) AS "LineNumAD"
+				,0 AS "LineNumAD"
+				--,A."U_DistributionRule" AS 	"DistributionRule"
+				,A."U_DistributionRule" AS 	"DistributionRule"
+			FROM EW_PRD_TEST20240924."@SETTLEMENTROW" AS D
+			LEFT JOIN EW_PRD_TEST20240924."@SETTLEMENTHEADER" AS DD ON D."DocEntry"=DD."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."@ADVANCEPAYMENT" AS C ON C."U_NumAtCard"=DD."U_RefNo"
+			LEFT JOIN EW_PRD_TEST20240924."@ADVANCEPAYMENTROW" AS A ON C."DocEntry"=A."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."OITM" AS B ON D."U_ItemCode"=B."ItemCode"			
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS E ON E."CardCode"=D."U_CustomerCode"
+			WHERE D."DocEntry"=:par2;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GetCommissionBySaleEmployee' THEN
+		SELECT 
+			 A."U_JOBNO" AS "JobNo"
+			,B."DocNum" AS "SONo"
+			,C."DocNum"
+			,Case WHEN C."PaidToDate"=C."DocTotal" THEN 
+				CASE WHEN IFNULL(A."U_COSTINGCONFIRM",'N')='N' 
+				THEN 'Paid Complete and Pending Confrim Costing' 
+				ELSE  
+					'Complete'
+				END
+			 ELSE 
+			 	CASE WHEN IFNULL(A."U_COSTINGCONFIRM",'N')='Y' 
+				THEN 'Confrim Complete and Pending Payment' 
+				ELSE  
+					'Pending'
+				END
+			 END AS "DocStatus"
+			,CASE WHEN IFNULL(A."U_COSTINGCONFIRM",'N')='N' 
+				THEN 0 
+			 ELSE  
+				D."CostingTotal"
+			 END AS "GrandTotalCosting"
+			,C."DocTotal"-C."VatSum" AS "GrandTotalSelling"
+			,C."PaidToDate" AS "TotalPayment"
+			,CASE WHEN IFNULL(A."U_COSTINGCONFIRM",'N')='N' 
+				THEN 0 
+			 ELSE  
+				(C."DocTotal"-C."VatSum")-D."CostingTotal"
+			 END AS "GrossProfit"
+			,E."Commission" AS "Commission"
+			,CASE WHEN IFNULL(A."U_COSTINGCONFIRM",'N')='N' 
+				THEN 0 
+			 ELSE  
+				(((C."DocTotal"-C."VatSum")-D."CostingTotal")*E."Commission"/100)
+			 END AS "TotalCommission"
+			,(C."DocTotal")-C."PaidToDate" AS "ARBalance"
+			,F."SaleEmployee" AS "SaleEmployee"
+			,C."DocEntry" AS "ARInvoice"
+			,IFNULL((SELECT 
+					STRING_AGG(T1."DocNum",', ')
+				FROM EW_PRD_TEST20240924."RCT2" T0
+				LEFT JOIN EW_PRD_TEST20240924."ORCT" AS T1 ON T1."DocEntry"=T0."DocNum" 
+				WHERE T0."InvType"=13 AND T0."DocEntry"=C."DocEntry" AND T1."Canceled"='N'),'') AS "IncomingNumber"
+			,IFNULL(G."CardName",'') AS "Consignee"
+			,IFNULL(H."CardName",'') AS "CustomerName"
+			,IFNULL(I."CardName",'') AS "Shipper"
+			,CAST(IFNULL(A."U_REBATE",0) AS double) AS "Rebate"
+		FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" AS A
+		LEFT JOIN EW_PRD_TEST20240924."ORDR" AS B ON A."U_SALESORDERDOCNUM"=B."DocEntry"
+		LEFT JOIN (
+			SELECT DISTINCT
+				 T1."BaseType"
+				,T1."BaseEntry"
+				,T0."DocEntry"
+				,T0."DocNum"
+				,T0."PaidToDate"
+				,T0."DocTotal"
+				,T0."SlpCode"
+				,T0."CANCELED"
+				,T0."VatSum"
+			FROM EW_PRD_TEST20240924."OINV" AS T0 
+			LEFT JOIN EW_PRD_TEST20240924."INV1" AS T1 ON T0."DocEntry"=T1."DocEntry"
+			WHERE T1."BaseType"='17' AND T1."Project" IS NOT NULL
+		)AS C ON C."BaseEntry"=A."U_SALESORDERDOCNUM"
+		LEFT JOIN (
+			SELECT SUM(T0."U_TOTALPRICE"*T0."U_Qty") AS "CostingTotal",T0."DocEntry" FROM EW_PRD_TEST20240924."@JOBTRUCKCOSTING" AS T0 GROUP BY T0."DocEntry"
+		)AS D ON D."DocEntry"=A."DocEntry" 
+		LEFT JOIN (
+			SELECT 
+				 T0."NAME" AS "ProjectName"
+				,T0."EMPLOYEE" AS "SaleEmployee" 
+				,T0."AbsEntry" AS "ProjectCode"
+			FROM EW_PRD_TEST20240924."OPMG" T0
+		)AS F ON F."ProjectName"=A."U_JOBNO"
+		LEFT JOIN (
+			SELECT 
+				 T0."Commission" AS "Commission"
+				,T0."SlpCode" AS "SlpCode"
+			FROM EW_PRD_TEST20240924."OSLP" AS T0
+		)AS E ON E."SlpCode"=F."SaleEmployee"
+		LEFT JOIN (
+			SELECT 
+				 T0."DocEntry" AS "DocEntry"
+				,STRING_AGG(T2."CardName",',') AS "CardName"
+			FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0
+			LEFT JOIN EW_PRD_TEST20240924."@TBCONSIGNEE" AS T1 ON T1."DocEntry"=T0."U_BOOKINGID"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T2 ON T2."CardCode"=T1."U_CONSIGNEE"
+			GROUP BY T0."DocEntry"
+		)AS G ON G."DocEntry"=A."U_CONFIRMBOOKINGID"
+		LEFT JOIN (
+			SELECT 
+				 T0."DocEntry" AS "DocEntry"
+				,STRING_AGG(T3."CardName",',') AS "CardName"
+			FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0
+			LEFT JOIN EW_PRD_TEST20240924."@TBSALESQUOTATION" AS T1 ON T1."DocEntry"=T0."U_BOOKINGID"
+			LEFT JOIN EW_PRD_TEST20240924."OQUT" AS T2 ON T2."DocEntry"=T1."U_DOCENTRY"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T3 ON T3."CardCode"=T2."CardCode"
+			GROUP BY T0."DocEntry"
+		)AS H ON H."DocEntry"=A."U_CONFIRMBOOKINGID"
+		LEFT JOIN (
+			SELECT 
+				 T0."DocEntry" AS "DocEntry"
+				,STRING_AGG(T2."CardName",',') AS "CardName"
+			FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0
+			LEFT JOIN EW_PRD_TEST20240924."@TBSHIPPER" AS T1 ON T1."DocEntry"=T0."U_BOOKINGID"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T2 ON T2."CardCode"=T1."U_SHIPPER"
+			GROUP BY T0."DocEntry"
+		)AS I ON I."DocEntry"=A."U_CONFIRMBOOKINGID"
+		WHERE C."BaseEntry" IS NOT NULL AND F."SaleEmployee"=:par1
+		AND (
+			SELECT COUNT(*) 
+				FROM (
+				SELECT DISTINCT T1."BaseEntry"
+				FROM EW_PRD_TEST20240924."OINV" AS T0 
+				LEFT JOIN EW_PRD_TEST20240924."INV1" AS T1 ON T0."DocEntry"=T1."DocEntry"
+				WHERE T1."BaseType"='17' AND T1."Project"=A."U_JOBNO")
+			)=(SELECT COUNT(*) FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" AS T0 WHERE T0."U_JOBNO"=A."U_JOBNO")
+		AND C."DocEntry" NOT IN 
+									(SELECT DISTINCT IFNULL(T3."DocEntry",0)
+										FROM EW_PRD_TEST20240924."@TBCOMMISSIONROW" AS T0 
+										LEFT JOIN EW_PRD_TEST20240924."@TBCOMMISSION" AS T1 ON T0."DocEntry"=T1."DocEntry" 
+										LEFT JOIN EW_PRD_TEST20240924."OPMG" AS T2 ON T2."AbsEntry"=T0."U_JobNumber"
+										LEFT JOIN EW_PRD_TEST20240924."PMG4" AS T3 ON T3."AbsEntry"=T2."AbsEntry" AND T3."DocEntry"=T0."U_ARInvoice" AND T3."TYP"='13'										
+										WHERE T1."Status"='O' AND T1."U_ApproveStatus"<>'R' AND T1."Canceled"<>'Y')
+		AND C."CANCELED"='N' ORDER BY B."DocNum";
+	ELSE IF :DTYPE='GetCommissionDetailByDocEntry' THEN
+		IF :par1='Header' THEN
+			SELECT 
+				 A."DocEntry" AS "DocEntry"
+				,TO_VARCHAR(A."DocNum") AS "DocNum"
+				,CASE 
+					WHEN A."U_ApproveStatus"='R' THEN 'Reject' 
+					WHEN A."U_ApproveStatus"='A' THEN 'Approve' 
+					WHEN A."U_ApproveStatus"='P' THEN 'Pending' END AS "ApproveStatus"
+				,A."Status" AS "IsCancel"
+				,A."U_UserID" AS "UserID"
+				,D."firstName"||' '||D."lastName" AS "UserName"
+				,IFNULL(A."Remark",'') AS "Reason"
+				,A."U_SlpCode" AS "SlpCode"
+				,E."SlpName" AS "SlpName"
+				,IFNULL(B."U_VendorCode",'') AS "VendorCode"
+				,TO_VARCHAR(A."U_IssueDate",'yyyy-MM-dd') AS "IssueDate"
+				,IFNULL(TO_VARCHAR(A."U_DueDate",'yyyy-MM-dd'),'') AS "DueDate"
+				,CAST(C."GrandTotalCosting" AS double) AS "GrandTotalCosting"
+				,CAST(C."GrandTotalSelling" AS double) AS "GrandTotalSelling"
+				,CAST(C."GrandTotalGrossProfit" AS double) AS "GrandTotalGrossProfit"
+				,CAST(C."GrandTotalCommission" AS double) AS "GrandTotalCommission"
+				,IFNULL(F."Currency",'') AS "Currency"
+				,IFNULL((SELECT "OPOR"."U_WEBID" FROM EW_PRD_TEST20240924."OPOR" WHERE "OPOR"."DocEntry"=A."U_PODocEntry"),'') AS "WebId"
+				,IFNULL(A."U_RemarkCommission",'') AS "Remark"
+				,(SELECT STRING_AGG(T1."NAME",',') 
+					FROM EW_PRD_TEST20240924."@TBCOMMISSIONROW" AS T0
+					LEFT JOIN EW_PRD_TEST20240924."OPMG" AS T1 ON T1."AbsEntry"=T0."U_JobNumber"
+					WHERE "DocEntry"=A."DocEntry") AS "NumAtCard"
+			FROM EW_PRD_TEST20240924."@TBCOMMISSION" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS B ON B."salesPrson"=A."U_SlpCode"
+			LEFT JOIN (
+				SELECT 
+					 T0."DocEntry"
+					,SUM(T0."U_GrandTotalCosting") AS "GrandTotalCosting"
+					,SUM(T0."U_GrandTotalSelling") AS "GrandTotalSelling"
+					,SUM(T0."U_GrossProfit") AS "GrandTotalGrossProfit"
+					,SUM(T0."U_TotalSaleCommission") AS "GrandTotalCommission"
+				FROM EW_PRD_TEST20240924."@TBCOMMISSIONROW" AS T0 GROUP BY T0."DocEntry"
+			)AS C ON C."DocEntry"=A."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."OHEM" AS D ON D."empID"=A."U_UserID"
+			LEFT JOIN EW_PRD_TEST20240924."OSLP" AS E ON E."SlpCode"=A."U_SlpCode"
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS F ON F."CardCode"=B."U_VendorCode"
+			WHERE A."DocEntry"=:par2;
+		ELSE IF :par1='Lines' THEN
+			SELECT 
+				 A."U_AccountCode" AS "AccountCode"
+				,TO_VARCHAR(B."NAME") AS "JobNumber"
+				,CAST(A."U_GrandTotalCosting" as double) AS "GrandTotalCosting"
+				,CAST(A."U_GrandTotalSelling" AS double) AS "GrandTotalSelling"
+				,CAST(A."U_GrossProfit" AS double) AS "GrossProfit"
+				,CAST(A."U_Percentage" AS double) AS "Percentage"
+				,CAST(A."U_TotalSaleCommission" As double) AS "TotalSaleCommission"
+				,IFNULL((SELECT 
+					STRING_AGG(T1."DocNum",', ')
+				FROM EW_PRD_TEST20240924."RCT2" T0
+				LEFT JOIN EW_PRD_TEST20240924."ORCT" AS T1 ON T1."DocEntry"=T0."DocNum" 
+				WHERE T0."InvType"=13 AND T0."DocEntry"=A."U_ARInvoice"),'') AS "IncomingNumber"
+				,IFNULL(TO_VARCHAR(C."DocNum"),'') AS "ARDocNum"
+			FROM EW_PRD_TEST20240924."@TBCOMMISSIONROW" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OPMG" AS B ON B."AbsEntry"=A."U_JobNumber"
+			LEFT JOIN EW_PRD_TEST20240924."OINV" AS C ON C."DocEntry"=A."U_ARInvoice"
+			WHERE A."DocEntry"=:par2;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='CheckCommissionDetailByJobNumber' THEN
+		SELECT 
+			 '61101002' AS "AccountCode"
+			,TO_VARCHAR(MAX(A."DocEntry")) AS "ARDocEntry"
+			,TO_VARCHAR(MAX(A."ProjectCode")) AS "JobNumber"
+			,CAST(MAX(A."TotalCostingNotAccurate") AS double) AS "GrandTotalCosting"
+			,CAST(SUM(A."DocTotal") AS double) AS "GrandTotalSelling"
+			,CAST(SUM(A."DocTotal")-MAX(A."TotalCostingNotAccurate") AS double) AS "GrossProfit"
+			,CAST(MAX(A."Commission") AS double) AS "Percentage"
+			,CAST((SUM(A."DocTotal")-SUM(A."PaidToDate")) AS double) AS "ARBalance" 
+			,CAST(((SUM(A."DocTotal")-MAX(A."TotalCostingNotAccurate"))* MAX(A."Commission"))/100 AS double) AS "TotalSaleCommission"
+		FROM (SELECT Distinct
+						 (A."DocTotal"-A."VatSum") AS "DocTotal"
+						,A."DocEntry"
+						,(A."PaidToDate"-A."VatSum") AS "PaidToDate"
+						,D."Commission"
+						,(SELECT 
+								SUM(Z1."U_TOTALPRICE"*Z1."U_Qty")
+							FROM EW_PRD_TEST20240924."@JOBSHEETRUCKING" AS Z0
+							LEFT JOIN EW_PRD_TEST20240924."@JOBTRUCKCOSTING" AS Z1 ON Z0."DocEntry"=Z1."DocEntry"
+							WHERE Z0."U_JOBNO"=(SELECT DISTINCT
+								 T1."NAME"
+								FROM EW_PRD_TEST20240924."PMG4" AS T0
+								LEFT JOIN EW_PRD_TEST20240924."OPMG" AS T1 ON T0."AbsEntry"=T1."AbsEntry"
+							WHERE T0."TYP"='13' AND T0."DocEntry"=:par1) AND Z0."U_SALESORDERDOCNUM"=B."BaseEntry") AS "TotalCostingNotAccurate"
+						,C."ProjectCode"
+						,C."ProjectName"
+					FROM EW_PRD_TEST20240924."OINV" AS A 
+					LEFT JOIN EW_PRD_TEST20240924."INV1" AS B ON A."DocEntry"=B."DocEntry"
+					LEFT JOIN (
+						SELECT 
+							 T0."NAME" AS "ProjectName"
+							,T0."EMPLOYEE" AS "SaleEmployee"
+							,T0."AbsEntry" AS "ProjectCode"
+						FROM EW_PRD_TEST20240924."OPMG" T0
+					)AS C ON C."ProjectName"=B."Project"
+					LEFT JOIN (
+						SELECT 
+							 T0."Commission" AS "Commission"
+							,T0."SlpCode" AS "SlpCode"
+						FROM EW_PRD_TEST20240924."OSLP" AS T0
+					)AS D ON D."SlpCode"=C."SaleEmployee"
+					WHERE B."BaseType"='17' 
+					AND A."DocEntry"=:par1 AND C."ProjectName"=:par2)AS A;
+	ELSE IF :DTYPE='GetListSalesCommission' THEN
+		SELECT 
+			 CAST(A."DocEntry" AS int) AS "DocEntry"
+			,CASE 
+					WHEN A."U_ApproveStatus"='R' THEN 'Reject' 
+					WHEN A."U_ApproveStatus"='A' THEN 'Approve' 
+					WHEN A."U_ApproveStatus"='P' THEN 'Pending' END AS "ApproveStatus"
+			,A."Status" AS "DocumentCancel"
+			,CAST(A."DocNum" AS int) AS "DocNum"
+			,IFNULL(B."SlpName",'') AS "SaleEmployee"
+			,C."firstName"||' '||C."lastName" AS "UserCreated"
+			,CAST(D."TotalCommission" as double) AS "TotalSalesComission"
+			,IFNULL(A."Remark",'') AS "Reason"
+			,TO_VARCHAR(A."U_IssueDate",'DD/MM/YYYY') AS "IssueDate"
+			,IFNULL(CAST(E."DocNum" AS NVARCHAR(250)),'') AS "PRDocNum"
+		FROM EW_PRD_TEST20240924."@TBCOMMISSION" AS A
+		LEFT JOIN EW_PRD_TEST20240924."OSLP" AS B ON A."U_SlpCode"=B."SlpCode"
+		LEFT JOIN EW_PRD_TEST20240924."OHEM" AS C ON C."empID"=A."U_UserID"
+		LEFT JOIN (
+		 SELECT 
+		 	 T0."DocEntry" AS "DocEntry"
+		 	,SUM(T0."U_TotalSaleCommission") AS "TotalCommission" 
+		 FROM EW_PRD_TEST20240924."@TBCOMMISSIONROW" AS T0 GROUP BY T0."DocEntry"
+		)AS D ON D."DocEntry"=A."DocEntry"
+		LEFT JOIN(
+			SELECT DISTINCT
+				 C."DocNum"
+				,A."DocEntry" 
+			FROM EW_PRD_TEST20240924."OPOR" AS A
+			LEFT JOIN EW_PRD_TEST20240924."POR1" AS B ON B."DocEntry"=A."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."OPRQ" AS C ON C."DocEntry"=B."BaseEntry" AND C."ObjType"=B."BaseType"
+			WHERE B."BaseType"='1470000113' AND A."CANCELED"!='Y'
+		)AS E ON E."DocEntry"=A."U_PODocEntry" ORDER BY A."DocEntry" DESC;
+	ELSE IF :DTYPE='GetARInvoiceWithJobNumberForDebit' THEN
+		IF :par1='CBT' THEN
+			SELECT 
+				 ROW_NUMBER ( ) OVER( ORDER BY A."DocNum" DESC ) AS ROWNUM
+			 	,A."DocNum" AS DOCNUM
+			 	,A."DocEntry" AS DOCENTRY
+			 	,A."U_WEBID" AS WEBID
+			 	,(SELECT DISTINCT MAX(INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry") AS JOBNUMBER
+			 	,A."CardCode" AS CustomerCode
+			 	,B."CardName" AS CustomerName
+			 	,TO_VARCHAR(A."DocDate",'dd-mm-YYYY') AS ISSUEDATE
+			 	,A."DocTotal" AS DOCTOTAL
+			 	,A."Comments" AS REMARK
+			FROM EW_PRD_TEST20240924."OINV" AS A 
+			LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON A."CardCode"=B."CardCode"
+			LEFT JOIN EW_PRD_TEST20240924."OPMG" AS C ON C."NAME"=(SELECT DISTINCT MAX(INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry")
+		 	LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS D ON D."U_PROJECTMANAGEMENTID"=C."AbsEntry"
+			WHERE IFNULL((SELECT DISTINCT MAX(INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry"),'')<>''
+				AND A."CANCELED"='N'
+			 	AND D."U_PROJECTMANAGEMENTID" IS NOT NULL
+		 	    AND C."STATUS"!='N';
+			 	   --AND (A."DocTotal"-A."PaidToDate")<>0 
+			 	   /*AND A."U_WEBID" IS NOT NULL */
+			 	   /*AND IFNULL((SELECT DISTINCT COUNT(INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry"),1)<2
+		 	   AND (SELECT COUNT(INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry")IN(1,0)*/
+		ELSE IF :par1='sea_and_air' THEN
+			SELECT 
+				 ROW_NUMBER ( ) OVER( ORDER BY A."DocNum" DESC ) AS ROWNUM
+			 	,A."DocNum" AS DOCNUM
+			 	,A."DocEntry" AS DOCENTRY
+			 	,A."U_WEBID" AS WEBID
+			 	,(SELECT DISTINCT MAX(INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry") AS JOBNUMBER
+			 	,A."CardCode" AS CustomerCode
+			 	,B."CardName" AS CustomerName
+			 	,TO_VARCHAR(A."DocDate",'dd-mm-YYYY') AS ISSUEDATE
+			 	,A."DocTotal" AS DOCTOTAL
+			 	,A."Comments" AS REMARK
+			 FROM EW_PRD_TEST20240924."OINV" AS A 
+			 LEFT JOIN EW_PRD_TEST20240924."OCRD" AS B ON A."CardCode"=B."CardCode"
+			 LEFT JOIN EW_PRD_TEST20240924."OPMG" AS C ON C."NAME"=(SELECT DISTINCT MAX(INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry")
+		 	 LEFT JOIN EW_PRD_TEST20240924."@CON_BOOKING_S_A" AS D ON D."U_PROJECTMANAGEMENTID"=C."AbsEntry"
+			 WHERE IFNULL((SELECT DISTINCT MAX(INV1."Project") FROM EW_PRD_TEST20240924."INV1" WHERE INV1."DocEntry"=A."DocEntry"),'')<>''
+			 	AND A."CANCELED"='N'
+			 	AND D."U_PROJECTMANAGEMENTID" IS NOT NULL
+		 	    AND C."STATUS"!='N';
+		END IF;
+		END IF;	
+	ELSE IF :DTYPE='GetARDeditMemoListOnReduceInvoice' THEN
+		IF :par3='ALL' THEN
+			SELECT * FROM (
+				SELECT 
+					 ROW_NUMBER ( ) OVER( ORDER BY A."DocNum" DESC ) AS ROWNUM
+					,A."DocEntry" AS DOCENTRY
+					,A."DocNum" AS DOCNUM
+					,A."NumAtCard" AS REFNO
+					,(SELECT DISTINCT MAX(T0."Project") FROM "EW_PRD_TEST20240924"."RIN1" T0 WHERE T0."DocEntry"=A."DocEntry") AS JOBNUMBER
+					,A."CardCode" AS VENDORCODE
+					,C."CardName" AS VENDORNAME
+					,TO_VARCHAR(A."DocDate",'YYYYMMDD') AS ISSUEDATE
+					,A."DocTotal"*-1 AS DOCTOTAL
+					,A."Comments" AS REMARKS
+				FROM "EW_PRD_TEST20240924"."ORIN" AS A
+				LEFT JOIN "EW_PRD_TEST20240924"."OCRD" AS C ON C."CardCode"=A."CardCode"
+				LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."NAME"=(SELECT DISTINCT T0."Project" FROM "EW_PRD_TEST20240924"."RIN1" T0 WHERE T0."DocEntry"=A."DocEntry")
+		 		LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS E ON E."U_PROJECTMANAGEMENTID"=D."AbsEntry"
+				WHERE A."U_CreditMemoType"='Debit'
+					AND A."DocDate" BETWEEN :par1 AND :par2
+					AND E."U_PROJECTMANAGEMENTID" IS NOT NULL
+		 	    	AND D."STATUS"!='N'
+				 	AND (A."U_UserCreate"=:par4
+							OR A."U_UserCreate" IN (
+										SELECT "U_User" 
+										FROM "EW_PRD_TEST20240924"."@TB_P_READ" AS T0
+										LEFT JOIN "EW_PRD_TEST20240924"."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									))
+					AND IFNULL((SELECT DISTINCT COUNT(RIN1."Project") FROM "EW_PRD_TEST20240924"."RIN1" WHERE RIN1."DocEntry"=A."DocEntry"),1)<2
+					AND A."CANCELED"='N'
+				
+				UNION ALL
+				
+				SELECT 
+					 ROW_NUMBER ( ) OVER( ORDER BY A."DocNum" DESC ) AS ROWNUM
+					,A."DocEntry" AS DOCENTRY
+					,A."DocNum" AS DOCNUM
+					,A."NumAtCard" AS REFNO
+					,(SELECT DISTINCT MAX(T0."Project") FROM "EW_PRD_TEST20240924"."DRF1" T0 WHERE T0."DocEntry"=A."DocEntry") AS JOBNUMBER
+					,A."CardCode" AS VENDORCODE
+					,C."CardName" AS VENDORNAME
+					,TO_VARCHAR(A."DocDate",'YYYYMMDD') AS ISSUEDATE
+					,A."DocTotal"*-1 AS DOCTOTAL
+					,A."Comments" AS REMARKS
+				FROM "EW_PRD_TEST20240924"."ODRF" AS A
+				LEFT JOIN "EW_PRD_TEST20240924"."OCRD" AS C ON C."CardCode"=A."CardCode"
+				LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."NAME"=(SELECT DISTINCT T0."Project" FROM "EW_PRD_TEST20240924"."DRF1" T0 WHERE T0."DocEntry"=A."DocEntry")
+		 		LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS E ON E."U_PROJECTMANAGEMENTID"=D."AbsEntry"
+				WHERE A."U_CreditMemoType"='Debit'
+					AND E."U_PROJECTMANAGEMENTID" IS NOT NULL
+		 	    	AND D."STATUS"!='N'
+					AND A."DocDate" BETWEEN :par1 AND :par2
+				 	AND (A."U_UserCreate"=:par4
+							OR A."U_UserCreate" IN (
+										SELECT "U_User" 
+										FROM "EW_PRD_TEST20240924"."@TB_P_READ" AS T0
+										LEFT JOIN "EW_PRD_TEST20240924"."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									))
+					AND A."ObjType"='14'
+					AND A."DocEntry" NOT IN (SELECT "draftKey" FROM EW_PRD_TEST20240924."ORIN" WHERE "draftKey" IS NOT NULL)
+			)AS A ORDER BY A."DOCENTRY" DESC;
+		ELSE IF :par3='DEFAULT' THEN
+			SELECT TOP 1000 * FROM (
+				SELECT 
+					 ROW_NUMBER ( ) OVER( ORDER BY A."DocNum" DESC ) AS ROWNUM
+					,A."DocEntry" AS DOCENTRY
+					,A."DocNum" AS DOCNUM
+					,A."NumAtCard" AS REFNO
+					,(SELECT DISTINCT MAX(T0."Project") FROM "EW_PRD_TEST20240924"."RIN1" T0 WHERE T0."DocEntry"=A."DocEntry") AS JOBNUMBER
+					,A."CardCode" AS VENDORCODE
+					,C."CardName" AS VENDORNAME
+					,TO_VARCHAR(A."DocDate",'YYYYMMDD') AS ISSUEDATE
+					,A."DocTotal"*-1 AS DOCTOTAL
+					,A."Comments" AS REMARKS
+				FROM "EW_PRD_TEST20240924"."ORIN" AS A
+				LEFT JOIN "EW_PRD_TEST20240924"."OCRD" AS C ON C."CardCode"=A."CardCode"
+				LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."NAME"=(SELECT DISTINCT T0."Project" FROM "EW_PRD_TEST20240924"."RIN1" T0 WHERE T0."DocEntry"=A."DocEntry")
+		 		LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS E ON E."U_PROJECTMANAGEMENTID"=D."AbsEntry"
+				WHERE A."U_CreditMemoType"='Debit'
+					AND A."DocDate" BETWEEN :par1 AND :par2
+					AND E."U_PROJECTMANAGEMENTID" IS NOT NULL
+		 	    	AND D."STATUS"!='N'
+				 	AND (A."U_UserCreate"=:par4
+							OR A."U_UserCreate" IN (
+										SELECT "U_User" 
+										FROM "EW_PRD_TEST20240924"."@TB_P_READ" AS T0
+										LEFT JOIN "EW_PRD_TEST20240924"."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									))
+					AND IFNULL((SELECT DISTINCT COUNT(RIN1."Project") FROM "EW_PRD_TEST20240924"."RIN1" WHERE RIN1."DocEntry"=A."DocEntry"),1)<2
+					AND A."CANCELED"='N'
+				
+				UNION ALL
+				
+				SELECT 
+					 ROW_NUMBER ( ) OVER( ORDER BY A."DocNum" DESC ) AS ROWNUM
+					,A."DocEntry" AS DOCENTRY
+					,A."DocNum" AS DOCNUM
+					,A."NumAtCard" AS REFNO
+					,(SELECT DISTINCT MAX(T0."Project") FROM "EW_PRD_TEST20240924"."DRF1" T0 WHERE T0."DocEntry"=A."DocEntry") AS JOBNUMBER
+					,A."CardCode" AS VENDORCODE
+					,C."CardName" AS VENDORNAME
+					,TO_VARCHAR(A."DocDate",'YYYYMMDD') AS ISSUEDATE
+					,A."DocTotal"*-1 AS DOCTOTAL
+					,A."Comments" AS REMARKS
+				FROM "EW_PRD_TEST20240924"."ODRF" AS A
+				LEFT JOIN "EW_PRD_TEST20240924"."OCRD" AS C ON C."CardCode"=A."CardCode"
+				LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."NAME"=(SELECT DISTINCT T0."Project" FROM "EW_PRD_TEST20240924"."DRF1" T0 WHERE T0."DocEntry"=A."DocEntry")
+		 		LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS E ON E."U_PROJECTMANAGEMENTID"=D."AbsEntry"
+				WHERE A."U_CreditMemoType"='Debit'
+					AND E."U_PROJECTMANAGEMENTID" IS NOT NULL
+		 	    	AND D."STATUS"!='N'
+					AND A."DocDate" BETWEEN :par1 AND :par2
+				 	AND (A."U_UserCreate"=:par4
+							OR A."U_UserCreate" IN (
+										SELECT "U_User" 
+										FROM "EW_PRD_TEST20240924"."@TB_P_READ" AS T0
+										LEFT JOIN "EW_PRD_TEST20240924"."@TBUSER" AS T1 ON T1."U_USERROLE"=T0."Code"
+										WHERE T1."Code"=:par4
+									))
+					AND A."ObjType"='14'
+					AND A."DocEntry" NOT IN (SELECT "draftKey" FROM EW_PRD_TEST20240924."ORIN" WHERE "draftKey" IS NOT NULL)
+			)AS A ORDER BY A."DOCENTRY" DESC;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GetTaxCodePurchases' THEN
+		SELECT 
+			 A."Code" AS "Code"
+			,A."Name" AS "Name"
+			,TO_DECIMAL(IFNULL(A."Rate",0),6,2) AS "Rate"
+		FROM EW_PRD_TEST20240924."OVTG" AS A 
+		WHERE A."Inactive"='N' AND A."Account" IS NOT NULL AND A."Category"='I';
+	ELSE IF :DTYPE='GetTaxCodeSales' THEN
+		SELECT 
+			 A."Code" AS "Code"
+			,A."Name" AS "Name"
+			,TO_DECIMAL(IFNULL(A."Rate",0),6,2) AS "Rate"
+		FROM EW_PRD_TEST20240924."OVTG" AS A 
+		WHERE A."Inactive"='N' AND A."Account" IS NOT NULL AND A."Category"='O';
+	ELSE IF :DTYPE='GETOverseaTruckerCONFIRMBOOKINGDETAIL' THEN
+		SELECT 
+			C."CardName" AS "OverseaTrucker"
+		FROM EW_PRD_TEST20240924."@TBOVERSEATRUCKER" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS B ON B."U_BOOKINGID"=A."DocEntry"
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=A."U_OVERSEATRUCKERCODE"
+		WHERE B."DocEntry"=par1;
+	ELSE IF :DTYPE='GetCommoditiesByDocEntry' THEN
+		SELECT 
+			 A."U_INVOICE" AS INVOICE 
+			,A."LineId" AS LINEID
+		FROM EW_PRD_TEST20240924."@COMMODITY" AS A
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GetEditConfirmBookingSheet' THEN
+		SELECT 
+			 IFNULL(CAST(A."Remark" AS NVARCHAR(500)),'') AS "Remark"
+			,TO_INT(A."U_PRICELIST") AS "PriceList"
+			,B."U_TYPE" AS "Type"
+			,B."U_CONTAINERTYPE" AS "ContainerType"
+			,B."U_CONTAINERNO" AS "ContainerNo"
+			,B."U_OWNER" AS "Owner"
+			,B."U_CONTAINERNO2" AS "ContainerNo2"
+			,B."U_OWNER2" AS "Owner2"
+			,B."U_GROSSWEIGHT" AS "GrossWeight"
+			,B."U_YARD" AS "Yard"
+			,B."U_FCL_LCL" AS "FCL_LCL"
+			,B."U_LOLO_UNLOADING" AS "LOLO_UNLOADING"
+			,CAST(B."U_TRUCKPROVINCE" AS VARCHAR(255)) AS "TruckProvince"
+			,CAST(B."U_TRUCKPLATENO" AS VARCHAR(255)) AS "TruckPlateNo"
+			,B."U_TRUCKTYPE" AS "TruckType"
+			,B."U_BRAND" AS "Brand"
+			,B."U_TRUCKCODE" AS "TruckCode"
+			,B."U_COLOR" AS "Color"
+			,B."U_TRAILERPROVINCE" AS "TrailerProvince"
+			,B."U_TRAILERPLATE" AS "TrailerPlate"
+			,B."U_TRAILERTYPE" AS "TrailerType"
+			,B."U_DRIVER1" AS "Driver1"
+			,B."U_TPNO1" AS "TPNO1"
+			,B."U_IDCARD1" AS "IDCard1"
+			,CAST(B."U_DRIVERLICENSE1" AS VARCHAR(255)) AS "DriverLicense1"
+			,B."U_DRIVER2" AS "Driver2"
+			,B."U_TPNO2" AS "TPNO2"
+			,B."U_IDCARD2" AS "IDCard2"
+			,CAST(B."U_DRIVERLICENSE2" AS VARCHAR(255)) AS "DriverLicense2"
+			,B."U_VENDORCODE" AS "VendorCode"
+			,B."U_TRUCKCOSTTHB" AS "TruckCostTHB"
+			,IFNULL(B."U_SEALNO1",'') AS "SealNo1"
+			,IFNULL(B."U_SEALNO2",'') AS "SealNo2"
+			,IFNULL(B."U_ContainerOption",'') AS "ContainerOption"
+			,IFNULL(B."U_BookingLineId",'0') AS "BookingLineId"
+			,B."LineId" AS "LineId"
+			,A."U_BOOKINGID" AS "BookingDocEntry"
+			,A."DocEntry" AS "ConfirmBookingID"
+			,E."Name" AS "ImportType"
+			,F."descript"||' - '||FF."descript" AS "Route"
+			,IFNULL((SELECT T0."WhsCode" FROM EW_PRD_TEST20240924."OWHS" AS T0 WHERE  T0."U_TerritoryID"=FF."territryID"),'') AS "Destination"
+			,G."SlpName" AS "SalePerson"
+			,IFNULL((SELECT STRING_AGG(T1."Name",',')
+				FROM EW_PRD_TEST20240924."@THAIBORDER" AS T0
+				LEFT JOIN EW_PRD_TEST20240924."@TBTHAIBORDER" AS T1 ON T1."Code"=T0."U_ThaiBorder"
+				WHERE T0."DocEntry"=D."DocEntry"),'') AS "ThaiBorder"
+			,D."U_EWSeries"||D."U_JOBNO" AS "JobNumber"
+			,IFNULL((SELECT STRING_AGG(T1."Name",',')
+				FROM EW_PRD_TEST20240924."@PLACEOFLOADING" AS T0
+				LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS T1 ON T1."Code"=T0."U_PLACELOADING"
+				WHERE T0."DocEntry"=D."DocEntry"),'') AS "PlaceOfLoading"
+			,IFNULL((SELECT STRING_AGG(T1."CardName",',')
+				FROM EW_PRD_TEST20240924."@TBSHIPPER" AS T0
+				LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T1 ON T1."CardCode"=T0."U_SHIPPER"
+				WHERE T0."DocEntry"=D."DocEntry"),'') AS "Shipper"
+			,IFNULL((SELECT STRING_AGG(T1."Name",',')
+				FROM EW_PRD_TEST20240924."@PLACEOFDELIVERY" AS T0
+				LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS T1 ON T1."Code"=T0."U_PLACEDELIVERY"
+				WHERE T0."DocEntry"=D."DocEntry"),'') AS "PlaceOfDelivery"
+			,IFNULL((SELECT STRING_AGG(T1."CardName",',')
+				FROM EW_PRD_TEST20240924."@TBCONSIGNEE" AS T0
+				LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T1 ON T1."CardCode"=T0."U_CONSIGNEE"
+				WHERE T0."DocEntry"=D."DocEntry"),'') AS "Consignee"
+			,IFNULL(A."U_CSName",'') AS "CSName"
+			,IFNULL(TO_VARCHAR(D."U_LOADINGDATE",'DD/MM/YYYY'),'') AS "LoadingDate"
+			,IFNULL(TO_VARCHAR(D."U_CROSSBORDERDATE",'DD/MM/YYYY'),'') AS "CrossBorderDate"
+			,IFNULL(TO_VARCHAR(D."U_ETAREQUIREMENT",'DD/MM/YYYY'),'') AS "ETARequirementDate"
+		FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TRUCKINFORMATION" AS B ON A."DocEntry"=B."DocEntry"
+		LEFT JOIN EW_PRD_TEST20240924."OLCT" AS C ON C."Code"=B."U_TRUCKPROVINCE"
+		LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS D ON D."DocEntry"=A."U_BOOKINGID"
+		LEFT JOIN EW_PRD_TEST20240924."@TBJOBTYPE" AS E ON E."Code"=D."U_IMPORTTYPE"
+		LEFT JOIN EW_PRD_TEST20240924."OTER" AS F ON F."territryID"=D."U_ORIGIN" --Origin
+		LEFT JOIN EW_PRD_TEST20240924."OTER" AS FF ON FF."territryID"=D."U_DESTINATION" --Destination
+		LEFT JOIN EW_PRD_TEST20240924."OSLP" AS G ON G."SlpCode"=D."U_SALEEMPLOYEE"
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GetMessagesTop5AlertByUserID' THEN
+		SELECT TOP 5
+			 A."Code" AS "AlertID"
+			,IFNULL(B."lastName"||'-'||B."firstName",'') AS "UserName"
+			,IFNULL(A."Name",'') AS "MessageHeader"
+			,IFNULL(A."U_MESSAGEDESCRIPTION",'') AS "MessageDescription"
+			,IFNULL(TO_INT((SELECT COUNT(*) FROM EW_PRD_TEST20240924."@TBALERT" AS T0 WHERE T0."U_USERID"=:par1 AND T0."U_ISREAD"='N')),0) AS "MessageCount"
+		FROM EW_PRD_TEST20240924."@TBALERT" AS A 
+		LEFT JOIN EW_PRD_TEST20240924."OHEM" AS B ON A."U_USERID"=B."empID"
+		WHERE A."U_USERID"=:par1 AND A."U_ISREAD"='N' ORDER BY A."Code" DESC;
+	ELSE IF :DTYPE='GetMessagesByAlertID' THEN
+		SELECT
+			 A."Code" AS "AlertID"
+			,IFNULL(B."lastName"||'-'||B."firstName",'') AS "UserName"
+			,IFNULL(A."Name",'') AS "MessageHeader"
+			,IFNULL(A."U_MESSAGEDESCRIPTION",'') AS "MessageDescription"
+			,IFNULL(TO_INT((SELECT COUNT(*) FROM EW_PRD_TEST20240924."@TBALERT" AS T0 WHERE T0."U_USERID"=694 AND T0."U_ISREAD"='N')),0) AS "MessageCount"
+		FROM EW_PRD_TEST20240924."@TBALERT" AS A 
+		LEFT JOIN EW_PRD_TEST20240924."OHEM" AS B ON A."U_USERID"=B."empID"
+		WHERE A."Code"=:par1 ORDER BY A."Code" DESC;
+	ELSE IF :DTYPE='GetMessagesByUser' THEN
+		SELECT
+			 A."Code" AS "AlertID"
+			,IFNULL(B."lastName"||'-'||B."firstName",IFNULL(C."lastName"||'-'||C."firstName",'')) AS "UserName"
+			,IFNULL(A."Name",'') AS "MessageHeader"
+			,IFNULL(A."U_MESSAGEDESCRIPTION",'') AS "MessageDescription"
+			,IFNULL(TO_INT((SELECT COUNT(*) FROM EW_PRD_TEST20240924."@TBALERT" AS T0 WHERE T0."U_USERID"=:par1 AND T0."U_ISREAD"='N')),0) AS "MessageCount"
+		FROM EW_PRD_TEST20240924."@TBALERT" AS A 
+		LEFT JOIN EW_PRD_TEST20240924."OHEM" AS B ON A."U_USERID"=B."empID"
+		LEFT JOIN EW_PRD_TEST20240924."OHEM" AS C ON C."empID"=A."U_CREATEBY"
+		WHERE A."U_USERID"=:par1 OR A."U_CREATEBY"=:par1 ORDER BY A."Code" DESC;
+	ELSE IF :DTYPE='GetCSName' THEN
+		SELECT 
+			 "Code" AS "Code"
+			,"Code" AS "Name"
+		FROM EW_PRD_TEST20240924."@TBUSER";
+	ELSE IF :DTYPE='GetCSNameAlert' THEN
+		SELECT 
+			  IFNULL(TO_VARCHAR(A."U_EMPLOYEEID"),'') AS "Code"
+			 ,IFNULL(B."firstName",'')||' - '||IFNULL(B."lastName",'') AS "Name"
+		FROM EW_PRD_TEST20240924."@TBUSER" AS A
+		LEFT JOIN EW_PRD_TEST20240924."OHEM" AS B ON B."empID"=A."U_EMPLOYEEID";
+	ELSE IF :DTYPE='GetUomGroupByUomEntry' THEN 
+		SELECT DISTINCT
+		  	 T0."UomEntry" AS "Code"
+		  	,T1."UomName" AS "Name"
+		  FROM EW_PRD_TEST20240924."UGP1" AS T0
+		  LEFT JOIN EW_PRD_TEST20240924."OUOM" AS T1 ON T1."UomEntry"=T0."UomEntry"
+		  WHERE T0."UgpEntry"=CASE WHEN :par1='' THEN T0."UgpEntry" ELSE :par1 END ORDER BY T0."UomEntry" ASC;
+	ELSE IF :DTYPE='GetReportByUser' THEN
+		SELECT 
+			 E."Code" AS "Code"
+			,E."Name" AS "Name"
+		FROM EW_PRD_TEST20240924."@TBUSER" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TBUSER_ROLE" AS B ON B."Code"=A."U_USERROLE"
+		LEFT JOIN EW_PRD_TEST20240924."@TB_P_REPORT" AS C ON C."Code"=B."Code"
+		LEFT JOIN EW_PRD_TEST20240924."@TBREPORTHEADER" AS E ON E."Code"=C."U_ReportID"
+		WHERE A."Code"=:par1 AND E."Code" IS NOT NULL;
+	ELSE IF :DTYPE='GetReportByID' THEN
+		SELECT 
+			 A."Code" AS "Code"
+			,A."Name" AS "RerpotName"
+			,IFNULL(B."U_TitleName",'') AS "TitleName"
+			,IFNULL(B."U_ObjectID",'') AS "ObjectID"
+			,IFNULL(B."U_ObjectType",'') AS "ObjectType"
+			,IFNULL(B."U_ObjectQuery",'') AS "ObjectQuery"
+			,IFNULL(CAST(B."U_SelectionNumber" AS VARCHAR(30)),'') AS "NumberSelect"
+		FROM EW_PRD_TEST20240924."@TBREPORTHEADER" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TBREPORTROW" AS B ON A."Code"=B."Code"
+		WHERE A."Code"=:par1;
+	ELSE IF :DTYPE='GetReportViewDetailHeaderByID' THEN
+		SELECT 
+			 A."Code" AS "Code"
+			,A."Name" AS "Name"
+			,A."U_StoreName" AS "StoreName"
+			,A."U_ReportFile" AS "ReportFile"
+		FROM EW_PRD_TEST20240924."@TBREPORTHEADER" AS A
+		WHERE A."Code"=:par1;
+	ELSE IF :DTYPE='GetReportViewDetailLineByID' THEN
+		SELECT 
+			 IFNULL(B."U_TitleName",'') AS "TitleName"
+			,IFNULL(B."U_ObjectID",'') AS "ObjectID"
+			,IFNULL(B."U_ObjectType",'') AS "ObjectType"
+			,IFNULL(B."U_ObjectQuery",'') AS "Query"
+		FROM EW_PRD_TEST20240924."@TBREPORTROW" AS B
+		WHERE B."Code"=:par1;
+	ELSE IF :DTYPE='GetContainerStatusUpdate' THEN
+		SELECT 
+			 CASE WHEN C."U_TYPE"='-1' THEN 'ASSET' ELSE C."U_TYPE" END AS "Type"
+			,IFNULL(C."U_CONTAINERNO",'') AS "ContainerNo"
+			,IFNULL(C."U_CONTAINERNO2",'') AS "ContainerNo2"
+			,IFNULL(C."U_OWNER",'') AS "Owner"
+			,IFNULL(C."U_CONTAINERTYPE",'') AS "ContainerType"
+			,IFNULL(TO_VARCHAR(A."U_LOADINGDATE",'DD-MM-YYYY'),'') AS "LoadingDate"
+			,IFNULL(TO_VARCHAR(A."U_CROSSBORDERDATE",'DD-MM-YYYY'),'') AS "ETABorderDate"
+			,IFNULL(TO_VARCHAR(A."U_ETAREQUIREMENT",'DD-MM-YYYY'),'') AS "CrossBorderDate"
+			,IFNULL(A."U_EWSeries",'')||IFNULL(A."U_JOBNO",'') AS "JOBNO"
+			,IFNULL(D."Location",'') AS "TruckProvince"
+			,IFNULL(E."InventryNo",'') AS "TruckNo"
+			,IFNULL(C."U_TRAILERPROVINCE",'') AS "TrailerProvince"
+			,IFNULL(C."U_TRAILERPLATE",'') AS "TrailerNo"
+			,IFNULL(F."firstName"||' - ','')||IFNULL(F."lastName"||' / ','')||IFNULL(C."U_TPNO1",'') AS "DriverName1"
+			--,IFNULL(FF."firstName"||' - ','')||IFNULL(FF."lastName"||' / ','')||IFNULL(C."U_TPNO2",'') AS "DriverName2"
+			,IFNULL(G."U_ShortName",G."CardName") AS "Transporter"
+			,IFNULL((SELECT 
+					STRING_AGG(T1."CardName",',')
+				FROM EW_PRD_TEST20240924."@TBSHIPPER" AS T0
+				LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T1 ON T0."U_SHIPPER"=T1."CardCode"
+				WHERE T0."DocEntry"=A."DocEntry"),'') AS "Shipper"
+			,IFNULL((SELECT 
+					STRING_AGG(T1."CardName",',')
+				FROM EW_PRD_TEST20240924."@TBCONSIGNEE" AS T0
+				LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T1 ON T0."U_CONSIGNEE"=T1."CardCode"
+				WHERE T0."DocEntry"=A."DocEntry"),'') AS "Consignee"
+			,IFNULL((SELECT 
+					STRING_AGG(T1."Name",',')
+				FROM EW_PRD_TEST20240924."@PLACEOFLOADING" AS T0
+				LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS T1 ON T1."Code"=T0."U_PLACELOADING"
+				WHERE T0."DocEntry"=A."DocEntry"),'') AS "PlaceOfLoading"
+			,IFNULL((SELECT 
+					STRING_AGG(T1."Name",',')
+				FROM EW_PRD_TEST20240924."@PLACEOFDELIVERY" AS T0
+				LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS T1 ON T1."Code"=T0."U_PLACEDELIVERY"
+				WHERE T0."DocEntry"=A."DocEntry"),'') AS "PlaceOfDelivery"	
+			,IFNULL(A."U_LOLOYARDRemark",'') AS "LOLOYard"
+			,'' AS "STUFFING_UNSTUFFING"
+			,IFNULL((SELECT 
+					STRING_AGG(T0."U_INVOICE",',')
+				FROM EW_PRD_TEST20240924."@COMMODITY" AS T0
+				WHERE T0."DocEntry"=A."DocEntry"),'') AS "InvoiceNo"
+			,IFNULL((SELECT 
+					STRING_AGG(T1."CardName",',')
+				FROM EW_PRD_TEST20240924."@THAIFORWARDER" AS T0
+				LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T1 ON T1."CardCode"=T0."U_THAIFORWARDER"
+				WHERE T0."DocEntry"=A."DocEntry"),'') AS "ThaiForwarder"
+			,IFNULL((SELECT 
+					STRING_AGG(T1."CardName",',')
+				FROM EW_PRD_TEST20240924."@TBOVERSEAFORWARDER" AS T0
+				LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T1 ON T1."CardCode"=T0."U_OVERSEAFORWARDERCODE"
+				WHERE T0."DocEntry"=A."DocEntry"),'') AS "OverseaForwarder"
+			,IFNULL((SELECT 
+					STRING_AGG(T1."CardName",',')
+				FROM EW_PRD_TEST20240924."@TBOVERSEATRUCKER" AS T0
+				LEFT JOIN EW_PRD_TEST20240924."OCRD" AS T1 ON T1."CardCode"=T0."U_OVERSEATRUCKERCODE"
+				WHERE T0."DocEntry"=A."DocEntry"),'') AS "OverseaTrucker"
+			,IFNULL(I."firstName"||' - '||I."lastName",'') AS "RecordedBy"
+			--,(SELECT "OnHand" FROM EW_PRD_TEST20240924."OITM" WHERE "ItemCode"=C."U_CONTAINERNO") AS "OnHand"
+			,(SELECT "WhsCode" FROM EW_PRD_TEST20240924."OWHS" WHERE "U_TerritoryID" =A."U_ORIGIN" AND "Inactive"='N') AS "OriginCode"
+			,J."descript" AS "OriginName"
+			,(SELECT "WhsCode" FROM EW_PRD_TEST20240924."OWHS" WHERE "U_TerritoryID" =A."U_DESTINATION" AND "Inactive"='N') AS "DestinationCode"
+			,JJ."descript" AS "DestinationName"
+		FROM EW_PRD_TEST20240924."@BOOKINGSHEET" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS B ON B."DocEntry"=A."U_CONFIRMBOOKINGSHEETID" --Get Confirm Booking Sheet
+		LEFT JOIN EW_PRD_TEST20240924."@JOBSHEETRUCKING" AS BB ON BB."U_CONFIRMBOOKINGID"=B."DocEntry" AND BB."Status"='O' -- Get JobSheetTrucking
+		LEFT JOIN EW_PRD_TEST20240924."@TRUCKINFORMATION" AS C ON C."DocEntry"=B."DocEntry" -- Get Information of Truck
+		LEFT JOIN EW_PRD_TEST20240924."OLCT" AS D ON D."Code"=C."U_TRUCKPROVINCE" --Get Province Of Truck
+		LEFT JOIN EW_PRD_TEST20240924."OITM" AS E ON E."ItemCode"=C."U_TRUCKCODE" --Get Truck Number
+		LEFT JOIN EW_PRD_TEST20240924."OHEM" AS F ON F."empID"=C."U_DRIVER1" --Get Driver Name 1
+		LEFT JOIN EW_PRD_TEST20240924."OHEM" AS FF ON FF."empID"=C."U_DRIVER2" --Get Driver Name 2
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS G ON G."CardCode"=C."U_VENDORCODE" --Get Transporter
+		LEFT JOIN EW_PRD_TEST20240924."@TBUSER" AS H ON H."Code"=A."U_UserCreate"
+		LEFT JOIN EW_PRD_TEST20240924."OHEM" AS I ON I."empID"=H."U_EMPLOYEEID"	
+		LEFT JOIN EW_PRD_TEST20240924."OTER" AS J ON J."territryID"=A."U_ORIGIN" -- Get Origin Location
+		LEFT JOIN EW_PRD_TEST20240924."OTER" AS JJ ON JJ."territryID"=A."U_DESTINATION" -- Get Destination Location
+		LEFT JOIN EW_PRD_TEST20240924."ORDR" AS K ON K."DocEntry"=BB."U_SALESORDERDOCNUM"
+		WHERE IFNULL(C."U_CONTAINERNO",'')!=''
+			  AND (SELECT 
+						"OnHand"
+					FROM EW_PRD_TEST20240924."OITW"
+					WHERE "ItemCode"=C."U_CONTAINERNO" AND (SELECT "U_TerritoryID" FROM EW_PRD_TEST20240924."OWHS" WHERE "WhsCode"=OITW."WhsCode")=A."U_ORIGIN")!=0
+		AND A."U_LOADINGDATE" BETWEEN :par1 AND :par2
+		AND B."Status"='O' AND BB."DocEntry" IS NOT NULL
+		AND IFNULL(C."U_TransferStatus",'N')='N'
+		AND K."CANCELED"='N';
+	ELSE IF :DTYPE='GetListOfInventoryTransfer' THEN 
+		SELECT 
+			 CAST(A."DocEntry" AS INT) AS "DocEntry"
+			,CAST(A."DocNum" AS VARCHAR(25)) AS "DocNum"
+			,CASE WHEN B."BaseEntry" IS NOT NULL THEN 
+				'CANCEL' 
+			  WHEN (SELECT COUNT(*) FROM EW_PRD_TEST20240924."WTR1" WHERE "LineStatus"='O' AND "BaseEntry" IS NULL AND "ItemCode"=B."ItemCode")=1 THEN
+					'OPEN'
+			  ELSE
+				CASE WHEN A."DocEntry"=(SELECT CAST(MAX("DocEntry") AS NVARCHAR(30)) FROM EW_PRD_TEST20240924."WTR1" WHERE "LineStatus"='O' AND "BaseEntry" IS NULL AND "ItemCode"=B."ItemCode") THEN
+						'OPEN'
+				ELSE 'CLOSE' END
+			 END AS "Status"
+			,CAST(B."ContainerNumber" AS INT) AS "ContainerNumber"
+			,TO_VARCHAR(A."DocDate",'DD/MM/YYYY') AS "DocDate"
+			,C."U_TerritoryName" AS "Origin"
+			,D."U_TerritoryName" AS "Destination"
+			,IFNULL(A."Comments",'') AS "Remark"
+			,'' AS "IssueBy"
+		FROM EW_PRD_TEST20240924."OWTR" AS A
+		LEFT JOIN (
+			SELECT COUNT(*) AS "ContainerNumber","DocEntry","BaseEntry",MAX("ItemCode") AS "ItemCode" FROM EW_PRD_TEST20240924."WTR1" GROUP BY "DocEntry","BaseEntry"
+		) AS B ON A."DocEntry"=B."DocEntry"
+		LEFT JOIN EW_PRD_TEST20240924."OWHS" AS C ON C."WhsCode"=A."Filler" --From Warehouse
+		LEFT JOIN EW_PRD_TEST20240924."OWHS" AS D ON D."WhsCode"=A."ToWhsCode" --To Warehouse
+		WHERE A."U_WEBID" IS NOT NULL 
+		  AND A."DocEntry" NOT IN (SELECT "BaseEntry" FROM EW_PRD_TEST20240924."WTR1" WHERE "BaseEntry" IS NOT NULL)
+		 ORDER BY A."DocEntry";
+	ELSE IF :DTYPE='GetInventoryTransferDetailByDocEntry' THEN
+		SELECT 
+			 TO_VARCHAR(A."DocNum") AS "DocNum"
+			,TO_VARCHAR(A."DocDate",'DD-MM-YYYY')  AS "IssueDate"
+			,'' AS "IssueBy"
+			,IFNULL(A."Comments",'') AS "Comment"
+			,C."U_TerritoryName" AS "Origin"
+			,D."U_TerritoryName" AS "Destination"
+		FROM EW_PRD_TEST20240924."OWTR" AS  A
+		LEFT JOIN EW_PRD_TEST20240924."OWHS" AS C ON C."WhsCode"=A."Filler" --Get Origin
+		LEFT JOIN EW_PRD_TEST20240924."OWHS" AS D ON D."WhsCode"=A."ToWhsCode" --Get Destination
+		WHERE A."DocEntry"=:par1;
+	ELSE IF :DTYPE='GetInventoryTransferDetailRowByDocEntry' THEN 
+		SELECT 
+			 IFNULL(B."Project",'') AS "Project"
+			,B."ItemCode" AS "ContainerCode"
+			,C."U_TerritoryName" AS "Origin"
+			,D."U_TerritoryName" AS "Destination" 
+		FROM EW_PRD_TEST20240924."WTR1" AS B
+		LEFT JOIN EW_PRD_TEST20240924."OWHS" AS C ON C."WhsCode"=B."FromWhsCod" --Get Origin
+		LEFT JOIN EW_PRD_TEST20240924."OWHS" AS D ON D."WhsCode"=B."WhsCode" --Get Destination
+		WHERE B."DocEntry"=:par1;
+	ELSE IF :DTYPE='GetReimbursementDocEntry' THEN
+		IF :par4='ALL' THEN
+			SELECT A."Code" AS "DocEntry"
+				  ,IFNULL(A."U_DocStatus",'P') AS "DocStatus"
+				  ,IFNULL(A."U_DocStatus",'P') AS "DocStatusUpdate"
+				  ,IFNULL(C."AcctName",'') AS "AccountCode"
+				  ,B."AcctCode" AS "CardCode"
+				  ,B."AcctName" AS "CardName"
+				  ,CAST(A."U_Amount" AS double) AS "Amount"
+				  ,IFNULL(A."U_Remark",'') AS "Remark"
+				  ,IFNULL(A."U_Reason",'') AS "Reason"
+				  ,CAST(B."U_LimitAmount"-B."CurrTotal" AS double) AS "AmountLimit"
+			FROM EW_PRD_TEST20240924."@TBREIMBURSEMENT" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OACT" AS B ON B."AcctCode"=A."U_CardCode"
+			LEFT JOIN EW_PRD_TEST20240924."OACT" AS C ON C."AcctCode"=A."U_AccountCode"
+			WHERE A."Code"=CASE WHEN :par1='' THEN A."Code" ELSE :par1 END
+			AND A."U_CreateDate" BETWEEN :par2 AND :par3
+			ORDER BY A."Code" DESC;
+		ELSE IF :par4='DEFAULT' THEN
+			SELECT TOP 1000 A."Code" AS "DocEntry"
+				  ,IFNULL(A."U_DocStatus",'P') AS "DocStatus"
+				  ,IFNULL(A."U_DocStatus",'P') AS "DocStatusUpdate"
+				  ,IFNULL(C."AcctName",'') AS "AccountCode"
+				  ,B."AcctCode" AS "CardCode"
+				  ,B."AcctName" AS "CardName"
+				  ,CAST(A."U_Amount" AS double) AS "Amount"
+				  ,IFNULL(A."U_Remark",'') AS "Remark"
+				  ,IFNULL(A."U_Reason",'') AS "Reason"
+				  ,CAST(B."U_LimitAmount"-B."CurrTotal" AS double) AS "AmountLimit"
+			FROM EW_PRD_TEST20240924."@TBREIMBURSEMENT" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OACT" AS B ON B."AcctCode"=A."U_CardCode"
+			LEFT JOIN EW_PRD_TEST20240924."OACT" AS C ON C."AcctCode"=A."U_AccountCode"
+			WHERE A."Code"=CASE WHEN :par1='' THEN A."Code" ELSE :par1 END 
+			AND A."U_CreateDate" BETWEEN :par2 AND :par3
+			ORDER BY A."Code" DESC;
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GetListReimbursementApprove' THEN
+		SELECT A."Code" AS "DocEntry"
+			  ,IFNULL(C."AcctName",'') AS "AccountCode"
+			  ,B."AcctCode" AS "CardCode"
+			  ,B."AcctName" AS "CardName"
+			  ,CAST(A."U_Amount" AS double) AS "Amount"
+			  ,IFNULL(A."U_Remark",'') AS "Remark"
+			  ,IFNULL(A."U_Reason",'') AS "Reason"
+		FROM EW_PRD_TEST20240924."@TBREIMBURSEMENT" AS A
+		LEFT JOIN EW_PRD_TEST20240924."OACT" AS B ON B."AcctCode"=A."U_CardCode"
+		LEFT JOIN EW_PRD_TEST20240924."OACT" AS C ON C."AcctCode"=A."U_AccountCode"
+		WHERE IFNULL(A."U_DocStatus",'P')='P';
+	ELSE IF :DTYPE='GetEmployeeBudget' THEN
+		SELECT 
+			 IFNULL(A."U_PETTY_CASH_ACC",'') AS "AccountCode"
+			,IFNULL(B."AcctName",'') AS "AccountName"
+			,CAST(IFNULL(B."CurrTotal",0) AS double) AS "BudgetOnHand"
+			,CAST(IFNULL(B."U_LimitAmount",0) AS double) AS "BudgetLimit"
+		FROM EW_PRD_TEST20240924."OHEM" AS A
+		LEFT JOIN EW_PRD_TEST20240924."OACT" AS B ON B."AcctCode"=A."U_PETTY_CASH_ACC"
+		WHERE A."U_PETTY_CASH_ACC" IS NOT NULL;
+	ELSE IF :DTYPE='GetAccountReimbursment' THEN
+		SELECT 
+			 "AcctCode" AS "AccountCode"
+			,"AcctName" AS "AccountName"
+		FROM EW_PRD_TEST20240924."OACT" 
+		WHERE /*"FatherNum" IN (SELECT "AcctCode" FROM EW_PRD_TEST20240924."OACT" WHERE "FatherNum"='63000000')*/
+			  "AcctCode"IN('11110001');
+	ELSE IF :DTYPE='GetConfirmBookingByProjectID' THEN
+		SELECT DISTINCT
+			 B."U_VENDORCODE" AS "VendorCode"
+			,C."CardName" AS "VendorName"
+			,CAST(A."DocEntry" AS VARCHAR(30)) AS "ConfirmBookingID"
+			/*,(SELECT DISTINCT STRING_AGG("U_TRUCKPLATENO",' , ') 
+				FROM EW_PRD_TEST20240924."@TRUCKINFORMATION" AS T0 WHERE T0."DocEntry"=A."DocEntry") AS "TruckNumber"*/
+		FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TRUCKINFORMATION" AS B ON A."DocEntry"=B."DocEntry"
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=B."U_VENDORCODE"
+		LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."AbsEntry"="U_PROJECTMANAGEMENTID"
+		WHERE D."NAME"=:par1 AND "Status"='O' AND IFNULL(B."U_VENDORCODE",'')!='';
+	ELSE IF :DTYPE='GetConfirmBookingLineByProjectID' THEN
+		SELECT
+			 '01-T-1-0001' AS "ItemCode"
+			,'Transportation charges' AS "ItemName"
+			,CAST(B."U_TRUCKCOSTTHB" AS double) AS "Amount"
+			,B."LineId" AS "LineNumber"
+			,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=E."UgpEntry") AS SERVICETYPE
+			,B."U_TRUCKPLATENO" AS "TruckNumber"
+			,IFNULL(F."InventryNo"||' / ','')||IFNULL(F0."AttriTxt1",'') AS "TruckName"
+		FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TRUCKINFORMATION" AS B ON A."DocEntry"=B."DocEntry"
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=B."U_VENDORCODE"
+		LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."AbsEntry"="U_PROJECTMANAGEMENTID"
+		LEFT JOIN EW_PRD_TEST20240924."OITM" AS F ON F."ItemCode"=B."U_TRUCKPLATENO" --To Get Fixed Asset Master Data
+		LEFT JOIN EW_PRD_TEST20240924."ITM13" AS F0 ON F0."ItemCode"=F."ItemCode" --To Get Fixed Asset Master Data Trailer or Properties
+		LEFT JOIN EW_PRD_TEST20240924."OITM" AS E ON E."ItemCode"= '01-T-1-0001'
+		WHERE D."NAME"=:par1 
+			AND B."U_VENDORCODE"=:par2 
+			AND "Status"='O' 
+			AND IFNULL("U_LineStatus",'')=''
+			AND B."LineId" NOT IN (SELECT "U_CONTAINERLINEID" FROM EW_PRD_TEST20240924."@TBPURCHASEREQUEST" AS T0 WHERE T0."DocEntry"=A."DocEntry");
+	ELSE IF :DTYPE='GetConfirmBookingLineByProjectIDUpdate' THEN
+		SELECT
+			 '01-T-1-0001' AS "ItemCode"
+			,'Transportation charges' AS "ItemName"
+			,CAST(B."U_TRUCKCOSTTHB" AS double) AS "Amount"
+			,B."LineId" AS "LineNumber"
+			,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=E."UgpEntry") AS SERVICETYPE
+			,B."U_TRUCKPLATENO" AS "TruckNumber"
+			,IFNULL(F."InventryNo"||' / ','')||IFNULL(F0."AttriTxt1",'') AS "TruckName"
+		FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TRUCKINFORMATION" AS B ON A."DocEntry"=B."DocEntry"
+		LEFT JOIN EW_PRD_TEST20240924."OCRD" AS C ON C."CardCode"=B."U_VENDORCODE"
+		LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."AbsEntry"="U_PROJECTMANAGEMENTID"
+		LEFT JOIN EW_PRD_TEST20240924."OITM" AS F ON F."ItemCode"=B."U_TRUCKPLATENO" --To Get Fixed Asset Master Data
+		LEFT JOIN EW_PRD_TEST20240924."ITM13" AS F0 ON F0."ItemCode"=F."ItemCode" --To Get Fixed Asset Master Data Trailer or Properties
+		LEFT JOIN EW_PRD_TEST20240924."OITM" AS E ON E."ItemCode"= '01-T-1-0001'
+		WHERE D."NAME"=:par1 
+			AND B."U_VENDORCODE"=:par2 
+			AND "Status"='O' 
+			AND IFNULL("U_LineStatus",'')=''
+			AND B."LineId" NOT IN (SELECT "U_CONTAINERLINEID" FROM EW_PRD_TEST20240924."@TBPURCHASEREQUEST" AS T0 WHERE T0."DocEntry"=A."DocEntry")
+		UNION ALL
+		SELECT DISTINCT
+			 A."U_ItemCode" AS "ItemCode"
+			,'Transportation charges' AS "ItemName"
+			,(SELECT
+				 T0."U_TRUCKCOSTTHB"
+				FROM EW_PRD_TEST20240924."@TRUCKINFORMATION" AS T0
+				LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T1 ON T1."DocEntry"=T0."DocEntry"
+				WHERE T1."U_PROJECTMANAGEMENTID"=CASE WHEN IFNULL(C."U_Project",0)=0 THEN IFNULL(A."U_JobNumber",0)
+							 								ELSE IFNULL(C."U_Project",0) END
+					  AND "U_TRUCKCODE"=A."U_TruckNo"
+					  AND T1."Canceled"='N') AS "Amount"
+			,(SELECT
+				 T0."LineId"
+				FROM EW_PRD_TEST20240924."@TRUCKINFORMATION" AS T0
+				LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T1 ON T1."DocEntry"=T0."DocEntry"
+				WHERE T1."U_PROJECTMANAGEMENTID"=CASE WHEN IFNULL(C."U_Project",0)=0 THEN IFNULL(A."U_JobNumber",0)
+							 								ELSE IFNULL(C."U_Project",0) END
+						AND "U_TRUCKCODE"=A."U_TruckNo"
+					    AND T1."Canceled"='N') AS "LineNumber"
+			,(SELECT "OUOM"."UomCode" FROM EW_PRD_TEST20240924."OUOM" WHERE "OUOM"."UomEntry"=E."UgpEntry") AS SERVICETYPE
+			,A."U_TruckNo" AS "TruckNumber"
+			,IFNULL(F."InventryNo"||' / ','')||IFNULL(F0."AttriTxt1",'') AS "TruckName"
+		FROM EW_PRD_TEST20240924."@ADVANCEPAYMENTROW" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@ADVANCEPAYMENT" AS C ON C."DocEntry"=A."DocEntry"
+		LEFT JOIN EW_PRD_TEST20240924."OITM" AS F ON F."ItemCode"=A."U_TruckNo" --To Get Fixed Asset Master Data
+		LEFT JOIN EW_PRD_TEST20240924."ITM13" AS F0 ON F0."ItemCode"=F."ItemCode" --To Get Fixed Asset Master Data Trailer or Properties
+		LEFT JOIN EW_PRD_TEST20240924."OITM" AS E ON E."ItemCode"= A."U_ItemCode"
+		LEFT JOIN EW_PRD_TEST20240924."OPMG" AS G ON G."AbsEntry"=C."U_Project"
+		WHERE G."NAME"=:par1 AND A."U_ItemCode"='01-T-1-0001' AND C."Canceled"='N';
+	ELSE IF :DTYPE='GetStatusCancelSalesQuotation' THEN
+		IF (SELECT COUNT(*) AS "Condition" FROM EW_PRD_TEST20240924."QUT1" WHERE "DocEntry"=:par1)
+			=(SELECT COUNT("LineStatus") AS "Condition" FROM EW_PRD_TEST20240924."QUT1" WHERE "DocEntry"=:par1 AND "LineStatus"='O') THEN
+			Select 'Cancel' AS "Status" from Dummy;
+		ELSE
+			Select 'Close' AS "Status" from Dummy;
+		END IF;
+	ELSE IF :DTYPE='GetServiceTypeSeaAndAirByJobNumber' THEN
+		SELECT 
+			 B."Code" AS "Code"
+			,B."Name" AS "Name"
+		FROM EW_PRD_TEST20240924."@TBJOBTYPE" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TBSERVICETYPE" AS B ON A."Code"=B."U_JOBTYPE" 
+		WHERE A."Code"=:par1;
+	ELSE IF :DTYPE='GetAccountByEmployeeByID' THEN
+		SELECT 
+			 IFNULL(B."AcctName",'') AS "AccountName"
+			,IFNULL(B."AcctCode",'') AS "AccountCode"
+			,CAST(IFNULL(B."CurrTotal",0) AS double) AS "BudgetOnHand"
+			,CAST(IFNULL(B."U_LimitAmount",0) AS double) AS "BudgetLimit"
+		FROM EW_PRD_TEST20240924."OHEM" AS A 
+		LEFT JOIN EW_PRD_TEST20240924."OACT" AS B ON B."AcctCode"=A."U_PETTY_CASH_ACC"
+		WHERE "empID"=:par1;
+	ELSE IF :DTYPE='GETEWSERIESBYLOADINGDATE' THEN
+		SELECT TOP 1 
+			"Series" AS "GetSeries"
+		FROM EW_PRD_TEST20240924."NNM1" 
+		WHERE "ObjectCode"='BOOKINGSHEET' 
+			  AND "BeginStr"='EW' 
+			  AND "Indicator"=TO_VARCHAR(CAST(:par1 AS DATE),'yyyy-MM');
+	ELSE IF :DTYPE='CHECKINGLOADINGDATEHASCHANGEORNOT' THEN
+		SELECT 
+			TO_VARCHAR("U_LOADINGDATE",'yyyy-MM') AS "Condition"
+		FROM EW_PRD_TEST20240924."@BOOKINGSHEET" WHERE "DocEntry"=:par1;
+	ELSE IF :DTYPE='GetTruckNoByJobNo' THEN
+		IF :par1='-1' THEN
+			SELECT 
+				 A."ItemCode" AS "TruckCode"
+				,IFNULL(A."InventryNo"||' / ','')||IFNULL(B."AttriTxt1",'') AS "TruckName"
+			FROM EW_PRD_TEST20240924."OITM" AS A
+			LEFT JOIN EW_PRD_TEST20240924."ITM13" AS B ON A."ItemCode"=B."ItemCode"
+			WHERE "ItemType"='F';
+		ELSE
+			SELECT 
+				 B."ItemCode" AS "TruckCode"
+				,IFNULL(B."InventryNo"||' / ','')||IFNULL(A."U_TRAILERPLATE",'') AS "TruckName"
+			FROM EW_PRD_TEST20240924."@TRUCKINFORMATION" AS A
+			LEFT JOIN EW_PRD_TEST20240924."OITM" AS B ON B."ItemCode"=A."U_TRUCKCODE"
+			LEFT JOIN EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS C ON C."DocEntry"=A."DocEntry"
+			LEFT JOIN EW_PRD_TEST20240924."OPMG" AS D ON D."AbsEntry"=C."U_PROJECTMANAGEMENTID"
+			WHERE D."NAME"=:par1 AND IFNULL(B."ItemCode",'')!='';
+		END IF;
+	ELSE IF :DTYPE='CountingJobforDeleteFinancialProject' THEN
+		--SELECT COUNT(*) AS "Condition" FROM EW_PRD_TEST20240924."PMG4" WHERE "AbsEntry"=:par1;
+		SELECT COUNT("Condition") AS "Condition" FROM (
+			SELECT COUNT(*) AS "Condition" FROM EW_PRD_TEST20240924."PMG4" WHERE "AbsEntry"=:par1
+			UNION
+			SELECT 
+				COUNT(B."DocEntry") AS "Condition"
+			FROM EW_PRD_TEST20240924."OPMG" AS A
+			LEFT JOIN EW_PRD_TEST20240924."ADOC" AS B ON A."NAME"=B."Project"
+			WHERE B."Project" IS NOT NULL 
+			AND A."AbsEntry"=:par1
+		)AS A;
+	ELSE IF :DTYPE='CheckingExistingJobinFinancialProjectForCreateNew' THEN
+		SELECT COUNT(*) AS "Condition" FROM EW_PRD_TEST20240924."OPRJ" WHERE "PrjCode"=:par1;
+	ELSE IF :DTYPE='ListOfApproveLoadingAndDelivery' THEN
+		SELECT 
+			 CAST(A."Code" AS VARCHAR(254)) AS "DocEntry"
+			,A."U_BOOKINGID" AS "BookingID"
+			,D."U_EWSeries"||D."U_JOBNO" AS "JobNumber"
+			,IFNULL(B0."Name",'') AS "PlaceOfLoading"
+			,IFNULL(C0."Name",'') AS "LoadingOfDistrict"
+			,IFNULL(B1."Name",'') AS "PlaceOfDelivery"
+			,IFNULL(C1."Name",'') AS "DeliveryOfDistrict"
+			,CASE WHEN A."U_STATUS"='P' THEN 'Pending' 
+				  WHEN A."U_STATUS"='A' THEN 'Approve' 
+				  WHEN A."U_STATUS"='R' THEN 'Reject' 
+			 END AS "Status"
+			,A."U_CreateBy" AS "CreateBy"
+		FROM EW_PRD_TEST20240924."@TB_PLACE_L_D" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS B0 ON B0."Code"=A."U_PLACEOFLOADING" --Get Place Of Loading
+		LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS B1 ON B1."Code"=A."U_PLACEOFDELIVERY" --Get Place Of Delivery
+		LEFT JOIN EW_PRD_TEST20240924."@TBDISTRICT" AS C0 ON C0."Code"=A."U_DISTRICTOFLOADING" --Get Loading Of District
+		LEFT JOIN EW_PRD_TEST20240924."@TBDISTRICT" AS C1 ON C1."Code"=A."U_DISTRICTOFDELIVERY" --Get Loading Of District
+		LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS D ON D."DocEntry"=A."U_BOOKINGID"
+		WHERE A."CreateDate" BETWEEN :par1 AND :par2;
+	ELSE IF :DTYPE='GetDataInformationPlaceOfLoadingDate' THEN
+		SELECT 
+			 TO_VARCHAR(A."Code") AS "DocEntry"
+			,A."U_BOOKINGID" AS "BookingID"
+			,D0."U_EWSeries"||D0."U_JOBNO" AS "JobNumber"
+			,IFNULL(B0."Name",'') AS "PlaceOfLoading"
+			,IFNULL(C0."Name",'') AS "LoadingOfDistrict"
+			,IFNULL(B1."Name",'') AS "PlaceOfDelivery"
+			,IFNULL(C1."Name",'') AS "DeliveryOfDistrict"
+			,CASE WHEN A."U_STATUS"='P' THEN 'Pending' 
+				  WHEN A."U_STATUS"='A' THEN 'Approve' 
+				  WHEN A."U_STATUS"='R' THEN 'Reject' 
+			 END AS "Status"
+			,IFNULL(E0."Name",'') AS "PlaceOfLoadingCurrent"
+			,IFNULL(E1."Name",'') AS "PlaceOfDeliveryCurrent"
+			,IFNULL(F0."Name",'') AS "LoadingDistrictCurrenct"
+			,IFNULL(F1."Name",'') AS "DeliveryDistrictCurrenct"
+			,A."U_CreateBy" AS "CreateBy"
+		FROM EW_PRD_TEST20240924."@TB_PLACE_L_D" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS B0 ON B0."Code"=A."U_PLACEOFLOADING" --Get Place Of Loading
+		LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS B1 ON B1."Code"=A."U_PLACEOFDELIVERY" --Get Place Of Delivery
+		LEFT JOIN EW_PRD_TEST20240924."@TBDISTRICT" AS C0 ON C0."Code"=A."U_DISTRICTOFLOADING" --Get Loading Of District
+		LEFT JOIN EW_PRD_TEST20240924."@TBDISTRICT" AS C1 ON C1."Code"=A."U_DISTRICTOFDELIVERY" --Get Loading Of District
+		LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS D0 ON D0."DocEntry"=A."U_BOOKINGID" -- GET BOOKING INFORMATION HEADER
+		LEFT JOIN EW_PRD_TEST20240924."@PLACEOFLOADING" AS D1 ON D1."DocEntry"=D0."DocEntry" --Get Place Of Loading BookingSheet
+		LEFT JOIN EW_PRD_TEST20240924."@PLACEOFDELIVERY" AS D2 ON D2."DocEntry"=D0."DocEntry" --Get Place Of Delivery BookingSheet
+		LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS E0 ON E0."Code"=D1."U_PLACELOADING" --Get Place OF LOading InFormation
+		LEFT JOIN EW_PRD_TEST20240924."@TBPLACEOFLOADING" AS E1 ON E1."Code"=D2."U_PLACEDELIVERY" --Get Place OF LOading InFormation
+		LEFT JOIN EW_PRD_TEST20240924."@TBDISTRICT" AS F0 ON F0."Code"=D1."U_District" --Get District Of Loading Information of BookingSheet
+		LEFT JOIN EW_PRD_TEST20240924."@TBDISTRICT" AS F1 ON F1."Code"=D2."U_District" --Get District Of Delivery Information of BookingSheet
+		WHERE A."Code"=:par1 AND A."U_BOOKINGID"=:par2;
+	ELSE IF :DTYPE='GetPlaceOfLoadingCheckingUpdateValue' THEN
+		SELECT 
+			IFNULL("U_PLACELOADING",'') AS "PlaceOfLoading"
+		FROM EW_PRD_TEST20240924."@PLACEOFLOADING"
+		WHERE "DocEntry"=:par1;
+	ELSE IF :DTYPE='GetPlaceOfLoadingDistrictCheckingUpdateValue' THEN
+		SELECT 
+			IFNULL("U_District",'') AS "LoadingOfDistrict"
+		FROM EW_PRD_TEST20240924."@PLACEOFLOADING"
+		WHERE "DocEntry"=:par1;
+	ELSE IF :DTYPE='GetPlaceOfDeliveryCheckingUpdateValue' THEN
+		SELECT 
+			IFNULL("U_PLACELOADING",'') AS "PlaceOfDelivery"
+		FROM EW_PRD_TEST20240924."@PLACEOFLOADING"
+		WHERE "DocEntry"=:par1;
+	ELSE IF :DTYPE='GetPlaceOfDeliveryDistrictCheckingUpdateValue' THEN
+		SELECT 
+			IFNULL("U_District",'') AS "DeliveryOfDistrict"
+		FROM EW_PRD_TEST20240924."@PLACEOFLOADING"
+		WHERE "DocEntry"=:par1;
+	ELSE IF :DTYPE='GetDataPlaceOfLoadingAndDeliveryApprove' THEN
+		SELECT 
+			 TO_VARCHAR(A."Code") AS "DocEntry"
+			,A."U_BOOKINGID" AS "BookingID"
+			,D0."U_EWSeries"||D0."U_JOBNO" AS "JobNumber"
+			,IFNULL(A."U_PLACEOFLOADING",'') AS "PlaceOfLoading"
+			,IFNULL(A."U_DISTRICTOFLOADING",'') AS "LoadingOfDistrict"
+			,IFNULL(A."U_PLACEOFDELIVERY",'') AS "PlaceOfDelivery"
+			,IFNULL(A."U_DISTRICTOFDELIVERY",'') AS "DeliveryOfDistrict"
+			,A."U_CreateBy" AS "CreateBy"
+		FROM EW_PRD_TEST20240924."@TB_PLACE_L_D" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS D0 ON D0."DocEntry"=A."U_BOOKINGID" -- GET BOOKING INFORMATION HEADER
+		WHERE A."Code"=:par1 AND A."U_BOOKINGID"=:par2;
+	ELSE IF :DTYPE='GetExchangeRateByLoadingDate' THEN
+		SELECT 
+			"Rate" AS "ExchangeRate"
+		FROM EW_PRD_TEST20240924."ORTT"
+		WHERE "RateDate"=(SELECT "U_LOADINGDATE" 
+							FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS T0
+							LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS T1 ON T1."DocEntry"=T0."U_BOOKINGID"
+							WHERE T0."DocEntry"=:par1 AND T0."Status"='O' AND T1."Status"='O')
+			  AND "Currency"=:par2;
+	ELSE IF :DTYPE='GetPaymentTerm' THEN
+		SELECT 
+			 TO_VARCHAR("UomEntry") AS "Code"
+			,TO_VARCHAR("UomCode") AS "Name"
+		FROM EW_PRD_TEST20240924."OUOM";
+	ELSE IF :DTYPE='GetJobSheetTruckingDetailLineByDocEntry' THEN
+		SELECT DISTINCT
+			 IFNULL(C."ItemCode",'') AS "ItemCode"
+			,IFNULL(C."ItemName",'') AS "ItemName"
+			,CAST(IFNULL(B."U_TOTALPRICE",0) AS double) AS "PriceCosting"
+			,CAST(IFNULL(B."U_Qty",0) As int) AS "QtyCosting"
+			,CAST(IFNULL(A."U_TOTALPRICE",0) AS double) AS "PriceSelling"			
+			,CAST(IFNULL(A."U_Qty",0) AS INT) AS "QtySelling"
+			,TO_VARCHAR(A."U_ContainerType") AS "UomCodeList"
+			,A."U_LineNum" AS "LineNum"
+			,A."U_ItemType" AS "ItemType"
+			,A."LineId"
+		FROM EW_PRD_TEST20240924."@JOBTRUCKINGSELLING" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@JOBTRUCKCOSTING" AS B ON A."DocEntry"=B."DocEntry" AND A."LineId"=B."LineId"
+		LEFT JOIN EW_PRD_TEST20240924."OITM" AS C ON C."ItemCode"=A."U_ITEMCODE"
+		WHERE A."DocEntry"=:par1 ORDER BY A."LineId";
+	ELSE IF :DTYPE='GetCurrencyByCardCodeJobSheetTrucking' THEN
+		IF(SELECT "Currency" FROM EW_PRD_TEST20240924."OCRD" WHERE "CardCode"=:par1)='##' THEN
+			SELECT 
+				 A."CurrCode" AS "CurrencyCode"
+				,B."CurrCode" AS "CurrencyName"
+				,IFNULL(C."Rate",0) AS "ExchangeRateSystemCurrency" --USS
+				,IFNULL(CC."Rate",0) AS "ExchangeRateLocalCurrency" --THS
+				,IFNULL(CCC."Rate",0) AS "EXCHANGERATE" --Base Currency
+				,A."Locked" AS "Defualt"
+			FROM EW_PRD_TEST20240924."CRD13" AS A
+			LEFT JOIN (
+				SELECT 
+					B."U_LOADINGDATE" AS "LoadingDateRate"
+				FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS A 
+				LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS B ON B."DocEntry"=A."U_BOOKINGID" 
+				WHERE A."DocEntry"=:par2
+			) AS Z ON 1=1
+			LEFT JOIN EW_PRD_TEST20240924."OCRN" AS B ON A."CurrCode"=B."CurrCode"
+			LEFT JOIN EW_PRD_TEST20240924."ORTT" AS C ON C."Currency"='USS' AND C."RateDate"=Z."LoadingDateRate" --USD
+			LEFT JOIN EW_PRD_TEST20240924."ORTT" AS CC ON CC."Currency"='THB' AND CC."RateDate"=Z."LoadingDateRate" --THB
+			LEFT JOIN EW_PRD_TEST20240924."ORTT" AS CCC ON CCC."Currency"=A."CurrCode" AND CCC."RateDate"=Z."LoadingDateRate" --Currency Base
+			WHERE "CardCode"=CASE WHEN :par1='' THEN "CardCode" ELSE :par1 END AND A."INCLUDE"='Y';--AND RIGHT(B."CurrCode",1)!='S';
+		ELSE
+			IF :par1='' THEN
+				SELECT
+					 B."CurrCode" AS "CurrencyCode"
+					,B."ChkName" AS "CurrencyName"
+					,IFNULL(C."Rate",0) AS "ExchangeRateSystemCurrency" --USS
+					,IFNULL(CC."Rate",0) AS "ExchangeRateLocalCurrency" --THS
+					,IFNULL(CCC."Rate",0) AS "EXCHANGERATE" --Base Currency
+					,'N' AS "Defualt"
+				FROM EW_PRD_TEST20240924."OCRN" AS B 
+				LEFT JOIN (
+					SELECT 
+						B."U_LOADINGDATE" AS "LoadingDateRate"
+					FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS A 
+					LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS B ON B."DocEntry"=A."U_BOOKINGID" 
+					WHERE A."DocEntry"=:par2
+				) AS Z ON 1=1
+				LEFT JOIN EW_PRD_TEST20240924."ORTT" AS C ON C."Currency"='USS' AND C."RateDate"=Z."LoadingDateRate" --USD
+				LEFT JOIN EW_PRD_TEST20240924."ORTT" AS CC ON CC."Currency"='THB' AND CC."RateDate"=Z."LoadingDateRate" --THB
+				LEFT JOIN EW_PRD_TEST20240924."ORTT" AS CCC ON CCC."Currency"=B."CurrCode" AND CCC."RateDate"=Z."LoadingDateRate" --Currency Base
+				WHERE RIGHT(B."CurrCode",1)!='S'
+				UNION ALL
+				SELECT   '##' AS "CurrencyCode"
+						,'All Currencies' AS "CurrencyName" 
+						,0.00 AS "ExchangeRateSystemCurrency" --USS
+						,0.00 AS "ExchangeRateLocalCurrency" --THS
+						,0.00 AS "EXCHANGERATE"
+						,'Y' AS "Defualt"
+				FROM DUMMY;
+			ELSE
+				SELECT
+					 A."Currency" AS "CurrencyCode"
+					,B."ChkName" AS "CurrencyName"
+					,IFNULL(C."Rate",0) AS "ExchangeRateSystemCurrency" --USS
+					,IFNULL(CC."Rate",0) AS "ExchangeRateLocalCurrency" --THS
+					,IFNULL(CASE WHEN A."Currency"='THS' THEN 1 ELSE CCC."Rate" END,0) AS "EXCHANGERATE"
+					,'Y' AS "Defualt"
+				FROM EW_PRD_TEST20240924."OCRD" AS A
+				LEFT JOIN (
+					SELECT 
+						B."U_LOADINGDATE" AS "LoadingDateRate"
+					FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS A 
+					LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS B ON B."DocEntry"=A."U_BOOKINGID" 
+					WHERE A."DocEntry"=:par2
+				) AS Z ON 1=1
+				LEFT JOIN EW_PRD_TEST20240924."OCRN" AS B ON A."Currency"=B."CurrCode"
+				LEFT JOIN EW_PRD_TEST20240924."ORTT" AS C ON C."Currency"='USS' AND C."RateDate"=Z."LoadingDateRate" --C."Currency"
+				LEFT JOIN EW_PRD_TEST20240924."ORTT" AS CC ON CC."Currency"='THB' AND CC."RateDate"=Z."LoadingDateRate"
+				LEFT JOIN EW_PRD_TEST20240924."ORTT" AS CCC ON CCC."Currency"=A."Currency" AND CCC."RateDate"=Z."LoadingDateRate" --Currency Base
+				WHERE "CardCode"=:par1 ;--AND RIGHT(B."CurrCode",1)!='S';
+			END IF;
+		END IF;
+	ELSE IF :DTYPE='GetCurrencyByCardCodeJobSheetTruckingCBT' THEN
+		IF(SELECT "Currency" FROM EW_PRD_TEST20240924."OCRD" WHERE "CardCode"=:par1)='##' THEN
+			SELECT 
+				 A."CurrCode" AS "CurrencyCode"
+				,B."CurrCode" AS "CurrencyName"
+				,IFNULL(C."Rate",0) AS "ExchangeRateSystemCurrency" --USS
+				,IFNULL(CC."Rate",0) AS "ExchangeRateLocalCurrency" --THS
+				,IFNULL(CCC."Rate",0) AS "EXCHANGERATE" --Base Currency
+				,A."Locked" AS "Defualt"
+			FROM EW_PRD_TEST20240924."CRD13" AS A
+			LEFT JOIN (
+				SELECT 
+					B."U_LOADINGDATE" AS "LoadingDateRate"
+				FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS A 
+				LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS B ON B."DocEntry"=A."U_BOOKINGID" 
+				WHERE A."DocEntry"=:par2
+			) AS Z ON 1=1
+			LEFT JOIN EW_PRD_TEST20240924."OCRN" AS B ON A."CurrCode"=B."CurrCode"
+			LEFT JOIN EW_PRD_TEST20240924."ORTT" AS C ON C."Currency"='USS' AND C."RateDate"=Z."LoadingDateRate" --USD
+			LEFT JOIN EW_PRD_TEST20240924."ORTT" AS CC ON CC."Currency"='THB' AND CC."RateDate"=Z."LoadingDateRate" --THB
+			LEFT JOIN EW_PRD_TEST20240924."ORTT" AS CCC ON CCC."Currency"=A."CurrCode" AND CCC."RateDate"=Z."LoadingDateRate" --Currency Base
+			WHERE "CardCode"=CASE WHEN :par1='' THEN "CardCode" ELSE :par1 END AND A."INCLUDE"='Y';--AND RIGHT(B."CurrCode",1)!='S';
+		ELSE
+			IF :par1='' THEN
+				SELECT
+					 B."CurrCode" AS "CurrencyCode"
+					,B."ChkName" AS "CurrencyName"
+					,IFNULL(C."Rate",0) AS "ExchangeRateSystemCurrency" --USS
+					,IFNULL(CC."Rate",0) AS "ExchangeRateLocalCurrency" --THS
+					,IFNULL(CCC."Rate",0) AS "EXCHANGERATE" --Base Currency
+					,'N' AS "Defualt"
+				FROM EW_PRD_TEST20240924."OCRN" AS B 
+				LEFT JOIN (
+					SELECT 
+						B."U_LOADINGDATE" AS "LoadingDateRate"
+					FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS A 
+					LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS B ON B."DocEntry"=A."U_BOOKINGID" 
+					WHERE A."DocEntry"=:par2
+				) AS Z ON 1=1
+				LEFT JOIN EW_PRD_TEST20240924."ORTT" AS C ON C."Currency"='USS' AND C."RateDate"=Z."LoadingDateRate" --USD
+				LEFT JOIN EW_PRD_TEST20240924."ORTT" AS CC ON CC."Currency"='THB' AND CC."RateDate"=Z."LoadingDateRate" --THB
+				LEFT JOIN EW_PRD_TEST20240924."ORTT" AS CCC ON CCC."Currency"=B."CurrCode" AND CCC."RateDate"=Z."LoadingDateRate" --Currency Base
+				WHERE RIGHT(B."CurrCode",1)!='S'
+				UNION ALL
+				SELECT   '##' AS "CurrencyCode"
+						,'All Currencies' AS "CurrencyName" 
+						,0.00 AS "ExchangeRateSystemCurrency" --USS
+						,0.00 AS "ExchangeRateLocalCurrency" --THS
+						,0.00 AS "EXCHANGERATE"
+						,'Y' AS "Defualt"
+				FROM DUMMY;
+			ELSE
+				SELECT
+					 A."Currency" AS "CurrencyCode"
+					,B."ChkName" AS "CurrencyName"
+					,IFNULL(C."Rate",0) AS "ExchangeRateSystemCurrency" --USS
+					,IFNULL(CC."Rate",0) AS "ExchangeRateLocalCurrency" --THS
+					,IFNULL(CASE WHEN A."Currency"='THS' THEN 1 ELSE CCC."Rate" END,0) AS "EXCHANGERATE"
+					,'Y' AS "Defualt"
+				FROM EW_PRD_TEST20240924."OCRD" AS A
+				LEFT JOIN (
+					SELECT 
+						B."U_LOADINGDATE" AS "LoadingDateRate"
+					FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS A 
+					LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS B ON B."DocEntry"=A."U_BOOKINGID" 
+					WHERE A."DocEntry"=:par2
+				) AS Z ON 1=1
+				LEFT JOIN EW_PRD_TEST20240924."OCRN" AS B ON A."Currency"=B."CurrCode"
+				LEFT JOIN EW_PRD_TEST20240924."ORTT" AS C ON C."Currency"='USS' AND C."RateDate"=Z."LoadingDateRate" --C."Currency"
+				LEFT JOIN EW_PRD_TEST20240924."ORTT" AS CC ON CC."Currency"='THB' AND CC."RateDate"=Z."LoadingDateRate"
+				LEFT JOIN EW_PRD_TEST20240924."ORTT" AS CCC ON CCC."Currency"=A."Currency" AND CCC."RateDate"=Z."LoadingDateRate" --Currency Base
+				WHERE "CardCode"=:par1 ;--AND RIGHT(B."CurrCode",1)!='S';
+			END IF;
+		END IF;
+	ELSE IF :DTYPE='GetCheckingRefInvPR' THEN
+		IF (SELECT COUNT(*) FROM EW_PRD_TEST20240924."@ADVANCEPAYMENTROW" WHERE "U_RefInv"=:par1 AND IFNULL("U_RefInv",'')!='')<>0 THEN
+			SELECT CAST(99 AS INT) AS "MessageCode",:par1||' is existing in Other PR' AS "Message" FROM DUMMY;
+		ELSE
+			SELECT CAST(0 AS INT) AS "MessageCode",'' AS "Message" FROM DUMMY;
+		END IF;
+	ELSE IF :DTYPE='GetSeriesDocNumPurchaseOrderByIssueDate' THEN
+		SELECT TOP 1
+			 TO_VARCHAR(A."Series") AS SERIES
+		FROM EW_PRD_TEST20240924."NNM1" AS A
+		WHERE A."Indicator" IN (SELECT "Indicator" 
+									FROM EW_PRD_TEST20240924."OFPR" AS A 
+								WHERE TO_VARCHAR(A."F_RefDate", 'YYYY/MM')=TO_VARCHAR(:par1, 'YYYY/MM'))
+		AND A."ObjectCode"='22' ;
+	ELSE IF :DTYPE='GetSeriesDocNumPurchaseRequestByIssueDate' THEN
+		SELECT TOP 1
+			 TO_VARCHAR(A."Series") AS SERIES
+		FROM EW_PRD_TEST20240924."NNM1" AS A
+		WHERE A."Indicator" IN (SELECT "Indicator" 
+									FROM EW_PRD_TEST20240924."OFPR" AS A 
+								WHERE TO_VARCHAR(A."F_RefDate", 'YYYY/MM')=TO_VARCHAR(:par1, 'YYYY/MM'))
+		AND A."ObjectCode"='1470000113' ;
+	ELSE IF :DTYPE='GetSeriesARCreditNoteByType' THEN
+		IF :par1='CreditNote' THEN
+			SELECT TOP 1
+				TO_VARCHAR(A."Series") AS SERIES
+			FROM EW_PRD_TEST20240924."NNM1" AS A
+			WHERE A."Indicator" IN (SELECT "Indicator" 
+										FROM EW_PRD_TEST20240924."OFPR" AS A 
+									WHERE TO_VARCHAR(A."F_RefDate", 'YYYY/MM')=TO_VARCHAR(:par2, 'YYYY/MM'))
+			AND A."ObjectCode"='14' 
+			AND A."BeginStr"='CN';
+		ELSE IF :par1='DebitNote' THEN
+			SELECT TOP 1
+				TO_VARCHAR(A."Series") AS SERIES
+			FROM EW_PRD_TEST20240924."NNM1" AS A
+			WHERE A."Indicator" IN (SELECT "Indicator" 
+										FROM EW_PRD_TEST20240924."OFPR" AS A 
+									WHERE TO_VARCHAR(A."F_RefDate", 'YYYY/MM')=TO_VARCHAR(:par2, 'YYYY/MM'))
+			AND A."ObjectCode"='14' 
+			AND A."BeginStr"='DN';
+		END IF;
+		END IF;
+	ELSE IF :DTYPE='GetMaxLineNumInPOForSettlement' THEN
+		SELECT 
+			MAX("LineNum") AS "DocEntry" 
+		FROM EW_PRD_TEST20240924."POR1" WHERE "DocEntry"=:par1;
+	ELSE IF :DTYPE='GetWTAmount' THEN
+		SELECT 
+			Count(*) AS "WTCount" 
+		FROM EW_PRD_TEST20240924."INV5" 
+		WHERE "AbsEntry"=:par1;
+	ELSE IF :DTYPE='GetCurrencyFromSalesQuotation' THEN
+		SELECT 
+			Count(*) AS "WTCount" 
+		FROM EW_PRD_TEST20240924."INV5" 
+		WHERE "AbsEntry"=:par1;
+	ELSE IF :DTYPE='GetCurrencyByDocEntrySalesQuotation' THEN
+		SELECT 
+			"DocCur" AS "SalesQuotationCurrency" 
+		FROM EW_PRD_TEST20240924."OQUT" 
+		WHERE "DocEntry"=:par1;
+	ELSE IF :DTYPE='GetLoadingDate' THEN
+		SELECT 
+			TO_VARCHAR(B."U_LOADINGDATE",'yyyy-MM-dd') AS "LoadingDate"
+		FROM EW_PRD_TEST20240924."@CONFIRMBOOKINGSHEET" AS A
+		LEFT JOIN EW_PRD_TEST20240924."@BOOKINGSHEET" AS B ON B."DocEntry"=A."U_BOOKINGID"
+		WHERE A."DocEntry"=:par1;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;	
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;	
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+	END IF;
+END;

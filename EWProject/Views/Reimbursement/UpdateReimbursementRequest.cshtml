@@ -1,0 +1,106 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model Client.Models.Response.ListMasterReimbursementRequest
+<div class="row">
+    <div class="col-6">
+    </div>
+    <div class="col-6">
+        <div style="float:right">
+            <h2>@localizer["Update Reimbursement"]</h2>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Employee Name"]
+            </div>
+            <div class="col-9">
+                <select class="form-control" multiple="multiple" id="txtEmployeeCode">
+                    @foreach (var a in Model.GetEmployeeBudgets)
+                    {
+                        if (@a.AccountCode == Model.GetReimbursementRequestsByDocEntry.CardCode)
+                        {
+                            <option selected value="@a.AccountCode">@a.AccountName</option>
+                        }
+                        else
+                        {
+                            <option value="@a.AccountCode">@a.AccountName</option>
+                        }                        
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                @localizer["Amount"]
+            </div>
+            <div class="col-9">
+                <input type="number" class="form-control" value="@Model.GetReimbursementRequestsByDocEntry.Amount" id="txtAmountRequest">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">@localizer["Remarks"]</div>
+    <div class="col-6"></div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <textarea id="txtRemark" rows="4" class="form-control">@Model.GetReimbursementRequestsByDocEntry.Remark</textarea>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-6">
+    </div>
+    <div class="col-6">
+        <button class="btn" id="btnConfirmTransaction" onclick="onConfirmTransaction('@Url.Action("PutReimbursementReques","Reimbursement")','@Url.Action("ViewDetailReimbursementByDocEntry","Reimbursement")')" style="float:right;background-color:#01295C;color:white"> Confirm Transaction</button>
+    </div>
+</div>
+@section scripts{
+    <script>
+        //Sales Quotation
+        $("#txtEmployeeCode").select2({
+            placeholder: "Select list Employee",
+            maximumSelectionLength: 1
+        });
+        function onConfirmTransaction(url, urlPDF) {
+            if ($("#txtEmployeeCode").val()[0] === undefined) {
+                alert("Please Select Employee Code!")
+                return;
+            } else if ($("#txtAmountRequest").val() === "" || $("#txtAmountRequest").val() <= 0) {
+                alert("Please Enter Amount!")
+                return;
+            } else if (confirm("Are you sure to confrim this transaction?")) {
+                var reimbursementrequest = {};
+                reimbursementrequest.CardCode = $("#txtEmployeeCode").val()[0];
+                reimbursementrequest.Amount = $("#txtAmountRequest").val();
+                reimbursementrequest.Remark = $("#txtRemark").val();
+                reimbursementrequest.DocEntry = '@Model.GetReimbursementRequestsByDocEntry.DocEntry';
+                $.ajax({
+                    url: url,
+                    type: "PUT",
+                    data: { reimbursementrequest: reimbursementrequest },
+                    dataType: "JSON",
+                    beforeSend: function () {
+                        $('#Modalloder').modal('show');
+                    },
+                    success: function (data) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html("Success");
+                        window.location.href = urlPDF + "?docEntry=" + data.docEntry;
+                    },
+                    error: function (erro) {
+                        $('#Modalloder').modal('hide');
+                        $('#ModalSuccess').modal('show');
+                        $('#ErrMsg').html(erro.responseText);
+                    }
+                });
+            }
+        }
+    </script>
+}

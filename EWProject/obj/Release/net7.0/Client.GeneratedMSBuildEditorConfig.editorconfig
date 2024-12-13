@@ -1,0 +1,611 @@
+is_global = true
+build_property.TargetFramework = net7.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = Client
+build_property.RootNamespace = Client
+build_property.ProjectDir = C:\Users\kimleang\RiderProjects\EW_PROnWeb_WebApp_SAP10PL0_HANA\EWProject\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 7.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\kimleang\RiderProjects\EW_PROnWeb_WebApp_SAP10PL0_HANA\EWProject
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/AdvancePayment/AddEmployeeClearingAdvance.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWR2YW5jZVBheW1lbnRcQWRkRW1wbG95ZWVDbGVhcmluZ0FkdmFuY2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/AdvancePayment/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWR2YW5jZVBheW1lbnRcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/AdvancePayment/ListAdvancePayment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWR2YW5jZVBheW1lbnRcTGlzdEFkdmFuY2VQYXltZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/AdvancePayment/ListApprovalAdvancePayment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWR2YW5jZVBheW1lbnRcTGlzdEFwcHJvdmFsQWR2YW5jZVBheW1lbnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/AdvancePayment/ListEmployeeClearingAdvancePayment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWR2YW5jZVBheW1lbnRcTGlzdEVtcGxveWVlQ2xlYXJpbmdBZHZhbmNlUGF5bWVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/AdvancePayment/ViewDetailAdvancePayment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWR2YW5jZVBheW1lbnRcVmlld0RldGFpbEFkdmFuY2VQYXltZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ApprovePlaceOfLoadingAndDelivery/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXBwcm92ZVBsYWNlT2ZMb2FkaW5nQW5kRGVsaXZlcnlcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ApprovePlaceOfLoadingAndDelivery/Modal/ModalViewDocumentApprove.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXBwcm92ZVBsYWNlT2ZMb2FkaW5nQW5kRGVsaXZlcnlcTW9kYWxcTW9kYWxWaWV3RG9jdW1lbnRBcHByb3ZlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ApprovePurchaseRequest/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXBwcm92ZVB1cmNoYXNlUmVxdWVzdFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ApprovePurchaseRequest/Modal/ModalViewDocumentApprove.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXBwcm92ZVB1cmNoYXNlUmVxdWVzdFxNb2RhbFxNb2RhbFZpZXdEb2N1bWVudEFwcHJvdmUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ApprovePurchaseRequest/Modal/ModalViewDocumentApproveCommission.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXBwcm92ZVB1cmNoYXNlUmVxdWVzdFxNb2RhbFxNb2RhbFZpZXdEb2N1bWVudEFwcHJvdmVDb21taXNzaW9uLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/BookingSheetSeaAndAir/EditBookingSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1NoZWV0U2VhQW5kQWlyXEVkaXRCb29raW5nU2hlZXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/BookingSheetSeaAndAir/EditBookingSheetCommodities.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1NoZWV0U2VhQW5kQWlyXEVkaXRCb29raW5nU2hlZXRDb21tb2RpdGllcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/BookingSheetSeaAndAir/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1NoZWV0U2VhQW5kQWlyXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/BookingSheetSeaAndAir/ListBookingSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1NoZWV0U2VhQW5kQWlyXExpc3RCb29raW5nU2hlZXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/BookingSheetSeaAndAir/ViewDetailBookingSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1NoZWV0U2VhQW5kQWlyXFZpZXdEZXRhaWxCb29raW5nU2hlZXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/BookingSheet/EditBookingSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1NoZWV0XEVkaXRCb29raW5nU2hlZXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/BookingSheet/EditBookingSheetCommodities.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1NoZWV0XEVkaXRCb29raW5nU2hlZXRDb21tb2RpdGllcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/BookingSheet/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1NoZWV0XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/BookingSheet/ListBookingSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1NoZWV0XExpc3RCb29raW5nU2hlZXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/BookingSheet/ListSalesQuotation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1NoZWV0XExpc3RTYWxlc1F1b3RhdGlvbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/BookingSheet/Modal/ModalCO.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1NoZWV0XE1vZGFsXE1vZGFsQ08uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/BookingSheet/Modal/ModalConsignee.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1NoZWV0XE1vZGFsXE1vZGFsQ29uc2lnbmVlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/BookingSheet/Modal/ModalShipper.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1NoZWV0XE1vZGFsXE1vZGFsU2hpcHBlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/BookingSheet/ViewDetailBookingSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1NoZWV0XFZpZXdEZXRhaWxCb29raW5nU2hlZXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheetSeaAndAir/EditConfirmBookingSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFNlYUFuZEFpclxFZGl0Q29uZmlybUJvb2tpbmdTaGVldC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheetSeaAndAir/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFNlYUFuZEFpclxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheetSeaAndAir/ListBookingSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFNlYUFuZEFpclxMaXN0Qm9va2luZ1NoZWV0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheetSeaAndAir/ListOfConfirmBookingSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFNlYUFuZEFpclxMaXN0T2ZDb25maXJtQm9va2luZ1NoZWV0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheetSeaAndAir/Modal/ModalContainer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFNlYUFuZEFpclxNb2RhbFxNb2RhbENvbnRhaW5lci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheetSeaAndAir/Modal/ModalCostType.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFNlYUFuZEFpclxNb2RhbFxNb2RhbENvc3RUeXBlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheetSeaAndAir/Modal/ModalEmployee.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFNlYUFuZEFpclxNb2RhbFxNb2RhbEVtcGxveWVlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheetSeaAndAir/Modal/ModalTruck.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFNlYUFuZEFpclxNb2RhbFxNb2RhbFRydWNrLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheetSeaAndAir/Modal/ModalVendor.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFNlYUFuZEFpclxNb2RhbFxNb2RhbFZlbmRvci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheetSeaAndAir/ViewDetailConfirmBookingSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFNlYUFuZEFpclxWaWV3RGV0YWlsQ29uZmlybUJvb2tpbmdTaGVldC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheet/EditConfirmBookingSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFxFZGl0Q29uZmlybUJvb2tpbmdTaGVldC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheet/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheet/ListBookingSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFxMaXN0Qm9va2luZ1NoZWV0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheet/ListConfirmBookingSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFxMaXN0Q29uZmlybUJvb2tpbmdTaGVldC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheet/Modal/ModalContainer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFxNb2RhbFxNb2RhbENvbnRhaW5lci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheet/Modal/ModalCostType.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFxNb2RhbFxNb2RhbENvc3RUeXBlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheet/Modal/ModalEmployee.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFxNb2RhbFxNb2RhbEVtcGxveWVlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheet/Modal/ModalTruck.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFxNb2RhbFxNb2RhbFRydWNrLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheet/Modal/ModalVendor.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFxNb2RhbFxNb2RhbFZlbmRvci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/ConfirmBookingSheet/ViewDetailConfirmBookingSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlybUJvb2tpbmdTaGVldFxWaWV3RGV0YWlsQ29uZmlybUJvb2tpbmdTaGVldC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Container/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udGFpbmVyXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Container/ListContainer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udGFpbmVyXExpc3RDb250YWluZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Container/ViewDetailContainer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udGFpbmVyXFZpZXdEZXRhaWxDb250YWluZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/CreditNote/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlZGl0Tm90ZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/CreditNote/ListCreditNote.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlZGl0Tm90ZVxMaXN0Q3JlZGl0Tm90ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/CreditNote/Modal/ModalSelectAdvancePayment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlZGl0Tm90ZVxNb2RhbFxNb2RhbFNlbGVjdEFkdmFuY2VQYXltZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/CreditNote/ViewDetailARCreditMemo.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlZGl0Tm90ZVxWaWV3RGV0YWlsQVJDcmVkaXRNZW1vLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/CreditSeaAir/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlZGl0U2VhQWlyXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/CreditSeaAir/ListCredit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlZGl0U2VhQWlyXExpc3RDcmVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/CreditSeaAir/Modal/ModalSelectAdvancePayment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlZGl0U2VhQWlyXE1vZGFsXE1vZGFsU2VsZWN0QWR2YW5jZVBheW1lbnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/CreditSeaAir/ViewDetailCreditNote.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlZGl0U2VhQWlyXFZpZXdEZXRhaWxDcmVkaXROb3RlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/DebitSeaAir/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGViaXRTZWFBaXJcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/DebitSeaAir/ListDebit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGViaXRTZWFBaXJcTGlzdERlYml0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/DebitSeaAir/Modal/ModalSelectAdvancePayment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGViaXRTZWFBaXJcTW9kYWxcTW9kYWxTZWxlY3RBZHZhbmNlUGF5bWVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/DebitSeaAir/ViewDetailDebitNote.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGViaXRTZWFBaXJcVmlld0RldGFpbERlYml0Tm90ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/DeditNote/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVkaXROb3RlXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/DeditNote/ListDeditNote.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVkaXROb3RlXExpc3REZWRpdE5vdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/DeditNote/Modal/ModalSelectAdvancePayment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVkaXROb3RlXE1vZGFsXE1vZGFsU2VsZWN0QWR2YW5jZVBheW1lbnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/DeditNote/ViewDetailARDeditMemo.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVkaXROb3RlXFZpZXdEZXRhaWxBUkRlZGl0TWVtby5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Home/LoginPage.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxMb2dpblBhZ2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/JobSheetTruckingSeaAndAir/EditJobSheetTrucking.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSm9iU2hlZXRUcnVja2luZ1NlYUFuZEFpclxFZGl0Sm9iU2hlZXRUcnVja2luZy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/JobSheetTruckingSeaAndAir/EditJobSheetTruckingDraft.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSm9iU2hlZXRUcnVja2luZ1NlYUFuZEFpclxFZGl0Sm9iU2hlZXRUcnVja2luZ0RyYWZ0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/JobSheetTruckingSeaAndAir/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSm9iU2hlZXRUcnVja2luZ1NlYUFuZEFpclxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/JobSheetTruckingSeaAndAir/ListConfirmBookingSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSm9iU2hlZXRUcnVja2luZ1NlYUFuZEFpclxMaXN0Q29uZmlybUJvb2tpbmdTaGVldC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/JobSheetTruckingSeaAndAir/ListJobSheetTrucking.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSm9iU2hlZXRUcnVja2luZ1NlYUFuZEFpclxMaXN0Sm9iU2hlZXRUcnVja2luZy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/JobSheetTruckingSeaAndAir/Modal/ModalListItemSalesQuotationJobSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSm9iU2hlZXRUcnVja2luZ1NlYUFuZEFpclxNb2RhbFxNb2RhbExpc3RJdGVtU2FsZXNRdW90YXRpb25Kb2JTaGVldC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/JobSheetTruckingSeaAndAir/Modal/ModalListSalesQuotationJobSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSm9iU2hlZXRUcnVja2luZ1NlYUFuZEFpclxNb2RhbFxNb2RhbExpc3RTYWxlc1F1b3RhdGlvbkpvYlNoZWV0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/JobSheetTruckingSeaAndAir/ViewDetailJobSheetTrucking.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSm9iU2hlZXRUcnVja2luZ1NlYUFuZEFpclxWaWV3RGV0YWlsSm9iU2hlZXRUcnVja2luZy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/JobSheetTrucking/EditAttachmentJobSheetTrucking.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSm9iU2hlZXRUcnVja2luZ1xFZGl0QXR0YWNobWVudEpvYlNoZWV0VHJ1Y2tpbmcuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/JobSheetTrucking/EditJobSheetTrucking.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSm9iU2hlZXRUcnVja2luZ1xFZGl0Sm9iU2hlZXRUcnVja2luZy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/JobSheetTrucking/EditJobSheetTruckingDraft.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSm9iU2hlZXRUcnVja2luZ1xFZGl0Sm9iU2hlZXRUcnVja2luZ0RyYWZ0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/JobSheetTrucking/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSm9iU2hlZXRUcnVja2luZ1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/JobSheetTrucking/ListConfirmBookingSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSm9iU2hlZXRUcnVja2luZ1xMaXN0Q29uZmlybUJvb2tpbmdTaGVldC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/JobSheetTrucking/ListJobSheetTrucking.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSm9iU2hlZXRUcnVja2luZ1xMaXN0Sm9iU2hlZXRUcnVja2luZy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/JobSheetTrucking/Modal/ModalListItemSalesQuotationJobSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSm9iU2hlZXRUcnVja2luZ1xNb2RhbFxNb2RhbExpc3RJdGVtU2FsZXNRdW90YXRpb25Kb2JTaGVldC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/JobSheetTrucking/Modal/ModalListSalesQuotationJobSheet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSm9iU2hlZXRUcnVja2luZ1xNb2RhbFxNb2RhbExpc3RTYWxlc1F1b3RhdGlvbkpvYlNoZWV0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/JobSheetTrucking/ViewDetailJobSheetTrucking.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSm9iU2hlZXRUcnVja2luZ1xWaWV3RGV0YWlsSm9iU2hlZXRUcnVja2luZy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/MessageAlert/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVzc2FnZUFsZXJ0XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/MessageAlert/ListMessage.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVzc2FnZUFsZXJ0XExpc3RNZXNzYWdlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/MessageAlert/ViewAlert.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVzc2FnZUFsZXJ0XFZpZXdBbGVydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PettyCash/EditDraftPettyCash.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGV0dHlDYXNoXEVkaXREcmFmdFBldHR5Q2FzaC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PettyCash/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGV0dHlDYXNoXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PettyCash/ListPettyCash.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGV0dHlDYXNoXExpc3RQZXR0eUNhc2guY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PettyCash/Modal/ModalAccountCodePettyCash.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGV0dHlDYXNoXE1vZGFsXE1vZGFsQWNjb3VudENvZGVQZXR0eUNhc2guY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PettyCash/Modal/ModalBpCodePettyCash.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGV0dHlDYXNoXE1vZGFsXE1vZGFsQnBDb2RlUGV0dHlDYXNoLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PettyCash/ViewDetailPettyCashByDocEntry.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGV0dHlDYXNoXFZpZXdEZXRhaWxQZXR0eUNhc2hCeURvY0VudHJ5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PurchaseRequestAdvancePayment/EditPurchaseAdvancePayment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVyY2hhc2VSZXF1ZXN0QWR2YW5jZVBheW1lbnRcRWRpdFB1cmNoYXNlQWR2YW5jZVBheW1lbnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PurchaseRequestAdvancePayment/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVyY2hhc2VSZXF1ZXN0QWR2YW5jZVBheW1lbnRcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PurchaseRequestAdvancePayment/ListPurchaseRequestAdvancePayment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVyY2hhc2VSZXF1ZXN0QWR2YW5jZVBheW1lbnRcTGlzdFB1cmNoYXNlUmVxdWVzdEFkdmFuY2VQYXltZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PurchaseRequestCostOfSales/EditPurchaseRequestCostOfSale.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVyY2hhc2VSZXF1ZXN0Q29zdE9mU2FsZXNcRWRpdFB1cmNoYXNlUmVxdWVzdENvc3RPZlNhbGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PurchaseRequestCostOfSales/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVyY2hhc2VSZXF1ZXN0Q29zdE9mU2FsZXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PurchaseRequestCostOfSales/ListPurchaseRequestCostOfSale.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVyY2hhc2VSZXF1ZXN0Q29zdE9mU2FsZXNcTGlzdFB1cmNoYXNlUmVxdWVzdENvc3RPZlNhbGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PurchaseRequestSalesCommission/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVyY2hhc2VSZXF1ZXN0U2FsZXNDb21taXNzaW9uXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PurchaseRequestSalesCommission/ListPurchaseRequestSalesCommission.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVyY2hhc2VSZXF1ZXN0U2FsZXNDb21taXNzaW9uXExpc3RQdXJjaGFzZVJlcXVlc3RTYWxlc0NvbW1pc3Npb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PurchaseRequestSalesCommission/ViewDetailPurchaseRequestSalesCommission.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVyY2hhc2VSZXF1ZXN0U2FsZXNDb21taXNzaW9uXFZpZXdEZXRhaWxQdXJjaGFzZVJlcXVlc3RTYWxlc0NvbW1pc3Npb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PurchaseRequest/EditPurchaseRequest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVyY2hhc2VSZXF1ZXN0XEVkaXRQdXJjaGFzZVJlcXVlc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PurchaseRequest/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVyY2hhc2VSZXF1ZXN0XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PurchaseRequest/ListPurchaseRequest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVyY2hhc2VSZXF1ZXN0XExpc3RQdXJjaGFzZVJlcXVlc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PurchaseRequest/Modal/ModalItemPurchaseRequest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVyY2hhc2VSZXF1ZXN0XE1vZGFsXE1vZGFsSXRlbVB1cmNoYXNlUmVxdWVzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PurchaseRequest/Modal/ModalServicePurchaseRequest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVyY2hhc2VSZXF1ZXN0XE1vZGFsXE1vZGFsU2VydmljZVB1cmNoYXNlUmVxdWVzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/PurchaseRequest/ViewDetailPurchaseRequest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVyY2hhc2VSZXF1ZXN0XFZpZXdEZXRhaWxQdXJjaGFzZVJlcXVlc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Reimbursement/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVpbWJ1cnNlbWVudFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Reimbursement/ListApproveReimbursement.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVpbWJ1cnNlbWVudFxMaXN0QXBwcm92ZVJlaW1idXJzZW1lbnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Reimbursement/ListReimbursement.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVpbWJ1cnNlbWVudFxMaXN0UmVpbWJ1cnNlbWVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Reimbursement/UpdateReimbursementRequest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVpbWJ1cnNlbWVudFxVcGRhdGVSZWltYnVyc2VtZW50UmVxdWVzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Reimbursement/ViewDetailReimbursementByDocEntry.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVpbWJ1cnNlbWVudFxWaWV3RGV0YWlsUmVpbWJ1cnNlbWVudEJ5RG9jRW50cnkuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Reimbursement/ViewReimbursement.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVpbWJ1cnNlbWVudFxWaWV3UmVpbWJ1cnNlbWVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Report/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Report/ReportByID.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0XFJlcG9ydEJ5SUQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/SalesQuotation/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2FsZXNRdW90YXRpb25cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/SalesQuotation/ListSalesQuotation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2FsZXNRdW90YXRpb25cTGlzdFNhbGVzUXVvdGF0aW9uLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/SalesQuotation/Modal/ModalCO.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2FsZXNRdW90YXRpb25cTW9kYWxcTW9kYWxDTy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/SalesQuotation/Modal/ModalItemSalesQuotation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2FsZXNRdW90YXRpb25cTW9kYWxcTW9kYWxJdGVtU2FsZXNRdW90YXRpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/SalesQuotation/ViewDetailSalesQuotation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2FsZXNRdW90YXRpb25cVmlld0RldGFpbFNhbGVzUXVvdGF0aW9uLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Settlement/EditSettlementDraft.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2V0dGxlbWVudFxFZGl0U2V0dGxlbWVudERyYWZ0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Settlement/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2V0dGxlbWVudFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Settlement/ListSettlement.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2V0dGxlbWVudFxMaXN0U2V0dGxlbWVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Settlement/Modal/ModalSelectAdvancePayment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2V0dGxlbWVudFxNb2RhbFxNb2RhbFNlbGVjdEFkdmFuY2VQYXltZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Settlement/ViewDetailPurchaseOrder.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2V0dGxlbWVudFxWaWV3RGV0YWlsUHVyY2hhc2VPcmRlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Settlement/ViewDetailPurchaseOrderDraft.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2V0dGxlbWVudFxWaWV3RGV0YWlsUHVyY2hhc2VPcmRlckRyYWZ0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Shared/Components/AdvancePayment/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQWR2YW5jZVBheW1lbnRcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Shared/Components/AdvancePayment/EditAdvancePayment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQWR2YW5jZVBheW1lbnRcRWRpdEFkdmFuY2VQYXltZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Shared/Components/AdvancePayment/ListAdvancePayment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQWR2YW5jZVBheW1lbnRcTGlzdEFkdmFuY2VQYXltZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Shared/Components/AdvancePayment/ViewAdvancePayment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQWR2YW5jZVBheW1lbnRcVmlld0FkdmFuY2VQYXltZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Shared/Components/ContainerInfo/ContainerAdd.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQ29udGFpbmVySW5mb1xDb250YWluZXJBZGQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Shared/Components/ContainerInfo/ContainerEdit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQ29udGFpbmVySW5mb1xDb250YWluZXJFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Shared/Components/ContainerInfo/ContainerSeaAndAirAdd.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQ29udGFpbmVySW5mb1xDb250YWluZXJTZWFBbmRBaXJBZGQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Shared/Components/ContainerInfo/ContainerSeaAndAirEdit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQ29udGFpbmVySW5mb1xDb250YWluZXJTZWFBbmRBaXJFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Shared/Components/PrintMultipleLayout/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHJpbnRNdWx0aXBsZUxheW91dFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Shared/Components/PurchaseRequest/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHVyY2hhc2VSZXF1ZXN0XERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Shared/Components/PurchaseRequest/EditPurchaseRequest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHVyY2hhc2VSZXF1ZXN0XEVkaXRQdXJjaGFzZVJlcXVlc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Shared/Components/PurchaseRequest/ListPurchaseRequest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHVyY2hhc2VSZXF1ZXN0XExpc3RQdXJjaGFzZVJlcXVlc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Shared/Components/PurchaseRequest/Modal/ModalItemPurchaseRequest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHVyY2hhc2VSZXF1ZXN0XE1vZGFsXE1vZGFsSXRlbVB1cmNoYXNlUmVxdWVzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Shared/Components/PurchaseRequest/Modal/ModalServicePurchaseRequest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHVyY2hhc2VSZXF1ZXN0XE1vZGFsXE1vZGFsU2VydmljZVB1cmNoYXNlUmVxdWVzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Shared/Components/PurchaseRequest/ViewPurchaseRequest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHVyY2hhc2VSZXF1ZXN0XFZpZXdQdXJjaGFzZVJlcXVlc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Shared/ModalInfo.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXE1vZGFsSW5mby5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kimleang/RiderProjects/EW_PROnWeb_WebApp_SAP10PL0_HANA/EWProject/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-j41ub9gw8f

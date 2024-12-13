@@ -1,0 +1,178 @@
+﻿@model Client.Models.Response.ResponseData<Client.Models.Request.PettyCashDetail>
+@{
+    var dt = DateTime.Today.ToString("yyyy-MM-dd");
+}
+<title>@ViewData["Title"] - EWSystem</title>
+<div class="row">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-4">
+                <ul class="navbar-nav flex-grow-1 btn" style="float:right;background-color:#01295C;color:white;width:100%">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown" href="#">@localizer["Print"]</a>
+                        @{
+                            var k = 1;
+                        }
+                        <ul class="dropdown-menu" style="border: 1px solid #01295C">
+                            @foreach (var j in Model.ListLayoutPrint)
+                            {
+                                @if (k == 1)
+                                {
+                                    <li>
+                                        <a class="dropdown-item btn btn-info" target="_blank" asp-route-layoutCode="@j.Code" asp-route-docEntry="@ViewBag.docEntry-@ViewBag.type" asp-controller="CallLayout" asp-action="PrintLayout">
+                                            @j.Name
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item btn btn-info" target="_blank" asp-route-layoutCode="@j.Code" asp-route-docEntry="@ViewBag.docEntry-@ViewBag.type" asp-controller="CallLayout" asp-action="PrintLayout">
+                                            @j.Name
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-8"></div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div style="float:right">
+            <h2>@localizer["PETTY CASH"]</h2>
+        </div>
+    </div>
+</div>
+@if (Model.ErrorCode != 0)
+{
+    <h2>@Model.ErrorMessage</h2>
+}
+else
+{
+    <!--Header-->
+    <h5><u>Header</u></h5>
+    <!--Series Row-->
+    <div class="row">
+        <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+            @localizer["Voucher No."]
+        </div>
+        <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+            @localizer["Series"]
+        </div>
+        <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+            @localizer["Posting Date"]
+        </div>
+        <div class="col-6" style="margin:auto;text-align:left;font-weight:bold;">
+            @localizer["Remarks"]
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2" style="text-align:left;font-weight:bold;">
+            <input type="text" class="form-control" value="@Model.Data.Header.WebID" id="txtVoucher" disabled>
+        </div>
+        <div class="col-2" style="text-align:left;font-weight:bold;">
+            <input type="text" class="form-control" disabled value="@Model.Data.Header.Series" id="txtSeries">
+        </div>
+        <div class="col-2" style="text-align:left;font-weight:bold;">
+            <input type="text" class="form-control" disabled value="@Model.Data.Header.PostingDate" id="txtPostingDate">
+        </div>
+        <div class="col-6" style="margin:auto;text-align:left;font-weight:bold;">
+            <textarea id="remarks" rows="1" disabled class="form-control">@Model.Data.Header.Remarks</textarea>
+        </div>
+    </div>
+    <!--Reference Row-->
+    <div class="row">
+        <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+            @localizer["Ref.1"]
+        </div>
+        <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+            @localizer["Ref.2"]
+        </div>
+        <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+            @localizer["Ref.3"]
+        </div>
+        <div class="col-6" style="margin:auto;text-align:left;font-weight:bold;">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2" style="text-align:left;font-weight:bold;">
+            <input type="text" class="form-control" disabled value="@Model.Data.Header.Ref1" id="txtRef1">
+        </div>
+        <div class="col-2" style="text-align:left;font-weight:bold;">
+            <input type="text" class="form-control" disabled value="@Model.Data.Header.Ref2" id="txtRef2">
+        </div>
+        <div class="col-2" style="text-align:left;font-weight:bold;">
+            <input type="text" class="form-control" disabled value="@Model.Data.Header.Ref3" id="txtRef3">
+        </div>
+        <div class="col-6" style="margin:auto;text-align:left;font-weight:bold;">
+        </div>
+    </div>
+    <!--End Header-->
+    <hr />
+    <!--Contents-->
+    <h5><u>Contents</u></h5>
+    <!--Account Information-->
+    <div class="table-responsive mt-3">
+        <div class="row">
+            <div class="col-12">
+                <table id="TbListPettyCashLine" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0" style="background: #f0eff1; color: #696969;">
+                    <thead>
+                        <tr>
+                            <th>Account Type</th>
+                            <th>Account Code & Account Name</th>
+                            <th>Customer Name</th>
+                            <th>Debit</th>
+                            <th>Credit</th>
+                            <th>Date</th>
+                            <th>Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var a in Model.Data.Lines)
+                        {
+                            <tr>
+                                <td>@a.AccountTypeCode</td>
+                                <td>@a.AccountCodeOrBpCode</td>
+                                <td>@a.CardCode</td>
+                                <td>@a.Debit</td>
+                                <td>@a.Credit</td>
+                                <td>@a.DateLine</td>
+                                <td>@a.Remarks</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Total Credit"]</div>
+                <div class="col-8">
+                    <input type="text" id="txtBalanceDebit" value="@Model.Data.Lines.Sum(x => x.Credit)" class="form-control" disabled />
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Total Debit"]</div>
+                <div class="col-8">
+                    <input type="text" id="txtBalanceDebit" value="@Model.Data.Lines.Sum(x => x.Debit)" class="form-control" disabled />
+                </div>
+            </div>
+        </div>
+    </div>
+    @section scripts{
+    @*<script src="~/js/pettycash/modal/ModalAccountCodePettyCash.js"></script>
+    <script src="~/js/pettycash/modal/ModalBpCodePettyCash.js"></script>
+    <script src="~/js/pettycash/index.js"></script>*@
+    <script>
+        $('#TbListPettyCashLine').DataTable();
+    </script>
+}
+}

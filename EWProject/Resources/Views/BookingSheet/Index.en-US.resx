@@ -1,0 +1,255 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="&amp; TRANSPORTER AND FORWARDER" xml:space="preserve">
+    <value>&amp; TRANSPORTER AND FORWARDER</value>
+  </data>
+  <data name="Add Invoice" xml:space="preserve">
+    <value>Add Invoice</value>
+  </data>
+  <data name="BOOKING DATE" xml:space="preserve">
+    <value>BOOKING DATE</value>
+  </data>
+  <data name="BOOKING ID" xml:space="preserve">
+    <value>BOOKING ID</value>
+  </data>
+  <data name="BOOKING SHEET" xml:space="preserve">
+    <value>BOOKING SHEET</value>
+  </data>
+  <data name="Choose..." xml:space="preserve">
+    <value>Choose...</value>
+  </data>
+  <data name="COMMODITY" xml:space="preserve">
+    <value>COMMODITY</value>
+  </data>
+  <data name="CONSIGNEE" xml:space="preserve">
+    <value>CONSIGNEE</value>
+  </data>
+  <data name="CONTAINER TYPE" xml:space="preserve">
+    <value>CONTAINER TYPE</value>
+  </data>
+  <data name="CROSS BORDER DATE" xml:space="preserve">
+    <value>CROSS BORDER DATE</value>
+  </data>
+  <data name="CUSTOMER DATA" xml:space="preserve">
+    <value>CUSTOMER DATA</value>
+  </data>
+  <data name="Dangerous Goods" xml:space="preserve">
+    <value>Dangerous Goods</value>
+  </data>
+  <data name="DESTINATION" xml:space="preserve">
+    <value>DESTINATION</value>
+  </data>
+  <data name="DISTRICT OF DELIVERY" xml:space="preserve">
+    <value>DISTRICT OF DELIVERY</value>
+  </data>
+  <data name="DISTRICT OF LOADING" xml:space="preserve">
+    <value>DISTRICT OF LOADING</value>
+  </data>
+  <data name="DOCUMENT REQUIREMENT" xml:space="preserve">
+    <value>DOCUMENT REQUIREMENT</value>
+  </data>
+  <data name="ETA REQUIREMENT" xml:space="preserve">
+    <value>ETA REQUIREMENT</value>
+  </data>
+  <data name="GOODS DESCRIPTION" xml:space="preserve">
+    <value>GOODS DESCRIPTION</value>
+  </data>
+  <data name="GROSS WEIGHT(KGS)" xml:space="preserve">
+    <value>GROSS WEIGHT(KGS)</value>
+  </data>
+  <data name="INVOICE NO#" xml:space="preserve">
+    <value>INVOICE NO#</value>
+  </data>
+  <data name="JOB NO." xml:space="preserve">
+    <value>JOB NO.</value>
+  </data>
+  <data name="JOB TYPE" xml:space="preserve">
+    <value>JOB TYPE</value>
+  </data>
+  <data name="LIST OF SALESQUOTATION" xml:space="preserve">
+    <value>LIST OF SALESQUOTATION</value>
+  </data>
+  <data name="LOADING DATE" xml:space="preserve">
+    <value>LOADING DATE</value>
+  </data>
+  <data name="NET WEIGHT(KGS)" xml:space="preserve">
+    <value>NET WEIGHT(KGS)</value>
+  </data>
+  <data name="ORIGIN" xml:space="preserve">
+    <value>ORIGIN</value>
+  </data>
+  <data name="Other Remarks" xml:space="preserve">
+    <value>Other Remarks</value>
+  </data>
+  <data name="OVERSEA FORWARDER" xml:space="preserve">
+    <value>OVERSEA FORWARDER</value>
+  </data>
+  <data name="OVERSEA TRANSPORT" xml:space="preserve">
+    <value>OVERSEA TRANSPORT</value>
+  </data>
+  <data name="PLACE OF DELIVERY" xml:space="preserve">
+    <value>PLACE OF DELIVERY</value>
+  </data>
+  <data name="PLACE OF LOADING" xml:space="preserve">
+    <value>PLACE OF LOADING</value>
+  </data>
+  <data name="ROUTE" xml:space="preserve">
+    <value>ROUTE</value>
+  </data>
+  <data name="SALE PERSON" xml:space="preserve">
+    <value>SALE PERSON</value>
+  </data>
+  <data name="SALES QUOTATION" xml:space="preserve">
+    <value>SALES QUOTATION</value>
+  </data>
+  <data name="Select" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="SERVICE TYPE" xml:space="preserve">
+    <value>SERVICE TYPE</value>
+  </data>
+  <data name="SHIPMENT DETAILS" xml:space="preserve">
+    <value>SHIPMENT DETAILS</value>
+  </data>
+  <data name="SHIPPER" xml:space="preserve">
+    <value>SHIPPER</value>
+  </data>
+  <data name="SPECIAL REQUEST" xml:space="preserve">
+    <value>SPECIAL REQUEST</value>
+  </data>
+  <data name="THAI BORDER" xml:space="preserve">
+    <value>THAI BORDER</value>
+  </data>
+  <data name="THAI FORWARDER" xml:space="preserve">
+    <value>THAI FORWARDER</value>
+  </data>
+  <data name="TO" xml:space="preserve">
+    <value>TO</value>
+  </data>
+  <data name="TOTAL PACKAGE" xml:space="preserve">
+    <value>TOTAL PACKAGE</value>
+  </data>
+  <data name="TRANSPORTER AND FORWARDER" xml:space="preserve">
+    <value>TRANSPORTER AND FORWARDER</value>
+  </data>
+  <data name="TRUCK TYPE" xml:space="preserve">
+    <value>TRUCK TYPE</value>
+  </data>
+</root>

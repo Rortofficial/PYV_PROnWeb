@@ -1,0 +1,269 @@
+﻿@model Client.Models.Request.ListPurchaseRequestConfirm
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+<div class="card" style="border: 3px solid rgb(1 41 92);">
+    <div class="card-header" style="background-color: rgb(1 41 92);color: white;">
+        @localizer["PURCHASE REQUEST"]
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div style="margin:auto;text-align:left;font-weight:bold;"><u>@localizer["HEADER PURCHASEREQUEST"]</u></div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["REF NO"]</div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" id="txtRefNo-@Model.ID" value="@Model.RefNo" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Job No"]</div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" value="@Model.JobNo" id="txtJobNo-@Model.ID" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ISSUE BY"]</div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" value="@Model.IssueBy" id="txtCustomerCode-@Model.ID" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["ISSUE DATE"]</div>
+                    <div class="col-8">
+                        <input type="date" class="form-control" id="txtIssueDate-@Model.ID" value="@Model.IssueDate" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                        @localizer["Vendor Name"]
+                    </div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" id="txtVendorName-@Model.ID" value="@Model.VendorName" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Due DATE"]</div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" id="txtDueDate-@Model.ID" value="@Model.DueDate" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                        @localizer["Ammount Currency"]
+                    </div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" id="cboAmountCurrency-@Model.ID" value="@Model.AmountCurrency" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["THB"]</div>
+                    <div class="col-8">
+                        <input type="number" class="form-control" id="txtAmountTHB-@Model.ID" value="@Model.AmountTHB" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*<div class="row mt-4">
+        <div class="col-6">
+        <div class="row">
+        <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+        @localizer["Truck No"]
+        </div>
+        <div class="col-9">
+        <input type="text" disabled class="form-control" id="txtTruckNo-@ViewBag.PRID">
+        </div>
+        </div>
+        </div>
+        <div class="col-6">
+        <div class="row">
+        <div class="col-4" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Container No"]</div>
+        <div class="col-8">
+        <input type="text" disabled class="form-control" id="txtContainerNo-@ViewBag.PRID">
+        </div>
+        </div>
+        </div>
+        </div>*@
+        <div class="row mt-4">
+            <div class="col-12">
+                <div style="margin:auto;text-align:left;font-weight:bold;"><u>@localizer["LINE PURCHASEREQUEST"]</u></div>
+            </div>
+        </div>
+
+        <div class="table-line">
+            <div id="itemType">
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <table id="TbListLineItemPurchaseRequest-@Model.ID" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0" style="background: #f0eff1; color: #696969;">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Service Type</th>
+                                    <th>Origin</th>
+                                    <th>Destination</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach(var a in Model.Lines)
+                                {
+                                    <tr>
+                                        <td>@a.ItemName</td>
+                                        <td>@a.ServiceType</td>
+                                        <td>@a.Origin</td>
+                                        <td>@a.Destination</td>
+                                        <td>@a.amount</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @*<div id="serviceType" style="display:none;">
+            <div class="row mt-5">
+            <div class="col-12">
+            <table id="TbListLineServicePurchaseRequest-@ViewBag.PRID" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0" style="background: #f0eff1; color: #696969;">
+            <thead>
+            <tr>
+            <th>Account Code</th>
+            <th>Account Name</th>
+            <th>Price</th>
+            <th>Remarks</th>
+            <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            </table>
+            </div>
+            </div>
+            </div>*@
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                        @localizer["Grand Total"]
+                    </div>
+                    <div class="col-9">
+                        <input type="number" class="form-control" id="txtGrandTotal-@Model.ID" value="@Model.GrandTotal" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                        @localizer["Bank Account"]
+                    </div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" id="txtBankAccount-@Model.ID" value="@Model.BankAccount" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Branch"]</div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" id="txtBranch-@Model.ID" value="@Model.BranchName" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Country"]</div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" id="txtCountry-@Model.ID" value="@Model.Country" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
+                        @localizer["Bank Name"]
+                    </div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" id="txtBankName-@Model.ID" value="@Model.BankName" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">@localizer["Swift Code"]</div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" id="txtSwiftCode-@Model.ID" value="@Model.SwiftCode" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-6">
+                <div style="margin:auto;text-align:left;font-weight:bold;"><u>@localizer["Remark"]</u></div>
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-12">
+                <textarea id="remarks-@Model.ID" rows="4" disabled class="form-control">@Model.Remarks</textarea>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="row mt-3">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+                <button class="btn btn-info" id="btnCloseModal-@Model.ID" onclick="OnCloseModal('ViewID-@Model.ID')" style="float:right;color:white">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script defer>
+    //$("#txtVendorName-@Model.ID").val();
+    $('#TbListLineItemPurchaseRequest-@Model.ID').DataTable({
+        columns:
+            [
+                { data: "ItemName", autoWidth: true },
+                { data: "ServiceType", autoWidth: true },
+                { data: "Origin", autoWidth: true },
+                { data: "Destination", autoWidth: true },
+                { data: "Amount", autoWidth: true }
+            ],
+    });
+    function OnCloseModal(modalID){
+        $("#" + modalID).empty();
+    }
+</script>
