@@ -489,6 +489,7 @@ C:\Mr_Rort\PYV_PROnWeb\EWProject\obj\Debug\net7.0\Client.csproj.CoreCompileInput
 C:\Mr_Rort\PYV_PROnWeb\EWProject\obj\Debug\net7.0\Client.MvcApplicationPartsAssemblyInfo.cache
 C:\Mr_Rort\PYV_PROnWeb\EWProject\obj\Debug\net7.0\Client.RazorAssemblyInfo.cache
 C:\Mr_Rort\PYV_PROnWeb\EWProject\obj\Debug\net7.0\Client.RazorAssemblyInfo.cs
+C:\Mr_Rort\PYV_PROnWeb\EWProject\obj\Debug\net7.0\Client.sourcelink.json
 C:\Mr_Rort\PYV_PROnWeb\EWProject\obj\Debug\net7.0\th-TH\Client.resources.cs
 C:\Mr_Rort\PYV_PROnWeb\EWProject\obj\Debug\net7.0\th-TH\Client.resources.dll
 C:\Mr_Rort\PYV_PROnWeb\EWProject\obj\Debug\net7.0\en-US\Client.resources.cs

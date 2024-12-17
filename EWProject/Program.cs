@@ -21,7 +21,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 app.UseSession();
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 var supportedCultures = new[] { "en-US", "km", "th-TH" };
 var localizationOptions = new RequestLocalizationOptions()
@@ -38,6 +38,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=LoginPage}/{id?}"); //LoginPage
 app.MapHub<ChatHub>("/chatHub");
-//UserDefinedLayoutAndReportManager._RegisterJobSheetTruckingLayout("JOBSHEETRUCKING", "JOBSHEETRUCKING", "JOBSHEETRUCKING", "JOBSHEETRUCKING", "JOBSHEETRUCKING", "tes.rpt", SAP_Driver_oCompany._CheckingStatusOCompany(), env);
-//string TypeName, string AddonName, string AddonFormType, string MenuID, string Name, string RepName, Company oCompany
+    //UserDefinedLayoutAndReportManager._RegisterJobSheetTruckingLayout("JOBSHEETRUCKING", "JOBSHEETRUCKING", "JOBSHEETRUCKING", "JOBSHEETRUCKING", "JOBSHEETRUCKING", "tes.rpt", SAP_Driver_oCompany._CheckingStatusOCompany(), env);
+    //string TypeName, string AddonName, string AddonFormType, string MenuID, string Name, string RepName, Company oCompany
 app.Run();

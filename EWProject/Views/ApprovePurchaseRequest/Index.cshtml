@@ -1,11 +1,11 @@
 ﻿@using Client.Connection;
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @model Client.Models.Response.ListMasterConfirmBookingSheet
-<div class="row">
+<div class="row mt-1">
+    @*<div class="col-6">
+    </div>*@
     <div class="col-6">
-    </div>
-    <div class="col-6">
-        <div style="float:right">
+        <div style="float:left">
             <h2>@localizer["Approve Document"]</h2>
         </div>
     </div>
@@ -14,8 +14,8 @@
                x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "ApprovalDocument").First().Properties.IsPermission
            && x.IsAllowReadOnly == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "ApprovalDocument").First().Properties.IsAllowReadOnly).Count() == 1)
 {
-    <div class="row">
-        <div class="col-1"></div>
+    <div class="row mt-4">
+        @*<div class="col-1"></div>*@
         <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
             @localizer["Date From"]
         </div>
@@ -25,11 +25,11 @@
         <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
             @localizer["Document Type"]
         </div>
-        <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+        <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
         </div>
     </div>
     <div class="row">
-        <div class="col-1"></div>
+        @*<div class="col-1"></div>*@
         <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
             <input type="date" class="form-control" value="@(DateTime.Now.ToString("yyyy-MM-01"))" id="txtDateFrom">
         </div>
@@ -45,7 +45,7 @@
                 <option value="PRCommission">Purchase Request For SalesCommission</option>
             </select>
         </div>
-        <div class="col-2" style="margin:auto;text-align:left;font-weight:bold;">
+        <div class="col-3" style="margin:auto;text-align:left;font-weight:bold;">
             <button class="btn" id="btnSearch" style="float:left;background-color:#01295C;color:white">Search</button>
         </div>
     </div>
@@ -96,8 +96,8 @@
                         },
                         {
                             render: function (data, type, full, meta) {
-                                var style="";
-                                if(full.documentType=="Approve"){
+                                var style = "";
+                                if(full.documentType == "Approve"){
                                     style = "color:green;font-weight: bold;"
                                 } else if (full.documentType == "Pending") {
                                     style = "color:purple;font-weight: bold;"

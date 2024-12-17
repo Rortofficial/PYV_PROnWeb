@@ -1,9 +1,13 @@
 ﻿@using Client.Connection;
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @model Client.Models.Response.ResponseData<List<Client.Models.Request.ReimbursementRequest>>
-<title>@ViewData["Title"] - EWSystem</title>
+<title>@ViewData["Title"] - PHSystem</title>
 <div class="row mt-1">
-    <div class="col-4"><h5>@localizer["List Of Reimbursement"]</h5></div>
+    <div class="col-4">
+        <h5>
+            @localizer["List Of Reimbursement"]
+        </h5>
+    </div>
     <div class="col-8">
         @if (Configure.ListOfPermissionsByUser.Where(x =>
             x.IsPermission == Client.Connection.Configure.ListOfPermissions.Where(x => x.Key == "RequestReimbursement").First().Properties.IsPermission
